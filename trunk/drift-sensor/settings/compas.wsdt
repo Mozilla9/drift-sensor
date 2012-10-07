@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>compas/Release</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>335</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      <PreferedWindows><Position>4</Position><ScreenPosX>26</ScreenPosX><ScreenPosY>100</ScreenPosY><Windows/></PreferedWindows></Workspace>
+    <Build><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>851</ColumnWidth1><ColumnWidth2>227</ColumnWidth2><ColumnWidth3>56</ColumnWidth3></Build></Static>
+    <Windows>
+      
+    <Wnd2><Tabs><Tab><Identity>TabID-2427-21119</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>compas</ExpandedNode><ExpandedNode>compas/COMPAS</ExpandedNode><ExpandedNode>compas/CONSOLE</ExpandedNode><ExpandedNode>compas/CORE</ExpandedNode><ExpandedNode>compas/DRIFT</ExpandedNode><ExpandedNode>compas/FILTER</ExpandedNode><ExpandedNode>compas/LED</ExpandedNode><ExpandedNode>compas/LIB</ExpandedNode><ExpandedNode>compas/TASKS</ExpandedNode><ExpandedNode>compas/UART</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd2><Wnd3><Tabs><Tab><Identity>TabID-21298-19680</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd3></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane/><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-002c1030><key>iaridepm.enu1</key></Toolbar-002c1030></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>792</Bottom><Right>436</Right><x>-2</x><y>-2</y><xscreen>11720</xscreen><yscreen>152</yscreen><sizeHorzCX>24989339</sizeHorzCX><sizeHorzCY>147002</sizeHorzCY><sizeVertCX>933902</sizeVertCX><sizeVertCY>767892</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>198</Bottom><Right>471</Right><x>-2</x><y>-2</y><xscreen>473</xscreen><yscreen>200</yscreen><sizeHorzCX>1008529</sizeHorzCX><sizeHorzCY>193424</sizeHorzCY><sizeVertCX>420043</sizeVertCX><sizeVertCY>193424</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

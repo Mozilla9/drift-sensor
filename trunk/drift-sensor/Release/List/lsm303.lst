@@ -1,0 +1,435 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  00:34:11 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Lsm303dlh\lsm303.c  #
+#    Command line =  D:\Projects\google_host\drift-sensor\Lsm303dlh\lsm303.c  #
+#                    -D NDEBUG -lc D:\Projects\google_host\drift-sensor\Relea #
+#                    se\List\ --diag_suppress Pe550 -o                        #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\lsm303 #
+#                    .lst                                                     #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\lsm303. #
+#                    o                                                        #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Lsm303dlh\lsm303.c
+      1          /******************************************************************************/
+      2          /* lsm303.c                                                                   */
+      3          /******************************************************************************/
+      4          
+      5          
+      6          #include "data_types.h"
+      7          #include <math.h>
+      8          #include "Protothread\pt.h"
+      9          #include "Core\core.h"
+     10          #include "I2c\i2c1.h"
+     11          #include "I2c\i2c2.h"
+     12          #include "Lsm303dlh\lsm303.h"
+     13          
+     14          
+     15          
+     16          
+     17          static vector a;              // accelerometer readings
+     18          static vector m;              // magnetometer readings
+     19          
+     20          static i2c_data a_data;
+     21          static struct pt a_pt;
+     22          
+     23          static i2c_data m_data;
+     24          static struct pt m_pt;
+     25          
+     26          #define ACC_ADDRESS_W (ACC_ADDRESS & I2C_WRITE)
+     27          #define ACC_ADDRESS_R (ACC_ADDRESS | I2C_READ)
+     28          
+     29          #define MAG_ADDRESS_W (MAG_ADDRESS & I2C_WRITE)
+     30          #define MAG_ADDRESS_R (MAG_ADDRESS | I2C_READ)
+     31          
+     32          
+     33          
+     34          
+     35          /*
+     36           * Writes an accelerometer register
+     37           *
+     38           */
+     39          static void write_acc_reg(uint8_t reg, uint8_t value) {
+     40              a_data.addr = ACC_ADDRESS_W;
+     41              a_data.buff[0] = reg;
+     42              a_data.buff[1] = value;
+     43              a_data.len = 2;
+     44          
+     45              PT_INIT(&a_pt);
+     46              while (1) {
+     47                  uint32_t status = start_i2c1(&a_pt, &a_data);
+     48          
+     49                  if (status == PT_ENDED || status == PT_EXITED) {
+     50                      break;
+     51                  }
+     52              }
+     53          }
+     54          
+     55          
+     56          /*
+     57           * Writes a magnetometer register
+     58           *
+     59           */
+     60          static void write_mag_reg(uint8_t reg, uint8_t value) {
+     61              m_data.addr = MAG_ADDRESS_W;
+     62              m_data.buff[0] = reg;
+     63              m_data.buff[1] = value;
+     64              m_data.len = 2;
+     65          
+     66              PT_INIT(&m_pt);
+     67              while (1) {
+     68                  uint32_t status = start_i2c2(&m_pt, &m_data);
+     69          
+     70                  if (status == PT_ENDED || status == PT_EXITED) {
+     71                      break;
+     72                  }
+     73              }
+     74          }
+     75          
+     76          
+     77          /*
+     78           * Init interrupt pins
+     79           *
+     80           */
+     81          static void init_interrupt_pins() {
+     82              // Init int
+     83              PINSEL4_bit.P2_12 = 0;     // int1
+     84              PINSEL4_bit.P2_13 = 0;     // int2
+     85          
+     86              FIO2DIR_bit.P2_12 = 0;     // input
+     87              FIO2DIR_bit.P2_13 = 0;     // input
+     88          
+     89              PINMODE4_bit.P2_12 = 3;    // PULL_RES
+     90              PINMODE4_bit.P2_13 = 3;    //
+     91          
+     92          }
+     93          
+     94          
+     95          /*
+     96           * Init drdy
+     97           *
+     98           */
+     99          static void init_drdy() {
+    100              // Init int
+    101              PINSEL4_bit.P2_3 = 0;     // drdy
+    102              FIO2DIR_bit.P2_3 = 0;     // input
+    103              PINMODE4_bit.P2_3 = 3;    // PULL_RES
+    104          }
+    105          
+    106          
+    107          /*
+    108           * Init SA0
+    109           *
+    110           */
+    111          static void init_addr() {
+    112              // Init int
+    113              PINSEL7_bit.P3_25 = 0;    // sa0
+    114              FIO3DIR_bit.P3_25 = 1;    // output
+    115              PINMODE7_bit.P3_25 = 3;   // PULL_RES
+    116          }
+    117          
+    118          
+    119          /*
+    120           * get int1
+    121           *
+    122           */
+    123          bool_t get_int1_lsm303() {
+    124              return (FIO2PIN_bit.P2_12) ? TRUE_T : FALSE_T;
+    125          }
+    126          
+    127          
+    128          /*
+    129           * get int2
+    130           *
+    131           */
+    132          bool_t get_int2_lsm303() {
+    133              return (FIO2PIN_bit.P2_13) ? TRUE_T : FALSE_T;
+    134          }
+    135          
+    136          
+    137          /*
+    138           * get mrdy
+    139           *
+    140           */
+    141          bool_t get_drdy_lsm303() {
+    142              return (FIO2PIN_bit.P2_3) ? TRUE_T : FALSE_T;
+    143          }
+    144          
+    145          
+    146          /*
+    147           * Set SA0
+    148           *
+    149           */
+    150          void set_sa0_lsm303() {
+    151              FIO3SET_bit.P3_25 = 1;
+    152          }
+    153          
+    154          
+    155          /*
+    156           * Clear SA0
+    157           *
+    158           */
+    159          void clear_sa0_lsm303() {
+    160              FIO3CLR_bit.P3_25 = 1;
+    161          }
+    162          
+    163          
+    164          /*
+    165           * Init LSM303
+    166           *
+    167           */
+    168          void init_lsm303() {
+    169              init_i2c1();
+    170              init_i2c2();
+    171              init_interrupt_pins();
+    172              init_drdy();
+    173              init_addr();
+    174          
+    175              set_sa0_lsm303();
+    176          }
+    177          
+    178          
+    179          /*
+    180           * Turns on the LSM303DLH's accelerometer and magnetometers and places
+    181           * them in normal mode.
+    182           *
+    183           */
+    184          void enable_default_lsm303() {
+    185              // Enable Accelerometer
+    186              // 0x2F = 0b00101111 - Normal power mode, all axes enabled, 100 HZ
+    187              write_acc_reg(LSM303DLH_CTRL_REG1_A, 0x2F);     // 100 Hz, normal mode
+    188              write_acc_reg(LSM303DLH_CTRL_REG4_A, 0x90);     // 4g
+    189          
+    190              // Enable Magnetometer
+    191              // 0x00 = 0b00000000
+    192              // Continuous conversion mode
+    193              write_mag_reg(LSM303DLH_CRA_REG_M, 0x18);
+    194              write_mag_reg(LSM303DLH_CRB_REG_M, 0xE0);
+    195              write_mag_reg(LSM303DLH_MR_REG_M, 0x00);
+    196          }
+    197          
+    198          
+    199          /*
+    200           * Reads the 3 accelerometer channels and stores them in vector a
+    201           *
+    202           */
+    203          void read_acc() {
+    204              // Write reg addr
+    205              a_data.addr = ACC_ADDRESS_W;
+    206              a_data.buff[0] = (LSM303DLH_OUT_X_L_A | (1 << 7));
+    207              a_data.len = 1;
+    208          
+    209              PT_INIT(&a_pt);
+    210              while (1) {
+    211                  uint32_t status = start_i2c1(&a_pt, &a_data);
+    212          
+    213                  if (status == PT_ENDED || status == PT_EXITED) {
+    214                      break;
+    215                  }
+    216              }
+    217          
+    218              // Read
+    219              a_data.addr = ACC_ADDRESS_R;
+    220              a_data.len = 6;
+    221          
+    222              PT_INIT(&a_pt);
+    223              while (1) {
+    224                  uint32_t status = start_i2c1(&a_pt, &a_data);
+    225          
+    226                  if (status == PT_ENDED || status == PT_EXITED) {
+    227                      break;
+    228                  }
+    229              }
+    230          
+    231              uint8_t xla = a_data.buff[0];
+    232              uint8_t xha = a_data.buff[1];
+    233              uint8_t yla = a_data.buff[2];
+    234              uint8_t yha = a_data.buff[3];
+    235              uint8_t zla = a_data.buff[4];
+    236              uint8_t zha = a_data.buff[5];
+    237          
+    238              a.x = (sint16_t)((xha << 8) | (xla & 0xFF));
+    239              a.y = (sint16_t)((yha << 8) | (yla & 0xFF));
+    240              a.z = (sint16_t)((zha << 8) | (zla & 0xFF));
+    241          
+    242              a.status = a_data.isOk;
+    243          }
+    244          
+    245          
+    246          /*
+    247           * Reads the 3 magnetometer channels and stores them in vector m
+    248           *
+    249           */
+    250          void read_mag() {
+    251              // Write reg addr
+    252              m_data.addr = MAG_ADDRESS_W;
+    253              m_data.buff[0] = LSM303DLH_OUT_X_H_M;
+    254              m_data.len = 1;
+    255          
+    256              PT_INIT(&m_pt);
+    257              while (1) {
+    258                  uint32_t status = start_i2c2(&m_pt, &m_data);
+    259          
+    260                  if (status == PT_ENDED || status == PT_EXITED) {
+    261                      break;
+    262                  }
+    263              }
+    264          
+    265              // Read
+    266              m_data.addr = MAG_ADDRESS_R;
+    267              m_data.len = 6;
+    268          
+    269              PT_INIT(&m_pt);
+    270              while (1) {
+    271                  uint32_t status = start_i2c2(&m_pt, &m_data);
+    272          
+    273                  if (status == PT_ENDED || status == PT_EXITED) {
+    274                      break;
+    275                  }
+    276              }
+    277          
+    278              uint8_t xhm = m_data.buff[0];
+    279              uint8_t xlm = m_data.buff[1];
+    280              uint8_t yhm = m_data.buff[2];
+    281              uint8_t ylm = m_data.buff[3];
+    282              uint8_t zhm = m_data.buff[4];
+    283              uint8_t zlm = m_data.buff[5];
+    284          
+    285              m.x = (xhm << 8 | xlm);
+    286              m.y = (yhm << 8 | ylm);
+    287              m.z = (zhm << 8 | zlm);
+    288              m.status = m_data.isOk;
+    289          }
+    290          
+    291          
+    292          /*
+    293           * Reads all 6 channels of the LSM303DLH and stores them in the object variables
+    294           *
+    295           */
+    296          void read_lsm303() {
+    297              read_acc();
+    298              read_mag();
+    299          }
+    300          
+    301          
+    302          /*
+    303           * Get acc vector
+    304           *
+    305           */
+    306          vector * get_acc() {
+    307              return &a;
+    308          }
+    309          
+    310          
+    311          /*
+    312           * Get mag vector
+    313           *
+    314           */
+    315          vector * get_mag() {
+    316              return &m;
+    317          }
+    318          
+
+   Maximum stack usage in bytes:
+
+     Function              .cstack
+     --------              -------
+     clear_sa0_lsm303           0
+     enable_default_lsm303      8
+     get_acc                    0
+     get_drdy_lsm303            0
+     get_int1_lsm303            0
+     get_int2_lsm303            0
+     get_mag                    0
+     init_addr                  0
+     init_drdy                  0
+     init_interrupt_pins        0
+     init_lsm303                8
+     read_acc                  24
+     read_lsm303                8
+     read_mag                  24
+     set_sa0_lsm303             0
+     write_acc_reg              8
+     write_mag_reg              8
+
+
+   Section sizes:
+
+     Function/Label        Bytes
+     --------------        -----
+     _A_PINSEL4               4
+     _A_PINSEL7               4
+     _A_PINMODE4              4
+     _A_PINMODE7              4
+     _A_FIO2DIR               4
+     _A_FIO2PIN               4
+     _A_FIO3DIR               4
+     _A_FIO3SET               4
+     _A_FIO3CLR               4
+     a                       12
+     m                       12
+     a_data                  56
+     a_pt
+     m_data                  56
+     m_pt
+     write_acc_reg           46
+     write_mag_reg           46
+     init_interrupt_pins     58
+     init_drdy               30
+     init_addr               34
+     get_int1_lsm303         12
+     get_int2_lsm303         12
+     get_drdy_lsm303         12
+     set_sa0_lsm303          14
+     clear_sa0_lsm303        14
+     init_lsm303             30
+     enable_default_lsm303   46
+     read_acc               112
+     read_mag               112
+     read_lsm303             14
+     get_acc                  4
+     get_mag                  4
+     ??DataTable13            4
+     ??DataTable13_1          4
+     ??DataTable13_2          4
+     ??DataTable13_3          4
+     ??DataTable13_4          4
+     ??DataTable13_5          4
+     ??DataTable13_6          4
+     ??DataTable13_7          4
+     ??DataTable13_8          4
+     ??DataTable13_9          4
+     ??DataTable13_10         4
+     ??DataTable13_11         4
+     ??DataTable13_12         4
+     ??DataTable13_13         4
+     ??DataTable13_14         4
+     ??DataTable13_15         4
+
+ 
+ 136 bytes in section .bss
+  36 bytes in section .data
+ 664 bytes in section .text
+ 
+ 664 bytes of CODE memory
+ 136 bytes of DATA memory (+ 36 bytes shared)
+
+Errors: none
+Warnings: none

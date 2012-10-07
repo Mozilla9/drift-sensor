@@ -1,0 +1,210 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  01:42:09 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Filter\average.c    #
+#    Command line =  D:\Projects\google_host\drift-sensor\Filter\average.c    #
+#                    -D NDEBUG -lc D:\Projects\google_host\drift-sensor\Relea #
+#                    se\List\ --diag_suppress Pe550 -o                        #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\averag #
+#                    e.lst                                                    #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\average #
+#                    .o                                                       #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Filter\average.c
+      1          /******************************************************************************/
+      2          /* average.c                                                                  */
+      3          /******************************************************************************/
+      4          
+      5          #include "data_types.h"
+      6          #include "Core\core.h"
+      7          #include "Filter\average.h"
+      8          
+      9          
+     10          
+     11          /*
+     12           * Init average filter
+     13           *
+     14           */
+     15          void init_average_filter(average_buff * const _pData) {
+     16              _pData->fill_index = 0;
+     17              _pData->wind_size = AVERAGE_DEF_WINDOW_SIZE;
+     18              _pData->average_type = AVERAGE_DEF_TYPE;
+     19          
+     20              for (uint16_t i = 0; i < AVERAGE_MAX_WINDOW_SIZE; i++) {
+     21                  _pData->buff[i] = 0;
+     22              }
+     23          }
+     24          
+     25          
+     26          /*
+     27           * Set window size
+     28           *
+     29           */
+     30          void set_wind_size_average_filter(average_buff * const _pData, const uint16_t _wind_size) {
+     31              if (_wind_size > AVERAGE_MAX_WINDOW_SIZE) {
+     32                  _pData->wind_size = AVERAGE_DEF_WINDOW_SIZE;
+     33              } else if (_wind_size < 2) {
+     34                  _pData->wind_size = AVERAGE_DEF_WINDOW_SIZE;
+     35              } else {
+     36                  _pData->wind_size = _wind_size;
+     37              }
+     38          
+     39              _pData->fill_index = 0;
+     40              for (uint16_t i = 0; i < AVERAGE_MAX_WINDOW_SIZE; i++) {
+     41                  _pData->buff[i] = 0;
+     42              }
+     43          }
+     44          
+     45          
+     46          /*
+     47           * Set average type
+     48           *
+     49           */
+     50          void set_average_type_filter(average_buff * const _pData, const uint16_t _type) {
+     51              if (_type == AVERAGE_SIMPLE) {
+     52                  _pData->average_type = AVERAGE_SIMPLE;
+     53              } else if(_type == AVERAGE_WEIGHT) {
+     54                  _pData->average_type = AVERAGE_WEIGHT;
+     55              } else if(_type == AVERAGE_MOD_PIT) {
+     56                  _pData->average_type = AVERAGE_MOD_PIT;
+     57              } else {
+     58                  _pData->average_type = AVERAGE_DEF_TYPE;
+     59              }
+     60          }
+     61          
+     62          
+     63          /*
+     64           * Add sample in filter
+     65           *
+     66           */
+     67          void add_sample_in_filter(average_buff * const _pData, const sint16_t _sample) {
+     68              if (_pData->fill_index < _pData->wind_size) {
+     69                  _pData->buff[_pData->fill_index++] = _sample;
+     70              }
+     71              else {
+     72                  uint16_t i = 0, k = 1;
+     73                  while (k < _pData->wind_size) {
+     74                      _pData->buff[i++] = _pData->buff[k++];
+     75                  }
+     76          
+     77                  _pData->buff[i] = _sample;
+     78              }
+     79          }
+     80          
+     81          
+     82          /*
+     83           * Get last sample
+     84           *
+     85           */
+     86          sint16_t get_last_sample(average_buff * const _pData) {
+     87              return _pData->buff[_pData->fill_index > 0 ?_pData->fill_index - 1 : 0];
+     88          }
+     89          
+     90          
+     91          /*
+     92           * Get average
+     93           *
+     94           */
+     95          sint16_t get_average(average_buff * const _pData) {
+     96              sint32_t summ = 0;
+     97          
+     98              for (uint16_t i = 0; i < _pData->wind_size; i++) {
+     99                  summ += _pData->buff[i];
+    100              }
+    101          
+    102              return summ / _pData->wind_size;
+    103          }
+    104          
+    105          
+    106          /*
+    107           * Get weighted average
+    108           * 30% with koeff 0.5
+    109           * 30% with koeff 0.8
+    110           * 30% with koeff 1.0
+    111           *
+    112           */
+    113          sint16_t get_weighted_average(average_buff * const _pData) {
+    114              sint32_t summ = 0;
+    115          
+    116              for (uint16_t i = 0; i < _pData->wind_size; i++) {
+    117                  sint32_t value = _pData->buff[i];
+    118                  if (i < (_pData->wind_size / 3)) {
+    119                      summ += (value / 2);
+    120                  }
+    121                  else if (i < ((_pData->wind_size * 2) / 3)) {
+    122                      summ += ((value * 4) / 5);
+    123                  }
+    124                  else {
+    125                      summ += value;
+    126                  }
+    127              }
+    128          
+    129              return summ / _pData->wind_size;
+    130          }
+    131          
+    132          
+    133          /*
+    134           * Get pit average
+    135           *
+    136           */
+    137          sint16_t get_pit_average(average_buff * const _pData, const sint16_t _med) {
+    138              sint32_t summ = 0;
+    139          
+    140              for (uint16_t i = 0; i < _pData->wind_size; i++) {
+    141                  summ += (_pData->buff[i] > _med ? _pData->buff[i] - _med : _med - _pData->buff[i]);
+    142              }
+    143          
+    144              return summ / _pData->wind_size;
+    145          }
+
+   Maximum stack usage in bytes:
+
+     Function                     .cstack
+     --------                     -------
+     add_sample_in_filter             16
+     get_average                       8
+     get_last_sample                   4
+     get_pit_average                  16
+     get_weighted_average             24
+     init_average_filter               4
+     set_average_type_filter           4
+     set_wind_size_average_filter      4
+
+
+   Section sizes:
+
+     Function/Label               Bytes
+     --------------               -----
+     init_average_filter            32
+     set_wind_size_average_filter   46
+     set_average_type_filter        38
+     add_sample_in_filter           66
+     get_last_sample                24
+     get_average                    48
+     get_weighted_average          100
+     get_pit_average                72
+
+ 
+ 426 bytes in section .text
+ 
+ 426 bytes of CODE memory
+
+Errors: none
+Warnings: none

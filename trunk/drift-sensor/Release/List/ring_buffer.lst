@@ -1,0 +1,192 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  01:42:19 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Ringbuff\ring_buffe #
+#                    r.c                                                      #
+#    Command line =  D:\Projects\google_host\drift-sensor\Ringbuff\ring_buffe #
+#                    r.c -D NDEBUG -lc D:\Projects\google_host\drift-sensor\R #
+#                    elease\List\ --diag_suppress Pe550 -o                    #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\ring_b #
+#                    uffer.lst                                                #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\ring_bu #
+#                    ffer.o                                                   #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Ringbuff\ring_buffer.c
+      1          /******************************************************************************/
+      2          /* ring_buffer.c                                                              */
+      3          /******************************************************************************/
+      4          
+      5          #include "data_types.h"
+      6          #include "Core\core.h"
+      7          #include "Uart\uart0.h"
+      8          #include "Ringbuff\ring_buffer.h"
+      9          
+     10          
+     11          static __ring_buff r_buff;
+     12          __ring_buff * const pointerRingBuff = &r_buff;
+     13          
+     14          
+     15          /*
+     16           * Inc tile.
+     17           *
+     18           */
+     19          static void inc_tile(__ring_buff * const _pBuff) {
+     20              if (_pBuff->tile > _pBuff->head) {
+     21                  if (_pBuff->tile == RING_BUFF_LEN - 1) {
+     22                      if (_pBuff->head > 0) {
+     23                          _pBuff->tile = 0;
+     24                      }
+     25                  }
+     26                  else {
+     27                      _pBuff->tile++;
+     28                  }
+     29              }
+     30              else if (_pBuff->tile < _pBuff->head) {
+     31                  if (_pBuff->tile != _pBuff->head - 1) {
+     32                      _pBuff->tile++;
+     33                  }
+     34              }
+     35              else {
+     36                  _pBuff->tile++;
+     37              }
+     38          }
+     39          
+     40          
+     41          /*
+     42           * Inc head.
+     43           *
+     44           */
+     45          static void inc_head(__ring_buff * const _pBuff) {
+     46              if (_pBuff->head == RING_BUFF_LEN - 1) {
+     47                  _pBuff->head = 0;
+     48              }
+     49              else {
+     50                  _pBuff->head++;
+     51              }
+     52          
+     53              if (_pBuff->tile == _pBuff->head) {
+     54                  _pBuff->tile = 0;
+     55                  _pBuff->head = 0;
+     56              }
+     57          }
+     58          
+     59          
+     60          /*
+     61           * Init new ring buff.
+     62           *
+     63           */
+     64          void init_ring_buff(__ring_buff * const _pBuff) {
+     65              _pBuff->tile = 0;
+     66              _pBuff->head = 0;
+     67          }
+     68          
+     69          
+     70          /*
+     71           * Put byte in ring buff.
+     72           *
+     73           */
+     74          void put_in_ring_buff(__ring_buff * const _pBuff, const uint8_t _byte) {
+     75              _pBuff->buff[_pBuff->tile] = _byte;
+     76              inc_tile(_pBuff);
+     77          }
+     78          
+     79          
+     80          /*
+     81           * Get byte from ring buff.
+     82           *
+     83           */
+     84          uint8_t get_from_ring_buff(__ring_buff * const _pBuff) {
+     85              uint8_t _byte = _pBuff->buff[_pBuff->head];
+     86          
+     87              enter_cs();
+     88              inc_head(_pBuff);
+     89              exit_cs();
+     90          
+     91              return _byte;
+     92          }
+     93          
+     94          
+     95          /*
+     96           * Test by empty ring buff.
+     97           *
+     98           */
+     99          bool_t is_ring_buff_empty(__ring_buff * const _pBuff) {
+    100              enter_cs();
+    101              const bool_t decision = _pBuff->head == _pBuff->tile ? TRUE_T : FALSE_T;
+    102              exit_cs();
+    103          
+    104              return decision;
+    105          }
+    106          
+    107          
+    108          /*
+    109           * Get size ring buff.
+    110           *
+    111           */
+    112          uint16_t size_ring_buff(__ring_buff * const _pBuff) {
+    113              if (_pBuff->head > _pBuff->tile) {
+    114                  return RING_BUFF_LEN - _pBuff->head + _pBuff->tile;
+    115              }
+    116              else if (_pBuff->head < _pBuff->tile) {
+    117                  return _pBuff->tile - _pBuff->head;
+    118              }
+    119              else {
+    120                  return 0;
+    121              }
+    122          }
+
+   Maximum stack usage in bytes:
+
+     Function           .cstack
+     --------           -------
+     get_from_ring_buff     16
+     inc_head                4
+     inc_tile                4
+     init_ring_buff          0
+     is_ring_buff_empty      8
+     put_in_ring_buff        8
+     size_ring_buff          4
+
+
+   Section sizes:
+
+     Function/Label     Bytes
+     --------------     -----
+     r_buff              104
+     pointerRingBuff       4
+     inc_tile             64
+     inc_head             34
+     init_ring_buff       10
+     put_in_ring_buff     16
+     get_from_ring_buff   32
+     is_ring_buff_empty   36
+     size_ring_buff       48
+
+ 
+ 104 bytes in section .bss
+   4 bytes in section .rodata
+ 240 bytes in section .text
+ 
+ 240 bytes of CODE  memory
+   4 bytes of CONST memory
+ 104 bytes of DATA  memory
+
+Errors: none
+Warnings: none

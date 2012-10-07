@@ -1,0 +1,350 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  01:42:11 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Core\core.c         #
+#    Command line =  D:\Projects\google_host\drift-sensor\Core\core.c -D      #
+#                    NDEBUG -lc D:\Projects\google_host\drift-sensor\Release\ #
+#                    List\ --diag_suppress Pe550 -o                           #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\core.l #
+#                    st                                                       #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\core.o  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Core\core.c
+      1          /******************************************************************************/
+      2          /* core.c                                                                     */
+      3          /******************************************************************************/
+      4          
+      5          
+      6          #include "data_types.h"
+      7          #include "Core\core.h"
+      8          
+      9          
+     10          static uint32_t g_istate;
+     11          
+     12          
+     13          
+     14          /*
+     15           * Init mam
+     16           *
+     17           */
+     18          static void init_mam() {
+     19              MAMCR_bit.MODECTRL = 0; // Dis MAM
+     20              MAMTIM_bit.CYCLES = 3;
+     21              MAMCR_bit.MODECTRL = 2; // En MAM
+     22          }
+     23          
+     24          
+     25          /*
+     26           * Init PLL - external
+     27           *
+     28           */
+     29          void init_pll() {
+     30              // Dis PLL
+     31              PLLCON_bit.PLLE = 0;
+     32              PLLCON_bit.PLLC = 0;
+     33              PLLFEED_bit.FEED = 0xAA;
+     34              PLLFEED_bit.FEED = 0x55;
+     35          
+     36              // En main oscill
+     37              //SCS_bit.MCIPWR = 0;      //
+     38              SCS_bit.OSCRANGE = 0;      // 1-20 Mhz
+     39              SCS_bit.OSCEN = 1;         // Ext oscill en
+     40          
+     41              while(!SCS_bit.OSCSTAT);   // Waiting
+     42          
+     43              // Set suply for PLL
+     44              CLKSRCSEL_bit.CLKSRC = 1;  // Main oscill
+     45          
+     46              // Configure PLL
+     47              PLLCFG_bit.MSEL = PLL_MValue;
+     48              PLLCFG_bit.NSEL = PLL_NValue;
+     49              PLLFEED_bit.FEED = 0xAA;
+     50              PLLFEED_bit.FEED = 0x55;
+     51          
+     52              // En PLL, but dont connect to CPU
+     53              PLLCON_bit.PLLE = 1;
+     54              PLLFEED_bit.FEED = 0xAA;
+     55              PLLFEED_bit.FEED = 0x55;
+     56          
+     57              // Set dividers for CPU and USB
+     58              CCLKCFG_bit.CCLKSEL = CCLK_DIV;
+     59              USBCLKCFG_bit.USBSEL = USB_CLK_DIV;
+     60          
+     61              // Configure PCLK
+     62              //PCLKSEL0 = 0x00000000;     // PCLK = CCKL/4
+     63              PCLKSEL0 = 0xAAAAAAAA;     // PCLK = CCKL/2 for all modules
+     64              PCLKSEL1 = 0xAAAAAAAA;
+     65          
+     66              while(!PLLSTAT_bit.PLOCK);
+     67          
+     68              // Connect and en PLL
+     69              PLLCON_bit.PLLE = 1;
+     70              PLLCON_bit.PLLC = 1;
+     71              PLLFEED_bit.FEED = 0xAA;
+     72              PLLFEED_bit.FEED = 0x55;
+     73          
+     74              while(!PLLSTAT_bit.PLOCK);   // Waiting capture pll
+     75          }
+     76          
+     77          
+     78          /*
+     79           * Init general pinouts
+     80           *
+     81           */
+     82          static void init_gpio() {
+     83              SCS_bit.GPIOM = 1;
+     84          
+     85              // Reset all GPIO pins to default: primary function
+     86              PINSEL0 = 0x00000000;
+     87              PINSEL1 = 0x00000000;
+     88              PINSEL2 = 0x00000000;
+     89              PINSEL3 = 0x00000000;
+     90              PINSEL4 = 0x00000000;
+     91              PINSEL5 = 0x00000000;
+     92              PINSEL6 = 0x00000000;
+     93              PINSEL7 = 0x00000000;
+     94              PINSEL8 = 0x00000000;
+     95              PINSEL9 = 0x00000000;
+     96              PINSEL10 = 0x00000000;
+     97          
+     98              IO0DIR = 0x00000000;
+     99              IO1DIR = 0x00000000;
+    100              IO0SET = 0x00000000;
+    101              IO1SET = 0x00000000;
+    102          
+    103              FIO0DIR = 0x00000000;
+    104              FIO1DIR = 0x00000000;
+    105              FIO2DIR = 0x00000000;
+    106              FIO3DIR = 0x00000000;
+    107              FIO4DIR = 0x00000000;
+    108          
+    109              FIO0CLR = 0xFFFFFFFF;
+    110              FIO1CLR = 0xFFFFFFFF;
+    111              FIO2CLR = 0xFFFFFFFF;
+    112              FIO3CLR = 0xFFFFFFFF;
+    113              FIO4CLR = 0xFFFFFFFF;
+    114          }
+    115          
+    116          
+    117          /*
+    118           * Init WatchDog
+    119           *
+    120           */
+    121          void init_wdt() {
+    122              WDTC = WDT_VALUE;         // 5 sec
+    123              WDCLKSEL_bit.WDSEL = 1;   // Suply of PCLK
+    124              WDMOD = 3;                // wdt enable
+    125          
+    126              // Feed WDT
+    127              WDFEED = 0xAA;
+    128              WDFEED = 0x55;
+    129          }
+    130          
+    131          
+    132          /*
+    133           * Critical section - enter
+    134           *
+    135           */
+    136          __arm void enter_cs() {
+    137              g_istate = __get_interrupt_state();
+    138              __disable_interrupt();
+    139          }
+    140          
+    141          
+    142          /*
+    143           * Critical section - exit
+    144           *
+    145           */
+    146          __arm void exit_cs() {
+    147              __set_interrupt_state(g_istate);
+    148          }
+    149          
+    150          
+    151          /*
+    152           * Clear WDT
+    153           *
+    154            */
+    155          __arm void clear_wdt() {
+    156              enter_cs();
+    157          
+    158              // feed WDT
+    159              WDFEED = 0xAA;
+    160              WDFEED = 0x55;
+    161          
+    162              exit_cs();
+    163          }
+    164          
+    165          
+    166          /*
+    167           * Reset device by wdt
+    168           *
+    169           */
+    170          __arm void reset_device() {
+    171              // error feed WDT
+    172              WDFEED = 0x55;
+    173              WDFEED = 0xAA;
+    174          }
+    175          
+    176          
+    177          /*
+    178           * Init TIMER0
+    179           *
+    180           */
+    181          void init_timer0() {
+    182              PCONP_bit.PCTIM0 = 1;
+    183          
+    184              // Reset and halt
+    185              T0TCR_bit.CE = 0;
+    186              T0TCR_bit.CR = 1;
+    187          
+    188              // Configure prescaler
+    189              T0PR = 0x00;
+    190              T0PC = 0x00;
+    191          
+    192              // Set mode
+    193              T0CTCR_bit.CTM = 0;   // timer mode
+    194              T0MCR_bit.MR0I = 1;   // int by compare
+    195              T0MCR_bit.MR0R = 1;   // clear TC in compare
+    196              T0MCR_bit.MR0S = 0;   // continuous count
+    197          
+    198              // Interval
+    199              T0MR0 = TIMER0_VALUE;
+    200          
+    201              // Run
+    202              T0TCR_bit.CE = 1;
+    203              T0TCR_bit.CR = 0;
+    204          }
+    205          
+    206          
+    207          /*
+    208           * Init Core
+    209           *
+    210           */
+    211          void init_core() {
+    212              init_gpio();
+    213              init_pll();
+    214              init_mam();
+    215          }
+
+   Maximum stack usage in bytes:
+
+     Function     .cstack
+     --------     -------
+     clear_wdt         8
+     enter_cs          0
+     exit_cs           0
+     init_core         8
+     init_gpio         0
+     init_mam          0
+     init_pll         20
+     init_timer0       0
+     init_wdt          0
+     reset_device      0
+
+
+   Section sizes:
+
+     Function/Label  Bytes
+     --------------  -----
+     _A_SCS             4
+     _A_PLLCON          4
+     _A_PLLCFG          4
+     _A_PLLSTAT         4
+     _A_PLLFEED         4
+     _A_CCLKCFG         4
+     _A_USBCLKCFG       4
+     _A_CLKSRCSEL       4
+     _A_PCLKSEL0        4
+     _A_PCLKSEL1        4
+     _A_PCONP           4
+     _A_MAMCR           4
+     _A_MAMTIM          4
+     _A_PINSEL0         4
+     _A_PINSEL1         4
+     _A_PINSEL2         4
+     _A_PINSEL3         4
+     _A_PINSEL4         4
+     _A_PINSEL5         4
+     _A_PINSEL6         4
+     _A_PINSEL7         4
+     _A_PINSEL8         4
+     _A_PINSEL9         4
+     _A_PINSEL10        4
+     _A_IO0SET          4
+     _A_IO0DIR          4
+     _A_FIO0DIR         4
+     _A_FIO0CLR         4
+     _A_IO1SET          4
+     _A_IO1DIR          4
+     _A_FIO1DIR         4
+     _A_FIO1CLR         4
+     _A_FIO2DIR         4
+     _A_FIO2CLR         4
+     _A_FIO3DIR         4
+     _A_FIO3CLR         4
+     _A_FIO4DIR         4
+     _A_FIO4CLR         4
+     _A_T0TCR           4
+     T0PR               4
+     T0PC               4
+     _A_T0MCR           4
+     T0MR0              4
+     _A_T0CTCR          4
+     _A_WDMOD           4
+     WDTC               4
+     _A_WDFEED          4
+     _A_WDCLKSEL        4
+     g_istate           4
+     init_mam          36
+     init_pll         224
+     init_gpio         74
+     init_wdt          34
+     enter_cs          28
+     exit_cs           32
+     clear_wdt         36
+     reset_device      24
+     init_timer0       82
+     init_core         18
+     ??DataTable6       4
+     ??DataTable6_1     4
+     ??DataTable6_2     4
+     ??DataTable6_3     4
+     ??DataTable6_4     4
+     ??DataTable6_5     4
+     ??DataTable6_6     4
+     ??DataTable6_7     4
+     ??DataTable6_8     4
+     ??DataTable6_9     4
+     ??DataTable6_10    4
+     ??DataTable6_11    4
+     ??DataTable6_12    4
+     ??DataTable6_13    4
+     ??DataTable6_14    4
+
+ 
+   4 bytes in section .bss
+ 192 bytes in section .data
+ 648 bytes in section .text
+ 
+ 648 bytes of CODE memory
+   4 bytes of DATA memory (+ 192 bytes shared)
+
+Errors: none
+Warnings: none

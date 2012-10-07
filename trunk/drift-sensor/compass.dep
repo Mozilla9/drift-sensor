@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>120343840</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\Microrl\microrl.c</file>
+      <file>$PROJ_DIR$\Core\core.c</file>
+      <file>$PROJ_DIR$\Microrl\handlers.c</file>
+      <file>$PROJ_DIR$\Filter\average.c</file>
+      <file>$PROJ_DIR$\Compass\compass.c</file>
+      <file>$PROJ_DIR$\Drift\drift.c</file>
+      <file>$PROJ_DIR$\Drift\calibrating.c</file>
+      <file>$PROJ_DIR$\I2C\i2c0.c</file>
+      <file>$PROJ_DIR$\I2C\i2c1.c</file>
+      <file>$PROJ_DIR$\I2C\i2c2.c</file>
+      <file>$PROJ_DIR$\Lib\bin_to_bcd.c</file>
+      <file>$PROJ_DIR$\Led\led.c</file>
+      <file>$PROJ_DIR$\L3g4200d\l3g4200d.c</file>
+      <file>$PROJ_DIR$\Lib\float_to_txt.c</file>
+      <file>$PROJ_DIR$\Lsm303dlh\lsm303.c</file>
+      <file>$PROJ_DIR$\Nmea\nmea.c</file>
+      <file>$PROJ_DIR$\Matrix\matrix.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\drift_recognition.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\compass.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\l3g4200d.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\i2c2.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\core.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\lsm303.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart2.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\ymath.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart0.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\handlers.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\tasks.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\bin_to_bcd.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\i2c1.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+      <file>$PROJ_DIR$\Drecognition\drift_recognition.c</file>
+      <file>$PROJ_DIR$\Microrl\microrl.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\average.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\v_printf.o</file>
+      <file>$PROJ_DIR$\Microrl\config.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart2.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\i2c1.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\nmea.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\nmea.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\v_printf.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\tasks.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart0.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\i2c0.o</file>
+      <file>$PROJ_DIR$\Core\core.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\i2c2.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\microrl.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\compass.pbi</file>
+      <file>$PROJ_DIR$\L3g4200d\l3g4200d.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\bin_to_bcd.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\compass.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\led.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\core.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\math.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xtgmath.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\average.o</file>
+      <file>$PROJ_DIR$\Tasks\tasks.h</file>
+      <file>$PROJ_DIR$\Uart\v_printf.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\ring_buffer.pbi</file>
+      <file>$PROJ_DIR$\Microrl\handlers.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\handlers.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\led.o</file>
+      <file>$PROJ_DIR$\Tasks\tasks.c</file>
+      <file>$PROJ_DIR$\Ringbuff\ring_buffer.c</file>
+      <file>$PROJ_DIR$\Uart\uart0.c</file>
+      <file>$PROJ_DIR$\Uart\uart2.c</file>
+      <file>$PROJ_DIR$\Uart\v_printf.c</file>
+      <file>$PROJ_DIR$\cstartup.s</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\i2c0.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\lsm303.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$PROJ_DIR$\Lsm303dlh\lsm303.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\microrl.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\ring_buffer.o</file>
+      <file>$PROJ_DIR$\Debug\Exe\c.out</file>
+      <file>$PROJ_DIR$\Debug\Obj\l3g4200d.o</file>
+      <file>$PROJ_DIR$\data_types.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\Ringbuff\ring_buffer.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\drift.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\drift.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\calibrating.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\matrix.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\float_to_txt.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\calibrating.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\float_to_txt.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\matrix.o</file>
+      <file>$PROJ_DIR$\Drift\drift.h</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 87</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Microrl\microrl.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 49</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 85</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 52 54 53 57 90 81 92 83 48 32 35</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Core\core.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 60</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 21</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Microrl\handlers.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 26</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 70</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Filter\average.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 63</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Compass\compass.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 18</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 50</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Drift\drift.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 94</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 93</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Drift\calibrating.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 98</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 95</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\I2C\i2c0.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 44</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 80</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\I2C\i2c1.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 29</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\I2C\i2c2.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 46</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 20</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Lib\bin_to_bcd.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 55</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 28</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Led\led.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 72</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 59</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\L3g4200d\l3g4200d.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 88</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 19</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 61 54 24 53 57 90 81 92 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Lib\float_to_txt.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 97</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 99</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Lsm303dlh\lsm303.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 82</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 22</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 61 54 24 53 57 90 81 92 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Nmea\nmea.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 39</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 38</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Matrix\matrix.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 100</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 96</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 61 54 24 53 57 90 81 92 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Drecognition\drift_recognition.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Obj\compass.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 33 28 95 50 21 93 99 70 80 29 20 19 59 22 47 96 85 38 66 27 25 36 40</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Tasks\tasks.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 41</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 27</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Ringbuff\ring_buffer.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 86</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Uart\uart0.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 42</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Uart\uart2.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 23</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 36</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Uart\v_printf.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 34</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 71 54 53 57 90 81 92</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\cstartup.s</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 69</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 43</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 89 68 54 53 57 90 81 92 83 58 52 48 30 45 65 84 51 91 101 67 32 35 64</file>
+        </tool>
+      </inputs>
+    </file>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
+    </forcedrebuild>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs>
+      <file>$PROJ_DIR$\Microrl\microrl.c</file>
+      <file>$PROJ_DIR$\Core\core.c</file>
+      <file>$PROJ_DIR$\Microrl\handlers.c</file>
+      <file>$PROJ_DIR$\Filter\average.c</file>
+      <file>$PROJ_DIR$\Compass\compass.c</file>
+      <file>$PROJ_DIR$\Drift\drift.c</file>
+      <file>$PROJ_DIR$\Drift\calibrating.c</file>
+      <file>$PROJ_DIR$\Lib\bin_to_bcd.c</file>
+      <file>$PROJ_DIR$\Led\led.c</file>
+      <file>$PROJ_DIR$\Lib\float_to_txt.c</file>
+      <file>$PROJ_DIR$\Matrix\matrix.c</file>
+      <file>$PROJ_DIR$\Matrix\calibrovka.txt</file>
+      <file>$PROJ_DIR$\Tasks\tasks.c</file>
+      <file>$PROJ_DIR$\Ringbuff\ring_buffer.c</file>
+      <file>$PROJ_DIR$\Uart\uart0.c</file>
+      <file>$PROJ_DIR$\Uart\uart2.c</file>
+      <file>$PROJ_DIR$\Uart\v_printf.c</file>
+      <file>$PROJ_DIR$\cstartup.s</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\Lis3dh\lis3dh.c</file>
+    </outputs>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

@@ -1,0 +1,492 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  01:42:13 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Microrl\handlers.c  #
+#    Command line =  D:\Projects\google_host\drift-sensor\Microrl\handlers.c  #
+#                    -D NDEBUG -lc D:\Projects\google_host\drift-sensor\Relea #
+#                    se\List\ --diag_suppress Pe550 -o                        #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\handle #
+#                    rs.lst                                                   #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\handler #
+#                    s.o                                                      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Microrl\handlers.c
+      1          /******************************************************************************/
+      2          /* handlers.c                                                                 */
+      3          /******************************************************************************/
+      4          
+      5          #include "data_types.h"
+      6          #include "Core\core.h"
+      7          #include "Lib\bin_to_bcd.h"
+      8          #include "Led\led.h"
+      9          #include "Uart\v_printf.h"
+     10          #include "Ringbuff\ring_buffer.h"
+     11          #include "Drift\drift.h"
+     12          #include "Compass\compass.h"
+     13          #include "Tasks\tasks.h"
+     14          #include "Microrl\microrl.h"
+     15          #include "Microrl\handlers.h"
+     16          
+     17          
+     18          // definition commands word
+     19          #define _CMD_HELP            "help"
+     20          #define _CMD_RESET           "reset"
+     21          #define _CMD_CLEAR           "cls"
+     22          #define _CMD_TIME            "time"
+     23          #define _CMD_TRACE           "trace"
+     24          #define _CMD_LED             "led" 
+     25          #define _CMD_ACC_TASK        "acc"
+     26          #define _CMD_ACC_MATRIX_TASK "mtr"
+     27          #define _CMD_ACC_XX          "ax?"
+     28          #define _CMD_ACC_YY          "ay?"
+     29          #define _CMD_ACC_ZZ          "az?"
+     30          #define _CMD_ACC_ZZ_PIT      "ap?"
+     31          #define _CMD_ACC_ZZ_MOD      "am?"
+     32          #define _CMD_ACC_X           "ax"
+     33          #define _CMD_ACC_Y           "ay"
+     34          #define _CMD_ACC_Z           "az"
+     35          #define _CMD_ACC_Z_PIT       "ap"
+     36          #define _CMD_ACC_Z_MOD       "am"
+     37          #define _CMD_CALB            "calb"
+     38          
+     39          
+     40          // available  commands
+     41          int8_t * keyword [] = {
+     42              _CMD_HELP,
+     43              _CMD_TIME,
+     44              _CMD_RESET,
+     45              _CMD_TRACE,
+     46              _CMD_LED,
+     47              _CMD_ACC_TASK,
+     48              _CMD_ACC_MATRIX_TASK,
+     49              _CMD_ACC_XX,
+     50              _CMD_ACC_YY,
+     51              _CMD_ACC_ZZ,
+     52              _CMD_ACC_ZZ_PIT,
+     53              _CMD_ACC_ZZ_MOD,
+     54              _CMD_ACC_X,
+     55              _CMD_ACC_Y,
+     56              _CMD_ACC_Z,
+     57              _CMD_ACC_Z_PIT,
+     58              _CMD_ACC_Z_MOD,
+     59              _CMD_CALB,
+     60              _CMD_CLEAR
+     61          };
+     62          
+     63          #define _NUM_OF_CMD    19
+     64          
+     65          
+     66          // array for comletion
+     67          int8_t * compl_word [_NUM_OF_CMD + 22];
+     68          
+     69          
+     70          
+     71          
+     72          /*
+     73           * Print help
+     74           *
+     75           */
+     76          void print_help_cmd () {
+     77              (*get_microrl_printf (pointerMicrorl)) ("Use TAB key for completion\n\rCommand:\n\r");
+     78              (*get_microrl_printf (pointerMicrorl)) ("\tctrl+C      - en/dis console\n\r");
+     79              (*get_microrl_printf (pointerMicrorl)) ("\thelp        - print it info\n\r");
+     80              (*get_microrl_printf (pointerMicrorl)) ("\tcls         - clear screen\n\r");
+     81              (*get_microrl_printf (pointerMicrorl)) ("\ttime        - time in sec continius from start\n\r");
+     82              (*get_microrl_printf (pointerMicrorl)) ("\treset       - reset device\n\r");
+     83              (*get_microrl_printf (pointerMicrorl)) ("\ttrace       - on/off debug trace\n\r");
+     84              (*get_microrl_printf (pointerMicrorl)) ("\tled         - on/off led\n\r");
+     85              (*get_microrl_printf (pointerMicrorl)) ("\tcalb        - on/off run calibrating\n\r");
+     86              (*get_microrl_printf (pointerMicrorl)) ("\tmtr         - on/off acc matrix task\n\r");
+     87              (*get_microrl_printf (pointerMicrorl)) ("\tacc         - on/off acc task\n\r");
+     88              (*get_microrl_printf (pointerMicrorl)) ("\tax?         - get acc X sett (med, up, down, gist, wind, average)\n\r");
+     89              (*get_microrl_printf (pointerMicrorl)) ("\tay?         - get acc Y sett\n\r");
+     90              (*get_microrl_printf (pointerMicrorl)) ("\taz?         - get acc Z sett\n\r");
+     91              (*get_microrl_printf (pointerMicrorl)) ("\tap?         - get acc Z_pit sett\n\r");
+     92              (*get_microrl_printf (pointerMicrorl)) ("\tam?         - get acc Z_mod sett\n\r");
+     93              (*get_microrl_printf (pointerMicrorl)) ("\tax          - set acc X sett (med, up, down, gist, wind, average)\n\r");
+     94              (*get_microrl_printf (pointerMicrorl)) ("\tay          - set acc Y sett\n\r");
+     95              (*get_microrl_printf (pointerMicrorl)) ("\taz          - set acc Z sett\n\r");
+     96              (*get_microrl_printf (pointerMicrorl)) ("\tap          - set acc Z_pit sett\n\r");
+     97              (*get_microrl_printf (pointerMicrorl)) ("\tam          - set acc Z_mod sett\n\r");
+     98          }
+     99          
+    100          
+    101          /*
+    102           * execute callback for microrl library
+    103           * do what you want here, but don't write to argv!!! read only!!
+    104           *
+    105           */
+    106          int32_t execute (const int32_t argc, const int8_t * const * argv) {
+    107          
+    108              int32_t i = 0;
+    109              // just iterate through argv word and compare it with your commands
+    110              while (i < argc) {
+    111                  if (strcmp (argv[i], _CMD_HELP) == 0) {
+    112                      print_help_cmd();
+    113                  }
+    114                  else if (strcmp (argv[i], _CMD_TIME) == 0) {
+    115                      (*get_microrl_printf (pointerMicrorl)) ("time alive = %u sec\n\r", get_time());
+    116                  }
+    117                  else if (strcmp (argv[i], _CMD_RESET) == 0) {
+    118                      reset_device();
+    119                  }
+    120                  else if (strcmp (argv[i], _CMD_TRACE) == 0) {
+    121                      if (++i < argc) {
+    122                          if (strcmp (argv[i], "on") == 0) {
+    123                              set_trace_func(&(*get_microrl_printf (pointerMicrorl)));
+    124                              (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+    125                          }
+    126                          else if (strcmp (argv[i], "off") == 0) {
+    127                              set_trace_func(0);
+    128                              (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+    129                          }
+    130                          else {
+    131                              (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument\n\r");
+    132                          }
+    133                      }
+    134                  }
+    135                  else if (strcmp (argv[i], _CMD_CALB) == 0) {
+    136                      if (++i < argc) {
+    137                          void (* func) () = 0;
+    138          
+    139                          if (strcmp (argv[i], "on") == 0) {
+    140                              func = &enable_calibr_task;
+    141                          }
+    142                          else if (strcmp (argv[i], "off") == 0) {
+    143                              func = &disable_calibr_task;
+    144                          }
+    145          
+    146                          if (func) {
+    147                              (*func)();
+    148                              (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+    149                          } else {
+    150                              (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument\n\r");
+    151                          }
+    152                      }
+    153                  }
+    154                  else if (strcmp (argv[i], _CMD_LED) == 0) {
+    155                      if (++i < argc) {
+    156                          void (* func) () = 0;
+    157          
+    158                          if (strcmp (argv[i], "on") == 0) {
+    159                              func = &led1_on;
+    160                          }
+    161                          else if (strcmp (argv[i], "off") == 0) {
+    162                              func = &led1_off;
+    163                          }
+    164                          else {
+    165                              (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument\n\r");
+    166                          }
+    167          
+    168                          if (func) (*func)();
+    169                          (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+    170                      }
+    171                  }
+    172                  else if ((strcmp (argv[i], _CMD_ACC_TASK) == 0)
+    173                              || (strcmp (argv[i], _CMD_ACC_MATRIX_TASK) == 0)) {
+    174                      if ((i + 1) < argc) {
+    175                          void (* pFunc) () = 0;
+    176                          uint16_t isEn = 0;
+    177          
+    178                          if (strcmp (argv[i + 1], "on") == 0) {
+    179                              isEn = 1;
+    180                          }
+    181                          else if (strcmp (argv[i + 1], "off") == 0) {
+    182                              isEn = 2;
+    183                          }
+    184          
+    185                          if (isEn) {
+    186                              if (argv[i][1] == 'c') {
+    187                                  pFunc = isEn == 1 ? &enable_acc_task : &disable_acc_task;
+    188                              }
+    189                              else if (argv[i][1] == 't') {
+    190                                  pFunc = isEn == 1 ? &enable_acc_matrix_task : &disable_acc_matrix_task;
+    191                              }
+    192                          }
+    193          
+    194                          if (pFunc) {
+    195                              (*pFunc)();
+    196                              (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+    197                          }
+    198                          else {
+    199                              (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument\n\r");
+    200                          }
+    201                      }
+    202                  }
+    203                  else if ((strcmp (argv[i], _CMD_ACC_XX) == 0)
+    204                              || (strcmp (argv[i], _CMD_ACC_YY) == 0)
+    205                              || (strcmp (argv[i], _CMD_ACC_ZZ) == 0)
+    206                              || (strcmp (argv[i], _CMD_ACC_ZZ_MOD) == 0) 
+    207                              || (strcmp (argv[i], _CMD_ACC_ZZ_PIT) == 0)) {
+    208                      drift_threshold * pThr = 0;
+    209                      average_buff * pFilter = 0;
+    210                      const int8_t * pMsg = "\r\nmed=%d\n\rup=%d\n\rdown=%d\n\rgist=%d\r\nwind=%u\r\nav=%u\n\r";
+    211          
+    212                      if (argv[i][1] == 'x') {
+    213                          pThr = get_x_acc_threshold();
+    214                          pFilter = get_x_drift_filter();
+    215                      }
+    216                      else if (argv[i][1] == 'y') {
+    217                          pThr = get_y_acc_threshold();
+    218                          pFilter = get_y_drift_filter();
+    219                      }
+    220                      else if (argv[i][1] == 'z') {
+    221                          pThr = get_z_acc_threshold();
+    222                          pFilter = get_z_drift_filter();
+    223                      }
+    224                      else if (argv[i][1] == 'p') {
+    225                          pThr = get_pit_acc_threshold();
+    226                          pFilter = get_pit_drift_filter();
+    227                      }
+    228                      else if (argv[i][1] == 'm') {
+    229                          pThr = get_mod_acc_threshold();
+    230                          pFilter = get_mod_drift_filter();
+    231                      }
+    232                      
+    233                      if (pThr && pFilter) {
+    234                          (*get_microrl_printf (pointerMicrorl))(pMsg, pThr->med, pThr->up_front, pThr->down_front, pThr->gist, pFilter->wind_size, pFilter->average_type);
+    235                      } else {
+    236                          (*get_microrl_printf (pointerMicrorl))("\n\r");
+    237                      }
+    238                  }
+    239                  else if ((strcmp (argv[i], _CMD_ACC_X) == 0)
+    240                              || (strcmp (argv[i], _CMD_ACC_Y) == 0)
+    241                              || (strcmp (argv[i], _CMD_ACC_Z) == 0)
+    242                              || (strcmp (argv[i], _CMD_ACC_Z_PIT) == 0)
+    243                              || (strcmp (argv[i], _CMD_ACC_Z_MOD) == 0)) {
+    244                      if ((i + 6) < argc) {
+    245                          void (* pSetThr)(const sint16_t, const sint16_t, const sint16_t, const sint16_t) = 0;
+    246                          average_buff * pFilter = 0;
+    247                          sint16_t med = 0, max = 0, min = 0, gist = 0, wind = 0, av_type = 0;
+    248          
+    249                          if (argv[i][1] == 'x') {
+    250                              pSetThr = &set_x_acc_threshold;
+    251                              pFilter = get_x_drift_filter();
+    252                          }
+    253                          else if (argv[i][1] == 'y') {
+    254                              pSetThr = &set_y_acc_threshold;
+    255                              pFilter = get_y_drift_filter();
+    256                          }
+    257                          else if (argv[i][1] == 'z') {
+    258                              pSetThr = &set_z_acc_threshold;
+    259                              pFilter = get_z_drift_filter();
+    260                          }
+    261                          else if (argv[i][1] == 'p') {
+    262                              pSetThr = &set_pit_acc_threshold;
+    263                              pFilter = get_pit_drift_filter();
+    264                          }
+    265                          else if (argv[i][1] == 'm') {
+    266                              pSetThr = &set_mod_acc_threshold;
+    267                              pFilter = get_mod_drift_filter();
+    268                          }
+    269          
+    270                          med = txt_to_bin(argv[++i]);
+    271                          max = txt_to_bin(argv[++i]);
+    272                          min = txt_to_bin(argv[++i]);
+    273                          gist = txt_to_bin(argv[++i]);
+    274                          wind = txt_to_bin(argv[++i]);
+    275                          av_type = txt_to_bin(argv[++i]);
+    276          
+    277                          if (pSetThr && pFilter) {
+    278                              pSetThr(med, max, min, gist);
+    279                              set_wind_size_average_filter(pFilter, wind);
+    280                              set_average_type_filter(pFilter, av_type);
+    281          
+    282                              (*get_microrl_printf (pointerMicrorl))("\n\r");
+    283                          } else {
+    284                              (*get_microrl_printf (pointerMicrorl))("invalid cmd arguments\n\r");
+    285                          }
+    286                      } else {
+    287                          (*get_microrl_printf (pointerMicrorl))("invalid cmd arguments\n\r");
+    288                      }
+    289                  }
+    290                  else if (strcmp (argv[i], _CMD_CLEAR) == 0) {
+    291                      (*get_microrl_printf (pointerMicrorl)) ("\033[2J");    // ESC seq for clear entire screen
+    292                      (*get_microrl_printf (pointerMicrorl)) ("\033[H");     // ESC seq for move cursor at left-top corner
+    293                  }
+    294                  else {
+    295                      (*get_microrl_printf (pointerMicrorl)) ("command: '");
+    296                      (*get_microrl_printf (pointerMicrorl)) ((int8_t *)argv[i]);
+    297                      (*get_microrl_printf (pointerMicrorl)) ("' Not found.\n\r");
+    298                  }
+    299          
+    300                  break;
+    301              }
+    302              return 0;
+    303          }
+    304          
+    305          
+    306          /*
+    307           * completion callback for microrl library
+    308           *
+    309           */
+    310          int8_t ** complet (int32_t argc, const int8_t * const * argv) {
+    311              int32_t j = 0;
+    312              compl_word [0] = NULL;
+    313          
+    314              // if there is token in cmdline
+    315              if (argc == 1) {
+    316                  // get last entered token
+    317                  int8_t * bit = (int8_t *)argv [argc - 1];
+    318                  for (int32_t i = 0; i < _NUM_OF_CMD; i++) {
+    319                      if (strstr(keyword[i], bit) == keyword [i]) {
+    320                          compl_word[j++] = keyword[i];
+    321                      }
+    322                  }
+    323              }
+    324              else { // if there is no token in cmdline, just print all available token
+    325                  for (; j < _NUM_OF_CMD; j++) {
+    326                      compl_word[j] = keyword[j];
+    327                  }
+    328              }
+    329          
+    330              // note! last ptr in array always must be NULL!!!
+    331              compl_word [j] = NULL;
+    332              return compl_word;
+    333          }
+    334          
+    335          
+    336          /*
+    337           * Sigint
+    338           *
+    339           */
+    340          void sigint () {
+    341              (*get_microrl_printf (pointerMicrorl))("^C catched!\n\r");
+    342              microrl_init_printf(pointerMicrorl, 
+    343                  get_microrl_printf (pointerMicrorl) == &serprintf ? NULL : &serprintf);
+    344          }
+
+   Maximum stack usage in bytes:
+
+     Function       .cstack
+     --------       -------
+     complet            24
+     execute            32
+     print_help_cmd      8
+     sigint             16
+     strstr              8
+
+
+   Section sizes:
+
+     Function/Label                               Bytes
+     --------------                               -----
+     strstr                                         10
+     keyword                                       240
+     compl_word
+     print_help_cmd                                328
+     execute                                      1284
+     complet                                        86
+     sigint                                         48
+     ??DataTable52                                   4
+     ??DataTable52_1                                 4
+     ??DataTable52_2                                 4
+     ??DataTable52_3                                 4
+     ??DataTable52_4                                 4
+     ??DataTable52_5                                 4
+     ??DataTable52_6                                 4
+     ?<Constant "Use TAB key for compl...">         40
+     ?<Constant "\tctrl+C      - en/dis...">        32
+     ?<Constant "\thelp        - print ...">        32
+     ?<Constant "\tcls         - clear ...">        32
+     ?<Constant "\ttime        - time i...">        52
+     ?<Constant "\treset       - reset ...">        32
+     ?<Constant "\ttrace       - on/off...">        36
+     ?<Constant "\tled         - on/off...">        28
+     ?<Constant "\tcalb        - on/off...">        40
+     ?<Constant "\tmtr         - on/off...">        40
+     ?<Constant "\tacc         - on/off...">        36
+     ?<Constant "\tax?         - get ac...">        72
+     ?<Constant "\tay?         - get ac...">        32
+     ?<Constant "\tap?         - get ac...">        36
+     ?<Constant "\tax          - set ac...">        72
+     ??DataTable53                                   4
+     ??DataTable53_1                                 4
+     ??DataTable53_2                                 4
+     ??DataTable53_3                                 4
+     ??DataTable53_4                                 4
+     ??DataTable53_5                                 4
+     ?<Constant "\r\nmed=%d\n\rup=%d\n\rdown...">   52
+     ?<Constant "help">                              8
+     ?<Constant "invalid cmd arguments\n\r">        24
+     ?<Constant "\033[2J">                           8
+     ?<Constant "command: \'">                      12
+     ?<Constant "\' Not found.\n\r">                16
+     ??DataTable54                                   4
+     ??DataTable55                                   4
+     ??DataTable55_1                                 4
+     ??DataTable55_2                                 4
+     ??DataTable55_3                                 4
+     ??DataTable55_4                                 4
+     ??DataTable55_5                                 4
+     ??DataTable55_6                                 4
+     ??DataTable55_7                                 4
+     ??DataTable55_8                                 4
+     ??DataTable55_9                                 4
+     ??DataTable55_10                                4
+     ??DataTable55_11                                4
+     ??DataTable55_12                                4
+     ??DataTable55_13                                4
+     ??DataTable55_14                                4
+     ??DataTable55_15                                4
+     ?<Constant "^C catched!\n\r">                  16
+     ?<Constant "time">                              8
+     ?<Constant "reset">                             8
+     ?<Constant "trace">                             8
+     ?<Constant "led">                               4
+     ?<Constant "acc">                               4
+     ?<Constant "mtr">                               4
+     ?<Constant "ax?">                               4
+     ?<Constant "ay?">                               4
+     ?<Constant "az?">                               4
+     ?<Constant "ap?">                               4
+     ?<Constant "am?">                               4
+     ?<Constant "ax">                                4
+     ?<Constant "ay">                                4
+     ?<Constant "az">                                4
+     ?<Constant "ap">                                4
+     ?<Constant "am">                                4
+     ?<Constant "calb">                              8
+     ?<Constant "cls">                               4
+     ?<Constant "\taz?         - get ac...">        32
+     ?<Constant "\tam?         - get ac...">        36
+     ?<Constant "\tay          - set ac...">        32
+     ?<Constant "\taz          - set ac...">        32
+     ?<Constant "\tap          - set ac...">        36
+     ?<Constant "\tam          - set ac...">        36
+     ?<Constant "time alive = %u sec\n\r">          24
+     ?<Constant "on">                                4
+     ?<Constant "\n\r">                              4
+     ?<Constant "off">                               4
+     ?<Constant "invalid cmd argument\n\r">         24
+     ?<Constant "\033[H">                            4
+      Others                                        12
+
+ 
+   240 bytes in section .data
+   364 bytes in section .rodata
+ 2 628 bytes in section .text
+ 
+ 2 606 bytes of CODE  memory (+ 22 bytes shared)
+   364 bytes of CONST memory
+   240 bytes of DATA  memory
+
+Errors: none
+Warnings: none
