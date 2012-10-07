@@ -1,0 +1,298 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  01:42:22 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Uart\v_printf.c     #
+#    Command line =  D:\Projects\google_host\drift-sensor\Uart\v_printf.c -D  #
+#                    NDEBUG -lc D:\Projects\google_host\drift-sensor\Release\ #
+#                    List\ --diag_suppress Pe550 -o                           #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\v_prin #
+#                    tf.lst                                                   #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\v_print #
+#                    f.o                                                      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Uart\v_printf.c
+      1          /* printf.c: Output format for a controller environment.
+      2           *
+      3           * This implements a limited subset of printf(), with only the
+      4           * format features typically needed in an embedded environment.
+      5           *
+      6           * It's compatible with the AVR, with the format string read from
+      7           * program space / flash, and all parameters from data space / RAM.
+      8           * See 'S' for an optional exception for constant strings.
+      9           *
+     10           * Before "fixing"/extending this implementation, please consider
+     11           * the target use on very small machine.
+     12           *
+     13           * This implementation is only printf().  There is no option for
+     14           * sprintf() or fprintf().  It queues the characters directly to the
+     15           * output device with serial_putch(), with the only additional space
+     16           * used a small buffer for building %d/%x output.
+     17           *
+     18           * Originally written 2010-2011 by Donald Becker and William Carlson
+     19           * for the QAR EV motor controller project.  Released under GPLv2.1
+     20           * Contact the authors for use under other terms.
+     21           */
+     22          
+     23          #include <stdarg.h>
+     24          #include "data_types.h"
+     25          #include "Core\core.h"
+     26          #include "Uart\uart0.h"
+     27          #include "Uart\v_printf.h"
+     28          
+     29          
+     30          static int8_t buf[12];
+     31          static serprint_func pTrace = 0;
+     32          
+     33          
+     34          /*
+     35           * Lpc23xx implementation for UART0
+     36           *
+     37           */
+     38          __arm static uint32_t uart_putchar(const uint8_t c) {
+     39              static uint32_t count = 16;
+     40          
+     41              if ((U0LSR & LSR_THRE) || (U0LSR & LSR_TEMT)) {
+     42                  count = 16;
+     43              }
+     44          
+     45              if (count) {
+     46                  U0THR = c;
+     47                  count--;
+     48                  return 0;
+     49              }
+     50              return 1;
+     51          }
+     52          
+     53          
+     54          __arm static void inline serial_putch(uint8_t c) {
+     55              while(uart_putchar(c) != 0);    // Returns -1 if full queue.
+     56                                              // We busy-wait.
+     57          }
+     58          
+     59          
+     60          /*
+     61           * Sleazy versions of number to string conversions.  These convert VAL
+     62           * to a string in the local buffer with the specified number of
+     63           * digits. Leading zeros are included, overflow is truncated and the
+     64           * string is not terminated.
+     65           *
+     66           */
+     67          __arm static void u32_to_uart(uint32_t val, sint32_t digits) {
+     68              int8_t * str = buf + sizeof(buf) - 1;
+     69              *str-- = 0;
+     70          
+     71              do {
+     72                  *str-- = (uint8_t)(val % 10) + '0';
+     73                  val = val / 10;
+     74              }
+     75              while (--digits > 0 || val > 0);
+     76          
+     77              do {
+     78                  serial_putch(*++str);
+     79              }
+     80              while (str < buf + sizeof(buf) - 1);
+     81          }
+     82          
+     83          
+     84          /*
+     85           * Same thing in hex.
+     86           *
+     87           */
+     88          __arm static void uint_to_hex_uart(unsigned val, uint8_t digits) {
+     89              uint8_t nibble;
+     90              int8_t * str = buf + sizeof(buf) - 1;
+     91              *str-- = 0;
+     92          
+     93              while (digits-- > 0) {
+     94                  nibble = val & 0x000f;
+     95          
+     96                  if (nibble >= 10)
+     97                      nibble = (nibble - 10) + 'A';
+     98                  else
+     99                      nibble = nibble + '0';
+    100          
+    101                  *str-- = nibble;
+    102                  val = val >> 4;
+    103              }
+    104              ++str;
+    105          
+    106              do {
+    107                  serial_putch(*str);
+    108              }
+    109              while (*++str);
+    110          }
+    111          
+    112          
+    113          
+    114          /*
+    115           * Printf() implementation for serial uart
+    116           *
+    117           *
+    118           */
+    119          __arm uint32_t serprintf(const int8_t * format, ...) {
+    120              va_list args;
+    121              uint8_t c, j = 0;
+    122              va_start(args, format);
+    123          
+    124              while ((c = *format++)) {
+    125                  if (j) {
+    126                      switch(c) {
+    127                          case 's': {
+    128                              uint8_t * str = va_arg(args, char *);
+    129                              do {
+    130                                  j = *str++;
+    131                                  if (j == 0) break;      // Clears precision
+    132                                  serial_putch(j);
+    133                              }
+    134                              while (1);
+    135                              break;
+    136                          }
+    137          
+    138                          case 'l':
+    139                              j = sizeof(long);
+    140                              continue;
+    141          
+    142                          case 'u':
+    143                              u32_to_uart(j == sizeof(long) ? va_arg(args, long) :
+    144                                          va_arg(args, int), j);
+    145                              break;
+    146          
+    147                          case 'd': {
+    148                              int32_t val = (j == sizeof(long) ? va_arg(args, long) :
+    149                                             va_arg(args, int));
+    150                              if (val < 0) {
+    151                                  serial_putch('-');
+    152                                  val = -val;
+    153                              }
+    154                              u32_to_uart(val, j);
+    155                              break;
+    156                          }
+    157          
+    158                          case 'c':
+    159                              serial_putch(va_arg(args, int));
+    160                              break;
+    161          
+    162                          case 'x':
+    163                          case 'X': {
+    164                              if (j == 1) {               // Do "%#x" rather than "%x"
+    165                                  //serial_putch('0');
+    166                                  //serial_putch(c);        // Match case 0x or 0X
+    167                              }
+    168                              uint_to_hex_uart(j == sizeof(long) 
+    169                                  ? va_arg(args, long) : va_arg(args, int), j);
+    170                              break;
+    171                          }
+    172          
+    173                          default:
+    174                              serial_putch(c);
+    175                              break;
+    176                      }
+    177          
+    178                      j = 0;
+    179                  }
+    180                  else {
+    181                      if (c == '%') {
+    182                          const int8_t d = *format;
+    183          
+    184                          if ('0' <= d && d <= '9') {
+    185                              format++;
+    186                              j = d - '0';
+    187                          }
+    188                          else {
+    189                              j = 1;
+    190                          }
+    191                      }
+    192                      else {
+    193                          // Automatic CR+LF expansion saves space.
+    194                          if (c == '\n')
+    195                              serial_putch('\r');
+    196                          serial_putch(c);
+    197                      }
+    198                  }
+    199              }
+    200              va_end(args);
+    201              return 0;                    // Incorrect, but this is a sleazy version.
+    202          }
+    203          
+    204          
+    205          
+    206          /*
+    207           * Enable trace function
+    208           *
+    209           */
+    210          void set_trace_func(serprint_func f) {
+    211              enter_cs();
+    212              pTrace = f;
+    213              exit_cs();
+    214          }
+    215          
+    216          
+    217          /*
+    218           * Get trace func
+    219           *
+    220           */
+    221          serprint_func get_trace() {
+    222              return pTrace;
+    223          }
+    224          
+
+   Maximum stack usage in bytes:
+
+     Function         .cstack
+     --------         -------
+     get_trace             0
+     serial_putch          8
+     serprintf            40
+     set_trace_func        8
+     u32_to_uart          24
+     uart_putchar          0
+     uint_to_hex_uart      8
+
+
+   Section sizes:
+
+     Function/Label   Bytes
+     --------------   -----
+     U0RBRTHR            1
+     _A_U0LSR            4
+     buf                12
+     pTrace              4
+     uart_putchar       88
+     count               4
+     serial_putch       32
+     u32_to_uart       116
+     uint_to_hex_uart  116
+     serprintf         324
+     set_trace_func     22
+     get_trace           6
+     ??DataTable4        4
+     ??DataTable4_1      4
+     ??DataTable4_2      4
+
+ 
+  16 bytes in section .bss
+   9 bytes in section .data
+ 716 bytes in section .text
+ 
+ 716 bytes of CODE memory
+  20 bytes of DATA memory (+ 5 bytes shared)
+
+Errors: none
+Warnings: none

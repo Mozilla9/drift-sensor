@@ -1,0 +1,95 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  01:42:09 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Lib\bin_to_bcd.c    #
+#    Command line =  D:\Projects\google_host\drift-sensor\Lib\bin_to_bcd.c    #
+#                    -D NDEBUG -lc D:\Projects\google_host\drift-sensor\Relea #
+#                    se\List\ --diag_suppress Pe550 -o                        #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\bin_to #
+#                    _bcd.lst                                                 #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\bin_to_ #
+#                    bcd.o                                                    #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Lib\bin_to_bcd.c
+      1          /******************************************************************************/
+      2          /* bin_to_bcd.c                                                               */
+      3          /******************************************************************************/
+      4          
+      5          #include "data_types.h"
+      6          #include "Lib\bin_to_bcd.h"
+      7          
+      8          
+      9          
+     10          
+     11          /*
+     12           * txt_to_bin
+     13           *
+     14           */
+     15          sint16_t txt_to_bin(const int8_t * pTxt) {
+     16              const uint16_t mul[6] = {0, 1, 10, 100, 1000, 10000};
+     17              sint16_t sign = 1;
+     18              sint16_t bin = 0;
+     19              uint16_t len = strlen(pTxt);
+     20              
+     21              if (len == 0 || len > 6) {
+     22                  return bin;
+     23              }
+     24          
+     25              if (pTxt[0] == '-') {
+     26                  len--;
+     27                  pTxt++;
+     28                  sign = -1;
+     29              } else if (pTxt[0] == '+') {
+     30                  len--;
+     31                  pTxt++;
+     32              }
+     33          
+     34              if (len == 0) {
+     35                  return bin;
+     36              }
+     37          
+     38              while (len) {
+     39                  bin += ((*pTxt++ - '0') * mul[len--]);
+     40              }
+     41          
+     42              return bin * sign;
+     43          }
+
+   Maximum stack usage in bytes:
+
+     Function   .cstack
+     --------   -------
+     txt_to_bin     32
+
+
+   Section sizes:
+
+     Function/Label                           Bytes
+     --------------                           -----
+     txt_to_bin                                110
+     ?<Constant {0, 1, 10, 100, 1000, 10000}>   12
+
+ 
+ 122 bytes in section .text
+ 
+ 122 bytes of CODE memory
+
+Errors: none
+Warnings: none

@@ -1,0 +1,170 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  01:42:21 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Uart\uart0.c        #
+#    Command line =  D:\Projects\google_host\drift-sensor\Uart\uart0.c -D     #
+#                    NDEBUG -lc D:\Projects\google_host\drift-sensor\Release\ #
+#                    List\ --diag_suppress Pe550 -o                           #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\uart0. #
+#                    lst                                                      #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\uart0.o #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Uart\uart0.c
+      1          /******************************************************************************/
+      2          /* uart0.c                                                                    */
+      3          /******************************************************************************/
+      4          
+      5          
+      6          #include "data_types.h"
+      7          #include "Core\core.h"
+      8          #include "Ringbuff\ring_buffer.h"
+      9          #include "Uart\uart0.h"
+     10          
+     11          
+     12          /*
+     13           * Init uart0
+     14           *
+     15           */
+     16          void init_uart0(const uint32_t _baudrate, const uint8_t _key) {
+     17              U0IER = 0UL;                  // int dis
+     18          
+     19              PCONP_bit.PCUART0 = 1;
+     20          
+     21              PINSEL0_bit.P0_2 = 1;         // TXD
+     22              PINSEL0_bit.P0_3 = 1;         // RXD
+     23          
+     24              FIO0DIR_bit.P0_2 = 1;         // TXD
+     25              FIO0DIR_bit.P0_3 = 0;         // RXD
+     26          
+     27              PINMODE0_bit.P0_2 = 2;        // TXD PULL_RES - dis
+     28              PINMODE0_bit.P0_3 = 2;        // RXD
+     29          
+     30              U0LCR = 0x80 | _key;          // 8 bits, no Parity, 1 Stop bit
+     31              U0FDR_bit.DIVADDVAL = 0;
+     32              U0FDR_bit.MULVAL = 0;
+     33          
+     34              uint32_t Br;
+     35          
+     36              if(_baudrate == 115200) {
+     37                  // ! for FPCLK=28800000
+     38                  U0DLM = 0;
+     39                  U0DLL = 13;
+     40                  U0FDR_bit.DIVADDVAL = 1;
+     41                  U0FDR_bit.MULVAL = 5;
+     42              }
+     43              else {
+     44                  Br = (FPCLK / 16) / _baudrate;
+     45                  U0DLM = Br / 256;
+     46                  U0DLL = Br % 256;
+     47              }
+     48          
+     49              U0LCR = _key;                  // DLAB = 0
+     50              U0FCR = 0x41;                  // Enable and reset TX and RX FIFO, size 4 bytes
+     51          }
+     52          
+     53          
+     54          /*
+     55           * Uart0 interrupt handler
+     56           *
+     57           */
+     58          __irq __arm void __interrupt_handler_uart0() {
+     59              uint8_t IIR_VALUE = U0IIR;
+     60              const uint8_t LSR_VALUE = U0LSR;
+     61          
+     62              IIR_VALUE >>= 1;
+     63              IIR_VALUE &= 0x07;
+     64          
+     65              switch(IIR_VALUE)
+     66              {
+     67                  //----------------------------------------------------------------------
+     68                  case IIR_RLS:
+     69                    if (LSR_VALUE & LSR_RXFE) {
+     70                        U0SCR = U0RBR;            // Bad data flush
+     71                    }
+     72                    break;
+     73          
+     74                  //----------------------------------------------------------------------
+     75                  case IIR_RDA:
+     76                    for (uint32_t i = 0; i < UART0_FIFO_TRLEVEL; i++) {
+     77                        put_in_ring_buff(pointerRingBuff, U0RBR);
+     78                    }
+     79                    break;
+     80          
+     81                  //----------------------------------------------------------------------
+     82                  case IIR_CTI:
+     83                    do {
+     84                        put_in_ring_buff(pointerRingBuff, U0RBR);
+     85                    } while (U0LSR & LSR_RDR);
+     86                    break;
+     87          
+     88                  //----------------------------------------------------------------------
+     89                  case IIR_THRE:
+     90                    break;
+     91          
+     92                  //----------------------------------------------------------------------
+     93                  default:
+     94                    break;
+     95              }
+     96          
+     97              VICADDRESS = 0;
+     98          }
+
+   Maximum stack usage in bytes:
+
+     Function                  .cstack
+     --------                  -------
+     __interrupt_handler_uart0     32
+     init_uart0                    28
+
+
+   Section sizes:
+
+     Function/Label            Bytes
+     --------------            -----
+     _A_PCONP                     4
+     VICADDRESS                   4
+     _A_PINSEL0                   4
+     _A_PINMODE0                  4
+     _A_FIO0DIR                   4
+     U0RBRTHR                     1
+     _A_U0IER                     4
+     _A_U0FCR                     4
+     _A_U0LCR                     4
+     _A_U0LSR                     4
+     U0SCR                        1
+     _A_U0FDR                     4
+     init_uart0                 184
+     __interrupt_handler_uart0  164
+     ??DataTable1                 4
+     ??DataTable1_1               4
+     ??DataTable1_2               4
+     ??DataTable1_3               4
+     ??DataTable1_4               4
+     ??DataTable1_5               4
+
+ 
+  42 bytes in section .data
+ 372 bytes in section .text
+ 
+ 372 bytes of CODE memory
+   0 bytes of DATA memory (+ 42 bytes shared)
+
+Errors: none
+Warnings: none

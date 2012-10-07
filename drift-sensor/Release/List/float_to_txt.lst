@@ -1,0 +1,75 @@
+###############################################################################
+#                                                                             #
+#                                                       08/Oct/2012  01:42:13 #
+# IAR ANSI C/C++ Compiler V6.21.2.22939/W32 EVALUATION for ARM                #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\Projects\google_host\drift-sensor\Lib\float_to_txt.c  #
+#    Command line =  D:\Projects\google_host\drift-sensor\Lib\float_to_txt.c  #
+#                    -D NDEBUG -lc D:\Projects\google_host\drift-sensor\Relea #
+#                    se\List\ --diag_suppress Pe550 -o                        #
+#                    D:\Projects\google_host\drift-sensor\Release\Obj\        #
+#                    --no_unroll --no_inline --no_tbaa --no_scheduling        #
+#                    --endian=little --cpu=ARM7TDMI-S -e --fpu=None           #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.0                           #
+#                    Evaluation\arm\INC\c\DLib_Config_Normal.h" -I            #
+#                    D:\Projects\google_host\drift-sensor\ -I                 #
+#                    D:\Projects\google_host\drift-sensor\Config\             #
+#                    --interwork --cpu_mode thumb -Om                         #
+#    List file    =  D:\Projects\google_host\drift-sensor\Release\List\float_ #
+#                    to_txt.lst                                               #
+#    Object file  =  D:\Projects\google_host\drift-sensor\Release\Obj\float_t #
+#                    o_txt.o                                                  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\Projects\google_host\drift-sensor\Lib\float_to_txt.c
+      1          /******************************************************************************/
+      2          /* float_to_txt.c                                                             */
+      3          /******************************************************************************/
+      4          
+      5          #include "data_types.h"
+      6          #include "Lib\float_to_txt.h"
+      7          
+      8          
+      9          
+     10          /*
+     11           * Split float to components (mantissa and exp)
+     12           *
+     13           */
+     14          void split_float_to_comp(const float32_t _ff, uint32_t components[]) {
+     15              const uint32_t mull = 10000;
+     16              const uint32_t sign = _ff >= 0.0 ? 0 : 1;
+     17              const float32_t ff = _ff >= 0.0 ? _ff : (-1.0 * _ff);
+     18              const uint32_t mnt = (uint32_t) ff;
+     19              const uint32_t exp = (uint32_t)((ff - mnt) * mull);
+     20              
+     21              components[0] = sign;
+     22              components[1] = mnt;
+     23              components[2] = exp;
+     24          }
+
+   Maximum stack usage in bytes:
+
+     Function            .cstack
+     --------            -------
+     split_float_to_comp     16
+
+
+   Section sizes:
+
+     Function/Label      Bytes
+     --------------      -----
+     split_float_to_comp   84
+
+ 
+ 84 bytes in section .text
+ 
+ 84 bytes of CODE memory
+
+Errors: none
+Warnings: none
