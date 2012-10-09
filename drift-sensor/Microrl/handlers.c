@@ -338,7 +338,7 @@ int8_t ** complet (int32_t argc, const int8_t * const * argv) {
  *
  */
 void sigint () {
-    (*get_microrl_printf (pointerMicrorl))("^C catched!\n\r");
+    (*get_microrl_printf (pointerMicrorl))("^C\n\r");
     microrl_init_printf(pointerMicrorl, 
         get_microrl_printf (pointerMicrorl) == &serprintf ? NULL : &serprintf);
 }

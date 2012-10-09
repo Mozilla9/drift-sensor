@@ -201,7 +201,7 @@ static int led_task(struct pt * pt) {
                     {
                         uint32_t tick = get_sys_tick();
                         if (tick > time_count) {
-                            time_count = tick + TIMER0_TICK / 2;
+                            time_count = tick + TIMER0_TICK * 3;
                             led1_off();
                         }
                     }
@@ -313,8 +313,8 @@ void init_tasks() {
     PT_INIT(&acc_pt);
     PT_INIT(&acc_matrix_pt);
     
-    //enable_acc_matrix_task();
-    enable_acc_task();
+    enable_acc_matrix_task();
+    //enable_acc_task();
 }
 
 

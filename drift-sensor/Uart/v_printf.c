@@ -162,8 +162,8 @@ __arm uint32_t serprintf(const int8_t * format, ...) {
                 case 'x':
                 case 'X': {
                     if (j == 1) {               // Do "%#x" rather than "%x"
-                        //serial_putch('0');
-                        //serial_putch(c);        // Match case 0x or 0X
+                        serial_putch('0');
+                        serial_putch(c);        // Match case 0x or 0X
                     }
                     uint_to_hex_uart(j == sizeof(long) 
                         ? va_arg(args, long) : va_arg(args, int), j);
