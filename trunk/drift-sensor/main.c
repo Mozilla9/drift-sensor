@@ -36,7 +36,7 @@ void main()
 
     __enable_interrupt();
 
-    serprintf("\n\rSTART_t12_2\n\r");
+    serprintf("\n\rSTART_t13_1\n\r");
 
     microrl_init (pointerMicrorl, &serprintf);
     microrl_set_execute_callback (pointerMicrorl, execute);

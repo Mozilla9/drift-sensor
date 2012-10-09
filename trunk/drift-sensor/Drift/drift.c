@@ -92,14 +92,12 @@ static void acc_x_decision_reco_drift() {
             case 1:
                 serprintf("$DRIFT,XA,%x,%x,%x,%u\r\n",
                     (x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
-                
-                DEBUG_PRINTF("x_end_acclr");
                 break;
 
             case 2:
                 serprintf("$DRIFT,XB,%x,%x,%x,%u\r\n",
                     (x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
-                
+
                 DEBUG_PRINTF("x_end_brake");
                 break;
 
@@ -167,14 +165,14 @@ static void acc_y_decision_reco_drift() {
             case 1:
                 serprintf("$DRIFT,YL,%x,%x,%x,%u\r\n",
                     (y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
-                
+
                 DEBUG_PRINTF("y_end_left");
                 break;
 
             case 2:
                 serprintf("$DRIFT,YR,%x,%x,%x,%u\r\n",
                     (y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
-                
+
                 DEBUG_PRINTF("y_end_right");
                 break;
 
@@ -283,7 +281,7 @@ static void acc_pit_decision_reco_drift() {
             if (pit_count) {
                 serprintf("$DRIFT,ZP1,%x,%x,%x,%u\r\n",
                     (pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
-                
+
                 DEBUG_PRINTF("Z_PIT_1: %d, %d, %d, %u\n\r",
                     (pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
             }
@@ -308,7 +306,7 @@ static void acc_pit_decision_reco_drift() {
             if (pit_count) {
                 serprintf("$DRIFT,ZP2,%x,%x,%x,%u\r\n",
                     (pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
-                
+
                 DEBUG_PRINTF("Z_PIT_2: %d, %d, %d, %u\n\r",
                     (pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
             }
@@ -403,7 +401,7 @@ static void acc_pit_mod_decision_reco_drift() {
         if (blank == 1) {
             serprintf("$DRIFT,ZM,%x,%x,%x,%u\r\n",
                 (mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count);
-            
+
             DEBUG_PRINTF("PIT_MOD_END: %d, %d, %d, %u, av_up=%d, av_dw=%d\n\r",
                 (mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count,
                 (av_up / count_up), (av_down / (mod_acc_stats.count - count_up)));
@@ -487,7 +485,7 @@ void add_acc_matrix_samples_in_reco_drift(const uint16_t x_acc, const uint16_t y
     // rotate
     float32_t output_vector[3];
     const sint16_t input_vector[3] = {x_acc, y_acc, z_acc};
-    
+
     multiply(input_vector, get_rotation_matrix(), output_vector);
 
     add_sample_in_filter(&x_acc_filter, (sint16_t)output_vector[0]);
