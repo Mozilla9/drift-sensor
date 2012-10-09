@@ -308,9 +308,9 @@ const int8_t * get_family_desc_at25df() {
             case eATMEL_DATAFLAFH:
                 return "ATMEL DATAFLASH";
             case eATMEL_AT25DF_26DF:
-                return "AT25DF";
+                return "AT25DF-26DF";
             case eATMEL_AT25F_25FS:
-                return "AT25DF-25FS";
+                return "AT25F-25FS";
             case eATMEL_QUAD:
                 return "ATMEL QUAD";
         }
