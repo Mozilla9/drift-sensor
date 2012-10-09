@@ -1792,6 +1792,15 @@
     </settings>
   </configuration>
   <group>
+    <name>AT25DF</name>
+    <file>
+      <name>$PROJ_DIR$\At25df\at25df.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Spi\spi.c</name>
+    </file>
+  </group>
+  <group>
     <name>COMPASS</name>
     <file>
       <name>$PROJ_DIR$\Compass\compass.c</name>
@@ -1828,15 +1837,15 @@
     </file>
   </group>
   <group>
+    <name>FMEM</name>
+    <file>
+      <name>$PROJ_DIR$\Fmem\fmem.c</name>
+    </file>
+  </group>
+  <group>
     <name>I2C</name>
     <file>
       <name>$PROJ_DIR$\I2C\i2c0.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\I2C\i2c1.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\I2C\i2c2.c</name>
     </file>
   </group>
   <group>

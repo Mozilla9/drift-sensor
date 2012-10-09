@@ -8,6 +8,7 @@
 
 #include "data_types.h"
 #include "Core\core.h"
+#include "At25df\at25df.h"
 #include "Uart\v_printf.h"
 #include "Lis3dh\lis3dh.h"
 #include "Compass\compass.h"
@@ -36,7 +37,11 @@ void main()
 
     __enable_interrupt();
 
-    serprintf("\n\rSTART_t13_1\n\r");
+    serprintf("\n\rSTART_t13_2\n\r");
+    serprintf("flash mem: %s %s %s\n\r",
+        get_flash_status_at25df() ? "on" : "off",
+        get_family_desc_at25df(),
+        get_density_desc_at25df());
 
     microrl_init (pointerMicrorl, &serprintf);
     microrl_set_execute_callback (pointerMicrorl, execute);
