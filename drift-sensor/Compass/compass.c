@@ -9,6 +9,7 @@
 #include "Led\led.h"
 #include "Uart\v_printf.h"
 #include "I2C\i2c0.h"
+#include "At25df\at25df.h"
 #include "Ringbuff\ring_buffer.h"
 #include "Lis3dh\lis3dh.h"
 #include "Compass\compass.h"
@@ -112,6 +113,7 @@ void init_device() {
     PCONP_bit.PCENET = 0;
 
     init_timer0();
+    init_at25df();
     init_led();
     init_lis3dh();
     init_ring_buff(pointerRingBuff);

@@ -51,7 +51,7 @@ define symbol __region_BAT_RAM_end__   = 0xE00847FF;
 
 
 /*-Sizes-*/
-define symbol __ICFEDIT_size_cstack__   = 0x500;
+define symbol __ICFEDIT_size_cstack__   = 0x900;
 define symbol __ICFEDIT_size_svcstack__ = 0x10;
 define symbol __ICFEDIT_size_irqstack__ = 0x200;
 define symbol __ICFEDIT_size_fiqstack__ = 0x40;

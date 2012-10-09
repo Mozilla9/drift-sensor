@@ -55,7 +55,6 @@ static void acc_x_decision_reco_drift() {
 
     if ((blank == 0 || blank == 1) && (average > (x_acc_thr.med + x_acc_thr.up_front - gisteresis))) {
         if (blank != 1) {
-            DEBUG_PRINTF("x_start_acclr: %d\n\r", average);
             blank = 1;
 
             x_acc_stats.average = last_sample;
@@ -72,7 +71,6 @@ static void acc_x_decision_reco_drift() {
     }
     else if ((blank == 0 || blank == 2) && (average < (x_acc_thr.med - x_acc_thr.down_front + gisteresis))) {
         if (blank != 2) {
-            DEBUG_PRINTF("x_start_brake: %d\n\r", average);
             blank = 2;
 
             x_acc_stats.average = last_sample;
@@ -90,15 +88,13 @@ static void acc_x_decision_reco_drift() {
     else {
         switch (blank) {
             case 1:
-                serprintf("$DRIFT,XA,%x,%x,%x,%u\r\n",
-                    (x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
+                serprintf("$DRIFT,XA,%4x,%4x,%4x,%u\r\n",
+                    (int16_t)(x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
                 break;
 
             case 2:
-                serprintf("$DRIFT,XB,%x,%x,%x,%u\r\n",
-                    (x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
-
-                DEBUG_PRINTF("x_end_brake");
+                serprintf("$DRIFT,XB,%4x,%4x,%4x,%u\r\n",
+                    (int16_t)(x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
                 break;
 
             default:
@@ -109,8 +105,8 @@ static void acc_x_decision_reco_drift() {
         blank = 0;
         gisteresis = 0;
 
-        DEBUG_PRINTF(": %d, %d, %d, %u\n\r",
-            (x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
+        DEBUG_PRINTF("x_res: %d, %d, %d, %u\n\r",
+            (int16_t)(x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
     }
 }
 
@@ -128,7 +124,6 @@ static void acc_y_decision_reco_drift() {
 
     if ((blank == 0 || blank == 1) && (average > (y_acc_thr.med + y_acc_thr.up_front - gisteresis))) {
         if (blank != 1) {
-            DEBUG_PRINTF("y_start_left_rot: %d\n\r", average);
             blank = 1;
 
             y_acc_stats.average = last_sample;
@@ -145,7 +140,6 @@ static void acc_y_decision_reco_drift() {
     }
     else if ((blank == 0 || blank == 2) && (average < (y_acc_thr.med - y_acc_thr.down_front + gisteresis))) {
         if (blank != 2) {
-            DEBUG_PRINTF("y_start_right_rot: %d\n\r", average);
             blank = 2;
 
             y_acc_stats.average = last_sample;
@@ -163,17 +157,13 @@ static void acc_y_decision_reco_drift() {
     else {
         switch (blank) {
             case 1:
-                serprintf("$DRIFT,YL,%x,%x,%x,%u\r\n",
-                    (y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
-
-                DEBUG_PRINTF("y_end_left");
+                serprintf("$DRIFT,YL,%4x,%4x,%4x,%u\r\n",
+                    (int16_t)(y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
                 break;
 
             case 2:
-                serprintf("$DRIFT,YR,%x,%x,%x,%u\r\n",
-                    (y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
-
-                DEBUG_PRINTF("y_end_right");
+                serprintf("$DRIFT,YR,%4x,%4x,%4x,%u\r\n",
+                    (int16_t)(y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
                 break;
 
             default:
@@ -184,8 +174,8 @@ static void acc_y_decision_reco_drift() {
         blank = 0;
         gisteresis = 0;
 
-        DEBUG_PRINTF("_rot: %d, %d, %d, %u\n\r",
-            (y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
+        DEBUG_PRINTF("y_res: %d, %d, %d, %u\n\r",
+            (int16_t)(y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
     }
 }
 
@@ -203,7 +193,6 @@ static void acc_z_decision_reco_drift() {
 
     if ((blank == 0 || blank == 1) && (average > (z_acc_thr.med + z_acc_thr.up_front - gisteresis))) {
         if (blank != 1) {
-            DEBUG_PRINTF("z_start_up: %d\n\r", average);
             blank = 1;
 
             z_acc_stats.average = last_sample;
@@ -220,7 +209,6 @@ static void acc_z_decision_reco_drift() {
     }
     else if ((blank == 0 || blank == 2) && (average < (z_acc_thr.med - z_acc_thr.down_front + gisteresis))) {
         if (blank != 2) {
-            DEBUG_PRINTF("z_start_down: %d\n\r", average);
             blank = 2;
 
             z_acc_stats.average = last_sample;
@@ -238,11 +226,9 @@ static void acc_z_decision_reco_drift() {
     else {
         switch (blank) {
             case 1:
-                DEBUG_PRINTF("z_end_up");
                 break;
 
             case 2:
-                DEBUG_PRINTF("z_end_down");
                 break;
 
             default:
@@ -253,8 +239,8 @@ static void acc_z_decision_reco_drift() {
         blank = 0;
         gisteresis = 0;
 
-        DEBUG_PRINTF(": %d, %d, %d, %u\n\r",
-            (z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
+        DEBUG_PRINTF("z_res: %d, %d, %d, %u\n\r",
+            (int16_t)(z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
     }
 }
 
@@ -279,11 +265,11 @@ static void acc_pit_decision_reco_drift() {
             blank = 1;
 
             if (pit_count) {
-                serprintf("$DRIFT,ZP1,%x,%x,%x,%u\r\n",
-                    (pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
+                serprintf("$DRIFT,ZP1,%4x,%4x,%4x,%u\r\n",
+                    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
 
                 DEBUG_PRINTF("Z_PIT_1: %d, %d, %d, %u\n\r",
-                    (pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
+                    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
             }
             pit_count = 13;
 
@@ -304,11 +290,11 @@ static void acc_pit_decision_reco_drift() {
             blank = 2;
 
             if (pit_count) {
-                serprintf("$DRIFT,ZP2,%x,%x,%x,%u\r\n",
-                    (pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
+                serprintf("$DRIFT,ZP2,%4x,%4x,%4x,%u\r\n",
+                    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
 
                 DEBUG_PRINTF("Z_PIT_2: %d, %d, %d, %u\n\r",
-                    (pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
+                    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
             }
             pit_count = 13;
 
@@ -399,11 +385,11 @@ static void acc_pit_mod_decision_reco_drift() {
     }
     else {
         if (blank == 1) {
-            serprintf("$DRIFT,ZM,%x,%x,%x,%u\r\n",
-                (mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count);
+            serprintf("$DRIFT,ZM,%4x,%4x,%4x,%u\r\n",
+                (int16_t)(mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count);
 
             DEBUG_PRINTF("PIT_MOD_END: %d, %d, %d, %u, av_up=%d, av_dw=%d\n\r",
-                (mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count,
+                (int16_t)(mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count,
                 (av_up / count_up), (av_down / (mod_acc_stats.count - count_up)));
         }
 
