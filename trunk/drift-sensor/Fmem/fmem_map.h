@@ -9,8 +9,9 @@
 #define FMEMORY_VOLUME         (0x200000)
 
 /******************************** Generic settings ****************************/
-#define GSETT_START_ADDR      (0)
-#define GSETT_MEM_SIZE        (4096)
+#define GSETT_START_ADDR           (0)
+#define GSETT_SWAP_START_ADDR      (4096)
+#define GSETT_MEM_SIZE             (4096)
 
 
 #endif

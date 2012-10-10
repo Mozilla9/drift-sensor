@@ -13,6 +13,7 @@
 
 void init_wdt();
 void init_timer0();
+void init_timer1();
 void init_core();
 __arm void enter_cs();
 __arm void exit_cs();

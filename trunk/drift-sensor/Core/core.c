@@ -205,6 +205,36 @@ void init_timer0() {
 
 
 /*
+ * Init TIMER1
+ *
+ */
+void init_timer1() {
+    PCONP_bit.PCTIM1 = 1;
+
+    // Reset and halt
+    T1TCR_bit.CE = 0;
+    T1TCR_bit.CR = 1;
+
+    // Configure prescaler
+    T1PR = 0x00;
+    T1PC = 0x00;
+
+    // Set mode
+    T1CTCR_bit.CTM = 0;   // timer mode
+    T1MCR_bit.MR0I = 1;   // int by compare
+    T1MCR_bit.MR0R = 1;   // clear TC in compare
+    T1MCR_bit.MR0S = 0;   // continuous count
+
+    // Interval
+    T1MR0 = TIMER1_VALUE;
+
+    // Run
+    T1TCR_bit.CE = 1;
+    T1TCR_bit.CR = 0;
+}
+
+
+/*
  * Init Core
  *
  */
