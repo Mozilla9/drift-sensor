@@ -468,17 +468,22 @@ void add_acc_samples_in_reco_drift(const uint16_t x_acc, const uint16_t y_acc, c
  *
  */
 void add_acc_matrix_samples_in_reco_drift(const uint16_t x_acc, const uint16_t y_acc, const uint16_t z_acc) {
+    sint16_t rot_x, rot_y, rot_z;
+
     // rotate
     float32_t output_vector[3];
     const sint16_t input_vector[3] = {x_acc, y_acc, z_acc};
 
     multiply(input_vector, get_rotation_matrix(), output_vector);
+    rot_x = (sint16_t)output_vector[0];
+    rot_y = (sint16_t)output_vector[1];
+    rot_z = (sint16_t)output_vector[2];
 
-    add_sample_in_filter(&x_acc_filter, (sint16_t)output_vector[0]);
-    add_sample_in_filter(&y_acc_filter, (sint16_t)output_vector[1]);
+    add_sample_in_filter(&x_acc_filter, rot_x);
+    add_sample_in_filter(&y_acc_filter, rot_y);
     //add_sample_in_filter(&z_acc_filter, (sint16_t)output_vector[2]);
     //add_sample_in_filter(&pit_acc_filter, (sint16_t)output_vector[2]);
-    add_sample_in_filter(&mod_acc_filter, (sint16_t)output_vector[2]);
+    add_sample_in_filter(&mod_acc_filter, rot_z);
 
     acc_x_decision_reco_drift();
     acc_y_decision_reco_drift();
