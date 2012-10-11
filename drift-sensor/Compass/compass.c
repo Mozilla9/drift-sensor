@@ -55,12 +55,10 @@ static __irq __arm void __interrupt_handler_timer0() {
  *
  */
 static void init_irq() {
-    // VIC in user mode
-    VICPROTECTION_bit.VIC_ACCESS = 0;
-
-
     uint32_t *vect_addr, *vect_cntl;
 
+    // VIC in user mode
+    VICPROTECTION_bit.VIC_ACCESS = 0;
     VICINTENCLEAR = 0xffffffff;
     VICADDRESS = 0L;
     VICINTSELECT = 0L;

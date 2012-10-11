@@ -324,7 +324,6 @@ void init_tasks() {
  */
 void run_tasks() {
     first_task(&first_pt);
-    
     led_task(&led_pt);
 
     if (test_calibr_task()) {
