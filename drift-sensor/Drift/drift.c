@@ -6,14 +6,15 @@
 #include "Core\core.h"
 #include "Uart\v_printf.h"
 #include "matrix\matrix.h"
+#include "Sett\settings.h"
 #include "Drift\drift.h"
 
 
-static drift_threshold x_acc_thr;
-static drift_threshold y_acc_thr;
-static drift_threshold z_acc_thr;
-static drift_threshold pit_acc_thr;
-static drift_threshold mod_acc_thr;
+static drift_threshold x_acc_thr = {0, 2500, 2500, 350, 10, 1};
+static drift_threshold y_acc_thr = {0, 2500, 2500, 350, 10, 1};
+static drift_threshold z_acc_thr = {8000, 2500, 2500, 350, 10, 1};
+static drift_threshold pit_acc_thr = {8000, 1800, 1800, 150, 6, 0};
+static drift_threshold mod_acc_thr = {8000, 2000, 2000, 150, 13, 2};
 
 static drift_stats x_acc_stats;
 static drift_stats y_acc_stats;
@@ -104,9 +105,6 @@ static void acc_x_decision_reco_drift() {
         }
         blank = 0;
         gisteresis = 0;
-
-        DEBUG_PRINTF("x_res: %d, %d, %d, %u\n\r",
-            (int16_t)(x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
     }
 }
 
@@ -173,9 +171,6 @@ static void acc_y_decision_reco_drift() {
         }
         blank = 0;
         gisteresis = 0;
-
-        DEBUG_PRINTF("y_res: %d, %d, %d, %u\n\r",
-            (int16_t)(y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
     }
 }
 
@@ -226,9 +221,13 @@ static void acc_z_decision_reco_drift() {
     else {
         switch (blank) {
             case 1:
+                serprintf("$DRIFT,Z1,%4x,%4x,%4x,%u\r\n",
+                    (int16_t)(z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
                 break;
 
             case 2:
+                serprintf("$DRIFT,Z2,%4x,%4x,%4x,%u\r\n",
+                    (int16_t)(z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
                 break;
 
             default:
@@ -238,9 +237,6 @@ static void acc_z_decision_reco_drift() {
         }
         blank = 0;
         gisteresis = 0;
-
-        DEBUG_PRINTF("z_res: %d, %d, %d, %u\n\r",
-            (int16_t)(z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
     }
 }
 
@@ -265,10 +261,7 @@ static void acc_pit_decision_reco_drift() {
             blank = 1;
 
             if (pit_count) {
-                serprintf("$DRIFT,ZP1,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
-
-                DEBUG_PRINTF("Z_PIT_1: %d, %d, %d, %u\n\r",
+                serprintf("$DRIFT,ZA,%4x,%4x,%4x,%u\r\n",
                     (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
             }
             pit_count = 13;
@@ -290,10 +283,7 @@ static void acc_pit_decision_reco_drift() {
             blank = 2;
 
             if (pit_count) {
-                serprintf("$DRIFT,ZP2,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
-
-                DEBUG_PRINTF("Z_PIT_2: %d, %d, %d, %u\n\r",
+                serprintf("$DRIFT,ZB,%4x,%4x,%4x,%u\r\n",
                     (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
             }
             pit_count = 13;
@@ -350,7 +340,6 @@ static void acc_pit_mod_decision_reco_drift() {
         }
 
         if (blank != 1) {
-            DEBUG_PRINTF("PIT_MOD_START: %d\n\r", average);
             blank = 1;
 
             if (ccc) {
@@ -387,10 +376,6 @@ static void acc_pit_mod_decision_reco_drift() {
         if (blank == 1) {
             serprintf("$DRIFT,ZM,%4x,%4x,%4x,%u\r\n",
                 (int16_t)(mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count);
-
-            DEBUG_PRINTF("PIT_MOD_END: %d, %d, %d, %u, av_up=%d, av_dw=%d\n\r",
-                (int16_t)(mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count,
-                (av_up / count_up), (av_down / (mod_acc_stats.count - count_up)));
         }
 
         blank = 0;
@@ -404,43 +389,66 @@ static void acc_pit_mod_decision_reco_drift() {
  *
  */
 void init_reco_drift() {
+    __FMEM_DATA data;
+
+    // read drift sett
+    data.addr = ACC_FILTR_DATA_ADDR;
+    data.pBuff = (uint8_t *) &x_acc_thr;
+    data.len = sizeof(drift_threshold);
+    read_app_settings(&data);
+
+    data.addr += sizeof(drift_threshold);
+    data.pBuff = (uint8_t *) &y_acc_thr;
+    read_app_settings(&data);
+
+    data.addr += sizeof(drift_threshold);
+    data.pBuff = (uint8_t *) &z_acc_thr;
+    read_app_settings(&data);
+
+    data.addr += sizeof(drift_threshold);
+    data.pBuff = (uint8_t *) &pit_acc_thr;
+    read_app_settings(&data);
+
+    data.addr += sizeof(drift_threshold);
+    data.pBuff = (uint8_t *) &mod_acc_thr;
+    read_app_settings(&data);
+
     // Init acc filters
     init_average_filter(&x_acc_filter);
+    set_wind_size_average_filter(&x_acc_filter, x_acc_thr.wind_size);
+    set_average_type_filter(&x_acc_filter, x_acc_thr.average_type);
+
     init_average_filter(&y_acc_filter);
+    set_wind_size_average_filter(&y_acc_filter, y_acc_thr.wind_size);
+    set_average_type_filter(&y_acc_filter, y_acc_thr.average_type);
+
     init_average_filter(&z_acc_filter);
+    set_wind_size_average_filter(&z_acc_filter, z_acc_thr.wind_size);
+    set_average_type_filter(&z_acc_filter, z_acc_thr.average_type);
 
     init_average_filter(&pit_acc_filter);
-    set_wind_size_average_filter(&pit_acc_filter, 6);
-    set_average_type_filter(&pit_acc_filter, AVERAGE_SIMPLE);
+    set_wind_size_average_filter(&pit_acc_filter, pit_acc_thr.wind_size);
+    set_average_type_filter(&pit_acc_filter, pit_acc_thr.average_type);
 
     init_average_filter(&mod_acc_filter);
-    set_wind_size_average_filter(&mod_acc_filter, 13);
-    set_average_type_filter(&mod_acc_filter, AVERAGE_MOD_PIT);
+    set_wind_size_average_filter(&mod_acc_filter, mod_acc_thr.wind_size);
+    set_average_type_filter(&mod_acc_filter, mod_acc_thr.average_type);
 
-    x_acc_thr.med = 0;
-    x_acc_thr.up_front = 2500;
-    x_acc_thr.down_front = 2500;
-    x_acc_thr.gist = 350;
+    // init calb sett
+    data.addr = ACC_MATRIX_KOEFF_ADDR;
+    data.pBuff = (uint8_t *) get_rotation_matrix();
+    data.len = 36;
+    read_app_settings(&data);
 
-    y_acc_thr.med = 0;
-    y_acc_thr.up_front = 2500;
-    y_acc_thr.down_front = 2500;
-    y_acc_thr.gist = 350;
+    // init axis indexes
+    data.addr = ACC_AXIS_MAP_ADDR;
+    data.pBuff = (uint8_t *) get_axis_data();
+    data.len = 6;
+    read_app_settings(&data);
 
-    z_acc_thr.med = 8000;
-    z_acc_thr.up_front = 2500;
-    z_acc_thr.down_front = 2500;
-    z_acc_thr.gist = 350;
-
-    pit_acc_thr.med = 8000;
-    pit_acc_thr.up_front = 1800;
-    pit_acc_thr.down_front = 1800;
-    pit_acc_thr.gist = 150;
-
-    mod_acc_thr.med = 8000;
-    mod_acc_thr.up_front = 2000;
-    mod_acc_thr.down_front = 2000;
-    mod_acc_thr.gist = 150;
+    if (get_trace()) {
+        print_calibr_results();
+    }
 }
 
 
@@ -469,15 +477,16 @@ void add_acc_samples_in_reco_drift(const uint16_t x_acc, const uint16_t y_acc, c
  */
 void add_acc_matrix_samples_in_reco_drift(const uint16_t x_acc, const uint16_t y_acc, const uint16_t z_acc) {
     sint16_t rot_x, rot_y, rot_z;
+    uint16_t * pAxis = get_axis_data();
 
     // rotate
     float32_t output_vector[3];
     const sint16_t input_vector[3] = {x_acc, y_acc, z_acc};
 
     multiply(input_vector, get_rotation_matrix(), output_vector);
-    rot_x = (sint16_t)output_vector[0];
-    rot_y = (sint16_t)output_vector[1];
-    rot_z = (sint16_t)output_vector[2];
+    rot_x = (sint16_t)output_vector[pAxis[0] < 3 ? pAxis[0] : 0];
+    rot_y = (sint16_t)output_vector[pAxis[1] < 3 ? pAxis[1] : 1];
+    rot_z = (sint16_t)output_vector[pAxis[2] < 3 ? pAxis[2] : 2];
 
     add_sample_in_filter(&x_acc_filter, rot_x);
     add_sample_in_filter(&y_acc_filter, rot_y);
@@ -494,14 +503,16 @@ void add_acc_matrix_samples_in_reco_drift(const uint16_t x_acc, const uint16_t y
 
 
 /*
- * Set x threshold
+ * Set threshold
  *
  */
-void set_x_acc_threshold(const sint16_t _med, const sint16_t _up, const sint16_t _down, const sint16_t _gist) {
-    x_acc_thr.med = _med;
-    x_acc_thr.up_front = (_up < 0) ? (-1 * _up) : _up;
-    x_acc_thr.down_front = (_down < 0) ? (-1 * _down) : _down;
-    x_acc_thr.gist= (_gist < 0) ? (-1 * _gist) : _gist;
+void set_acc_threshold(drift_threshold * const pTr, const drift_threshold * const pEtalonTr) {
+    pTr->med = pEtalonTr->med;
+    pTr->up_front = (pEtalonTr->up_front < 0) ? (-1 * pEtalonTr->up_front) : pEtalonTr->up_front;
+    pTr->down_front = (pEtalonTr->down_front < 0) ? (-1 * pEtalonTr->down_front) : pEtalonTr->down_front;
+    pTr->gist = (pEtalonTr->gist < 0) ? (-1 * pEtalonTr->gist) : pEtalonTr->gist;
+    pTr->wind_size = pEtalonTr->wind_size;
+    pTr->average_type = pEtalonTr->average_type;
 }
 
 
@@ -513,19 +524,6 @@ drift_threshold * get_x_acc_threshold() {
     return &x_acc_thr;
 }
 
-
-/*
- * Set y threshold
- *
- */
-void set_y_acc_threshold(const sint16_t _med, const sint16_t _up, const sint16_t _down, const sint16_t _gist) {
-    y_acc_thr.med = _med;
-    y_acc_thr.up_front = (_up < 0) ? (-1 * _up) : _up;
-    y_acc_thr.down_front = (_down < 0) ? (-1 * _down) : _down;
-    y_acc_thr.gist= (_gist < 0) ? (-1 * _gist) : _gist;
-}
-
-
 /*
  * Get y_acc_thr
  *
@@ -533,19 +531,6 @@ void set_y_acc_threshold(const sint16_t _med, const sint16_t _up, const sint16_t
 drift_threshold * get_y_acc_threshold() {
     return &y_acc_thr;
 }
-
-
-/*
- * Set z threshold
- *
- */
-void set_z_acc_threshold(const sint16_t _med, const sint16_t _up, const sint16_t _down, const sint16_t _gist) {
-    z_acc_thr.med = _med;
-    z_acc_thr.up_front = (_up < 0) ? (-1 * _up) : _up;
-    z_acc_thr.down_front = (_down < 0) ? (-1 * _down) : _down;
-    z_acc_thr.gist= (_gist < 0) ? (-1 * _gist) : _gist;
-}
-
 
 /*
  * Get z_acc_thr
@@ -557,35 +542,11 @@ drift_threshold * get_z_acc_threshold() {
 
 
 /*
- * Set pit threshold
- *
- */
-void set_pit_acc_threshold(const sint16_t _med, const sint16_t _up, const sint16_t _down, const sint16_t _gist) {
-    pit_acc_thr.med = _med;
-    pit_acc_thr.up_front = (_up < 0) ? (-1 * _up) : _up;
-    pit_acc_thr.down_front = (_down < 0) ? (-1 * _down) : _down;
-    pit_acc_thr.gist= (_gist < 0) ? (-1 * _gist) : _gist;
-}
-
-
-/*
  * Get pit_acc_thr
  *
  */
 drift_threshold * get_pit_acc_threshold() {
     return &pit_acc_thr;
-}
-
-
-/*
- * Set mod threshold
- *
- */
-void set_mod_acc_threshold(const sint16_t _med, const sint16_t _up, const sint16_t _down, const sint16_t _gist) {
-    mod_acc_thr.med = _med;
-    mod_acc_thr.up_front = (_up < 0) ? (-1 * _up) : _up;
-    mod_acc_thr.down_front = (_down < 0) ? (-1 * _down) : _down;
-    mod_acc_thr.gist= (_gist < 0) ? (-1 * _gist) : _gist;
 }
 
 

@@ -8,6 +8,8 @@
 
 
 sint16_t txt_to_bin(const int8_t * pTxt);
+uint8_t nibble_to_bin(const uint8_t nibble);
+uint16_t hex_to_bin(const int8_t * pHex);
 
 
 

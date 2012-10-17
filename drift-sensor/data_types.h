@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <intrinsics.h>
+#include "Fmem\fmem_map.h"
 
 /******************************************************************************/
 /*                            Data types                                      */

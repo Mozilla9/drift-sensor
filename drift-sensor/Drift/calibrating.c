@@ -4,9 +4,9 @@
 
 #include "data_types.h"
 #include "Core\core.h"
-#include "Lib\float_to_txt.h"
 #include "Matrix\matrix.h"
 #include "Uart\v_printf.h"
+#include "Sett\settings.h"
 #include "Drift\drift.h"
 
 
@@ -19,6 +19,7 @@ static average_buff y_acc_filter;
 static average_buff z_acc_filter;
 
 static float32_t rotation[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+static uint16_t axis_ind[3] = {0, 1, 2};
 
 /*
  * Init calibr data
@@ -120,10 +121,74 @@ void commit_quiet_calibr_data() {
  *
  */
 sint16_t commit_motion_calibr_data() {
+    __FMEM_DATA data;
+
     const sint16_t quiet[3] = {quiet_data.x, quiet_data.y, quiet_data.z};
     const sint16_t motion[3] = {motion_data.x, motion_data.y, motion_data.z};
+    const sint16_t res = rotate(quiet, motion, rotation);
 
-    return rotate(quiet, motion, rotation);
+    data.addr = ACC_MATRIX_KOEFF_ADDR;
+    data.pBuff = (uint8_t *) rotation;
+    data.len = sizeof(rotation);
+
+    if (res == 0) {
+        write_app_settings(&data);
+    } else {
+        read_app_settings(&data);
+    }
+    return res;
+}
+
+
+/*
+ * Commit axis calb data
+ *
+ */
+void commit_axis_calibr_data() {
+    __FMEM_DATA data;
+    sint16_t rot_x, rot_y, rot_z;
+
+    // search and set x-axis
+    if (motion_data.x >= motion_data.y && motion_data.x >= motion_data.z) {
+        axis_ind[0] = 0;
+    } else if (motion_data.y >= motion_data.x && motion_data.y >= motion_data.z) {
+        axis_ind[0] = 1;
+    } else if (motion_data.z >= motion_data.y && motion_data.z >= motion_data.x) {
+        axis_ind[0] = 2;
+    }
+
+    // rotate
+    float32_t output_vector[3];
+    const sint16_t input_vector[3] = {quiet_data.x, quiet_data.y, quiet_data.z};
+    multiply(input_vector, rotation, output_vector);
+
+    rot_x = (sint16_t)output_vector[0];
+    rot_y = (sint16_t)output_vector[1];
+    rot_z = (sint16_t)output_vector[2];
+
+    // search and set z-axis
+    if (rot_x >= rot_y && rot_x >= rot_z) {
+        axis_ind[2] = 0;
+    } else if (rot_y >= rot_x && rot_y >= rot_z) {
+        axis_ind[2] = 1;
+    } else if (rot_z >= rot_y && rot_z >= rot_x) {
+        axis_ind[2] = 2;
+    }
+
+    // set y-axis
+    axis_ind[1] = 3 - (axis_ind[0] + axis_ind[2]);
+
+    // validating
+    if (axis_ind[0] > 2 || axis_ind[1] > 2 || axis_ind[2] > 2) {
+        axis_ind[0] = 0;
+        axis_ind[1] = 1;
+        axis_ind[2] = 2;
+    }
+
+    data.addr = ACC_AXIS_MAP_ADDR;
+    data.pBuff = (uint8_t *) axis_ind;
+    data.len = sizeof(axis_ind);
+    write_app_settings(&data);
 }
 
 
@@ -132,182 +197,40 @@ sint16_t commit_motion_calibr_data() {
  *
  */
 void print_calibr_results() {
-    uint32_t ff_comp[3];
-    int8_t add_null[4];
+    DEBUG_PRINTF("rotation matrix koeff:\r\n");
 
-    DEBUG_PRINTF("*********** Results ***************\r\n");
-    DEBUG_PRINTF("quiet values:\r\n");
-    DEBUG_PRINTF(" x = %d\r\n", quiet_data.x);
-    DEBUG_PRINTF(" y = %d\r\n", quiet_data.y);
-    DEBUG_PRINTF(" z = %d\r\n", quiet_data.z);
+    DEBUG_PRINTF("rotation[0] = %f\r\n", rotation[0]);
+    DEBUG_PRINTF("rotation[0] = %u\r\n", (uint32_t)rotation[0]);
+    
+    DEBUG_PRINTF("rotation[1] = %f\r\n", rotation[1]);
+    DEBUG_PRINTF("rotation[1] = %u\r\n", (uint32_t)rotation[1]);
+    
+    DEBUG_PRINTF("rotation[2] = %f\r\n", rotation[2]);
+    DEBUG_PRINTF("rotation[2] = %u\r\n", (uint32_t)rotation[2]);
+    
+    DEBUG_PRINTF("rotation[3] = %f\r\n", rotation[3]);
+    DEBUG_PRINTF("rotation[3] = %u\r\n", (uint32_t)rotation[3]);
+    
+    DEBUG_PRINTF("rotation[4] = %f\r\n", rotation[4]);
+    DEBUG_PRINTF("rotation[4] = %u\r\n", (uint32_t)rotation[4]);
+    
+    DEBUG_PRINTF("rotation[5] = %f\r\n", rotation[5]);
+    DEBUG_PRINTF("rotation[5] = %f\r\n", rotation[5]);
+    
+    DEBUG_PRINTF("rotation[6] = %f\r\n", rotation[6]);
+    DEBUG_PRINTF("rotation[6] = %u\r\n", (uint32_t)rotation[6]);
+    
+    DEBUG_PRINTF("rotation[7] = %f\r\n", rotation[7]);
+    DEBUG_PRINTF("rotation[7] = %u\r\n", (uint32_t)rotation[7]);
+    
+    DEBUG_PRINTF("rotation[8] = %f\r\n", rotation[8]);
+    DEBUG_PRINTF("rotation[8] = %u\r\n", (uint32_t)rotation[8]);
 
-    DEBUG_PRINTF("motion max values:\r\n");
-    DEBUG_PRINTF(" x = %d\r\n", motion_data.x);
-    DEBUG_PRINTF(" y = %d\r\n", motion_data.y);
-    DEBUG_PRINTF(" z = %d\r\n", motion_data.z);
-    DEBUG_PRINTF("rotation matrix values:\r\n");
+    DEBUG_PRINTF("axis matrix indx:\r\n");
 
-    split_float_to_comp(rotation[0], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[0] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
-
-    split_float_to_comp(rotation[1], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[1] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
-
-    split_float_to_comp(rotation[2], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[2] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
-
-    split_float_to_comp(rotation[3], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[3] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
-
-    split_float_to_comp(rotation[4], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[4] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
-
-    split_float_to_comp(rotation[5], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[5] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
-
-    split_float_to_comp(rotation[6], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[6] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
-
-    split_float_to_comp(rotation[7], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[7] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
-
-    split_float_to_comp(rotation[8], ff_comp);
-    if (ff_comp[2] >= 1000 || !ff_comp[2]) {
-        add_null[0] = 0;
-    } else if (ff_comp[2] >= 100) {
-        add_null[0] = '0';
-        add_null[1] = 0;
-    } else if (ff_comp[2] >= 10)  {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = 0;
-    } else {
-        add_null[0] = '0';
-        add_null[1] = '0';
-        add_null[2] = '0';
-        add_null[3] = 0;
-    }
-    DEBUG_PRINTF("rotation[8] = %c%d.%s%d\r\n", ff_comp[0] ? '-' : '+', ff_comp[1], add_null, ff_comp[2]);
+    DEBUG_PRINTF("x_idx = %u\r\n", axis_ind[0]);
+    DEBUG_PRINTF("y_idx = %u\r\n", axis_ind[1]);
+    DEBUG_PRINTF("z_idx = %u\r\n", axis_ind[2]);
 }
 
 
@@ -335,6 +258,15 @@ calibr_data * get_calibr_motion_data() {
  */
 float32_t * get_rotation_matrix() {
     return rotation;
+}
+
+
+/*
+ * Get calibr axis data
+ *
+ */
+uint16_t * get_axis_data() {
+    return axis_ind;
 }
 
 

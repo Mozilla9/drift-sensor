@@ -16,8 +16,26 @@
 
 
 static volatile uint32_t sys_tick = 0;
+static uint32_t device_id = 0;
 
 
+
+/*
+ * Get device id
+ *
+ */
+uint32_t get_device_id() {
+    return device_id;
+}
+
+
+/*
+ * Set device id
+ *
+ */
+void set_device_id(const uint32_t id) {
+    device_id = id;
+}
 
 
 /*

@@ -23,11 +23,11 @@
 
 
 /************************ Constants for timers ********************************/
-#define   TIMER0_TICK         (200L)                    // Tick per sec
-#define   TIMER0_VALUE        (FPCLK/TIMER0_TICK)       // Interval = 5 msec
+#define   TIMER0_TICK       (200L)                    // Tick per sec
+#define   TIMER0_VALUE      (FPCLK/TIMER0_TICK)       // Interval = 5 msec
 
-#define   TIMER1_TICK         (1000000L)                // Tick per sec
-#define   TIMER1_VALUE        (FPCLK/TIMER1_TICK)       // Interval = 1 usec
+#define   TIMER1_TICK       (1000000L)                // Tick per sec
+#define   TIMER1_VALUE      (FPCLK/TIMER1_TICK)       // Interval = 1 usec
 
 
 /****************************** Macros for IRQ ********************************/
