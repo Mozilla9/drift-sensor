@@ -320,7 +320,7 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
                     pFilter = get_mod_drift_filter();
                     fdata.addr = 4;
                 }
-    
+
                 tr_data.med = txt_to_bin(argv[++i]);
                 tr_data.up_front = txt_to_bin(argv[++i]);
                 tr_data.down_front = txt_to_bin(argv[++i]);
