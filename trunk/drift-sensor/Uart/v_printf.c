@@ -110,6 +110,43 @@ __arm static void uint_to_hex_uart(unsigned val, uint8_t digits) {
 }
 
 
+/*
+ * Float to uart
+ *
+ */
+__arm static void float_to_uart(float32_t val, uint8_t digits) {
+    const uint32_t sign = val >= 0.0 ? 0 : 1;
+    const float32_t ff = val >= 0.0 ? val : (-1.0 * val);
+    const uint32_t mnt = (uint32_t) ff;
+    const uint32_t exp = (uint32_t)((ff - mnt) * 10000.0);
+
+    // sign
+    if (sign) {
+        serial_putch('-');
+    }
+
+    // mantissa
+    u32_to_uart(mnt, 0);
+    serial_putch('.');
+
+    // leading zeros
+    if (exp >= 1000 || !exp) {
+
+    } else if (exp >= 100) {
+        serial_putch('0');
+    } else if (exp >= 10)  {
+        serial_putch('0');
+        serial_putch('0');
+    } else {
+        serial_putch('0');
+        serial_putch('0');
+        serial_putch('0');
+    }
+
+    // exp
+    u32_to_uart(exp, 0);
+}
+
 
 /*
  * Printf() implementation for serial uart
@@ -155,6 +192,10 @@ __arm uint32_t serprintf(const int8_t * format, ...) {
                     break;
                 }
 
+                case 'f':
+                    float_to_uart(va_arg(args, float), j);
+                    break;
+
                 case 'c':
                     serial_putch(va_arg(args, int));
                     break;
@@ -165,7 +206,7 @@ __arm uint32_t serprintf(const int8_t * format, ...) {
                         serial_putch('0');
                         serial_putch(c);        // Match case 0x or 0X
                     }
-                    uint_to_hex_uart(j == sizeof(long) 
+                    uint_to_hex_uart(j == sizeof(long)
                         ? va_arg(args, long) : va_arg(args, int), j);
                     break;
                 }
@@ -220,5 +261,14 @@ void set_trace_func(serprint_func f) {
  */
 serprint_func get_trace() {
     return pTrace;
+}
+
+
+/*
+ * Set trace func
+ *
+ */
+void set_trace(serprint_func func) {
+    pTrace = func;
 }
 

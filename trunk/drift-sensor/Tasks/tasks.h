@@ -11,6 +11,7 @@
 
 void init_tasks();
 void run_tasks();
+uint32_t get_en_tasks();
 
 void enable_calibr_task();
 void disable_calibr_task();

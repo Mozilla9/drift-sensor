@@ -8,7 +8,10 @@
 #include "Protothread\pt.h"
 #include "Core\core.h"
 #include "I2c\i2c0.h"
+#include "Sett\settings.h"
 #include "Lis3dh\lis3dh.h"
+
+#include "Uart\v_printf.h"
 
 
 
@@ -160,10 +163,152 @@ void init_lis3dh() {
  *
  */
 void enable_default_lis3dh() {
-    // Enable Accelerometer
-    write_acc_reg(LIS3DH_TEMP_CFG_REG, 0x00);  // adc dis, temp sensor dis
-    write_acc_reg(LIS3DH_CTRL_REG1, 0x57);     // 100 Hz, normal mode, all axis en
-    write_acc_reg(LIS3DH_CTRL_REG4, 0x10);     // 4g
+    uint8_t reg[2];
+    __FMEM_DATA data;
+
+    // temp cfg
+    data.addr = ACC_TEMP_CFG_REG_ADDR;
+    data.pBuff = reg;
+    data.len = 2;
+    read_app_settings(&data);
+    
+    if (reg[0] == LIS3DH_TEMP_CFG_REG) {
+        write_acc_reg(LIS3DH_TEMP_CFG_REG, reg[1]);
+    } else {
+        write_acc_reg(LIS3DH_TEMP_CFG_REG, 0x00);
+    }
+
+    // reg1
+    data.addr = ACC_CTRL_REG1_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_CTRL_REG1) {
+        write_acc_reg(LIS3DH_CTRL_REG1, reg[1]);
+    } else {
+        write_acc_reg(LIS3DH_CTRL_REG1, 0x57);
+    }
+
+    // reg2
+    data.addr = ACC_CTRL_REG2_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_CTRL_REG2) {
+        write_acc_reg(LIS3DH_CTRL_REG2, reg[1]);
+    }
+
+    // reg3
+    data.addr = ACC_CTRL_REG3_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_CTRL_REG3) {
+        write_acc_reg(LIS3DH_CTRL_REG3, reg[1]);
+    }
+
+    // reg4
+    data.addr = ACC_CTRL_REG4_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_CTRL_REG4) {
+        write_acc_reg(LIS3DH_CTRL_REG4, reg[1]);
+    } else {
+        write_acc_reg(LIS3DH_CTRL_REG4, 0x10);
+    }
+
+    // reg5
+    data.addr = ACC_CTRL_REG5_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_CTRL_REG5) {
+        write_acc_reg(LIS3DH_CTRL_REG5, reg[1]);
+    }
+
+    // reg6
+    data.addr = ACC_CTRL_REG6_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_CTRL_REG6) {
+        write_acc_reg(LIS3DH_CTRL_REG6, reg[1]);
+    }
+
+    // preference
+    data.addr = ACC_REFERENCE_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_REFERENCE) {
+        write_acc_reg(LIS3DH_REFERENCE, reg[1]);
+    }
+
+    // fifo ctrl reg
+    data.addr = ACC_FIFO_CTRL_REG_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_FIFO_CTRL_REG) {
+        write_acc_reg(LIS3DH_FIFO_CTRL_REG, reg[1]);
+    }
+
+    // int1 cfg reg
+    data.addr = ACC_INT1_CFG_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_INT1_CFG) {
+        write_acc_reg(LIS3DH_INT1_CFG, reg[1]);
+    }
+
+    // int1 ths reg
+    data.addr = ACC_INT1_THS_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_INT1_THS) {
+        write_acc_reg(LIS3DH_INT1_THS, reg[1]);
+    }
+
+    // int1 duration reg
+    data.addr = ACC_INT1_DURATION_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_INT1_DURATION) {
+        write_acc_reg(LIS3DH_INT1_DURATION, reg[1]);
+    }
+
+    // click cfg reg
+    data.addr = ACC_CLICK_CFG_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_CLICK_CFG) {
+        write_acc_reg(LIS3DH_CLICK_CFG, reg[1]);
+    }
+
+    // click ths reg
+    data.addr = ACC_CLICK_THS_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_CLICK_THS) {
+        write_acc_reg(LIS3DH_CLICK_THS, reg[1]);
+    }
+
+    // time limit reg
+    data.addr = ACC_TIME_LIMIT_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_TIME_LIMIT) {
+        write_acc_reg(LIS3DH_TIME_LIMIT, reg[1]);
+    }
+
+    // time latency reg
+    data.addr = ACC_TIME_LATENCY_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_TIME_LATENCY) {
+        write_acc_reg(LIS3DH_TIME_LATENCY, reg[1]);
+    }
+
+    // time window reg
+    data.addr = ACC_TIME_WINDOW_ADDR;
+    read_app_settings(&data);
+
+    if (reg[0] == LIS3DH_TIME_WINDOW) {
+        write_acc_reg(LIS3DH_TIME_WINDOW, reg[1]);
+    }
 }
 
 

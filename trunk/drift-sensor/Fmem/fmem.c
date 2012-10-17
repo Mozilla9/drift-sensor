@@ -4,6 +4,7 @@
 
 
 #include "data_types.h"
+#include "Core\core.h"
 #include "At25df\at25df.h"
 #include "Fmem\fmem.h"
 
@@ -91,6 +92,7 @@ uint32_t write_data_fmem(const __FMEM_SETT * const pSett, const __FMEM_DATA * co
         // Test at new sectror write
         if (test_new_sector_write(pSett, count_addr) == TRUE_T) {
             // Erase sector
+            clear_wdt();
             err = block_erase_at25df(hw_data.addr, eAT25DF_BLOCK_4);
 
             switch (err)
@@ -118,6 +120,7 @@ uint32_t write_data_fmem(const __FMEM_SETT * const pSett, const __FMEM_DATA * co
         }
 
         // Write data
+        clear_wdt();
         err = program_page_at25df(&hw_data);
 
         switch (err)
@@ -180,6 +183,7 @@ uint32_t change_data_fmem(const __FMEM_SETT * const pSett, const __FMEM_DATA * c
     hw_data.len = pData->len;
 
     // Write data
+    clear_wdt();
     return program_page_at25df(&hw_data);
 }
 
@@ -248,6 +252,7 @@ uint32_t erase_memory_fmem(const __FMEM_SETT * const pSett) {
         }
 
         // Erase
+        clear_wdt();
         err = block_erase_at25df(hw_addr, block);
         if (err != eMEM_OK) {
             break;

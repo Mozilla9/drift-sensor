@@ -8,6 +8,7 @@
 #include "Led\led.h"
 #include "Uart\v_printf.h"
 #include "Ringbuff\ring_buffer.h"
+#include "Sett\settings.h"
 #include "Drift\drift.h"
 #include "Compass\compass.h"
 #include "Tasks\tasks.h"
@@ -21,7 +22,7 @@
 #define _CMD_CLEAR           "cls"
 #define _CMD_TIME            "time"
 #define _CMD_TRACE           "trace"
-#define _CMD_LED             "led" 
+#define _CMD_LED             "led"
 #define _CMD_ACC_TASK        "acc"
 #define _CMD_ACC_MATRIX_TASK "mtr"
 #define _CMD_ACC_XX          "ax?"
@@ -35,6 +36,8 @@
 #define _CMD_ACC_Z_PIT       "ap"
 #define _CMD_ACC_Z_MOD       "am"
 #define _CMD_CALB            "calb"
+#define _CMD_WRSETT          "wrsett"
+#define _CMD_RDSETT          "rdsett"
 
 
 // available  commands
@@ -57,10 +60,12 @@ int8_t * keyword [] = {
     _CMD_ACC_Z_PIT,
     _CMD_ACC_Z_MOD,
     _CMD_CALB,
+    _CMD_WRSETT,
+    _CMD_RDSETT,
     _CMD_CLEAR
 };
 
-#define _NUM_OF_CMD    19
+#define _NUM_OF_CMD    21
 
 
 // array for comletion
@@ -95,6 +100,8 @@ void print_help_cmd () {
     (*get_microrl_printf (pointerMicrorl)) ("\taz          - set acc Z sett\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tap          - set acc Z_pit sett\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tam          - set acc Z_mod sett\n\r");
+    (*get_microrl_printf (pointerMicrorl)) ("\twrsett      - write byte to sett mem (addr byte)\n\r");
+    (*get_microrl_printf (pointerMicrorl)) ("\trdsett      - read byte from sett mem(addr)\n\r");
 }
 
 
@@ -104,8 +111,9 @@ void print_help_cmd () {
  *
  */
 int32_t execute (const int32_t argc, const int8_t * const * argv) {
-
     int32_t i = 0;
+    __FMEM_DATA fdata;
+
     // just iterate through argv word and compare it with your commands
     while (i < argc) {
         if (strcmp (argv[i], _CMD_HELP) == 0) {
@@ -119,13 +127,24 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
         }
         else if (strcmp (argv[i], _CMD_TRACE) == 0) {
             if (++i < argc) {
+                uint32_t flg;
+                fdata.addr = DEV_EN_TRACE_ADDR;
+                fdata.pBuff = (uint8_t *) &flg;
+                fdata.len = 4;
+
                 if (strcmp (argv[i], "on") == 0) {
                     set_trace_func(&(*get_microrl_printf (pointerMicrorl)));
                     (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+
+                    flg = 0xAA55AA55;
+                    write_app_settings(&fdata);
                 }
                 else if (strcmp (argv[i], "off") == 0) {
                     set_trace_func(0);
                     (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+
+                    flg = 0;
+                    write_app_settings(&fdata);
                 }
                 else {
                     (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument\n\r");
@@ -169,6 +188,36 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
                 (*get_microrl_printf (pointerMicrorl)) ("\n\r");
             }
         }
+        else if (strcmp (argv[i], _CMD_WRSETT) == 0) {
+            if ((i + 2) < argc) {
+                uint16_t addr = 0;
+                uint8_t byte_sett = 0;
+
+                addr = hex_to_bin(argv[++i]);
+                byte_sett = hex_to_bin(argv[++i]);
+
+                fdata.addr = addr;
+                fdata.pBuff = &byte_sett;
+                fdata.len = 1;
+                write_app_settings(&fdata);
+            } else {
+                (*get_microrl_printf (pointerMicrorl))("invalid cmd arguments\n\r");
+            }
+        }
+        else if (strcmp (argv[i], _CMD_RDSETT) == 0) {
+            if ((i + 1) < argc) {
+                uint8_t byte_sett = 0;
+
+                fdata.addr = hex_to_bin(argv[++i]);
+                fdata.pBuff = &byte_sett;
+                fdata.len = 1;
+                read_app_settings(&fdata);
+
+                (*get_microrl_printf (pointerMicrorl))("\r\n%2X\n\r", byte_sett);
+            } else {
+                (*get_microrl_printf (pointerMicrorl))("invalid cmd arguments\n\r");
+            }
+        }
         else if ((strcmp (argv[i], _CMD_ACC_TASK) == 0)
                     || (strcmp (argv[i], _CMD_ACC_MATRIX_TASK) == 0)) {
             if ((i + 1) < argc) {
@@ -194,6 +243,12 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
                 if (pFunc) {
                     (*pFunc)();
                     (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+
+                    const uint32_t tasks_reg = get_en_tasks();
+                    fdata.addr = DEV_EN_TASKS_ADDR;
+                    fdata.pBuff = (uint8_t *)&tasks_reg;
+                    fdata.len = 4;
+                    write_app_settings(&fdata);
                 }
                 else {
                     (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument\n\r");
@@ -203,35 +258,29 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
         else if ((strcmp (argv[i], _CMD_ACC_XX) == 0)
                     || (strcmp (argv[i], _CMD_ACC_YY) == 0)
                     || (strcmp (argv[i], _CMD_ACC_ZZ) == 0)
-                    || (strcmp (argv[i], _CMD_ACC_ZZ_MOD) == 0) 
+                    || (strcmp (argv[i], _CMD_ACC_ZZ_MOD) == 0)
                     || (strcmp (argv[i], _CMD_ACC_ZZ_PIT) == 0)) {
             drift_threshold * pThr = 0;
-            average_buff * pFilter = 0;
             const int8_t * pMsg = "\r\nmed=%d\n\rup=%d\n\rdown=%d\n\rgist=%d\r\nwind=%u\r\nav=%u\n\r";
 
             if (argv[i][1] == 'x') {
                 pThr = get_x_acc_threshold();
-                pFilter = get_x_drift_filter();
             }
             else if (argv[i][1] == 'y') {
                 pThr = get_y_acc_threshold();
-                pFilter = get_y_drift_filter();
             }
             else if (argv[i][1] == 'z') {
                 pThr = get_z_acc_threshold();
-                pFilter = get_z_drift_filter();
             }
             else if (argv[i][1] == 'p') {
                 pThr = get_pit_acc_threshold();
-                pFilter = get_pit_drift_filter();
             }
             else if (argv[i][1] == 'm') {
                 pThr = get_mod_acc_threshold();
-                pFilter = get_mod_drift_filter();
             }
-            
-            if (pThr && pFilter) {
-                (*get_microrl_printf (pointerMicrorl))(pMsg, pThr->med, pThr->up_front, pThr->down_front, pThr->gist, pFilter->wind_size, pFilter->average_type);
+
+            if (pThr) {
+                (*get_microrl_printf (pointerMicrorl))(pMsg, pThr->med, pThr->up_front, pThr->down_front, pThr->gist, pThr->wind_size, pThr->average_type);
             } else {
                 (*get_microrl_printf (pointerMicrorl))("\n\r");
             }
@@ -242,42 +291,52 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
                     || (strcmp (argv[i], _CMD_ACC_Z_PIT) == 0)
                     || (strcmp (argv[i], _CMD_ACC_Z_MOD) == 0)) {
             if ((i + 6) < argc) {
-                void (* pSetThr)(const sint16_t, const sint16_t, const sint16_t, const sint16_t) = 0;
+                drift_threshold * pThr = 0;
                 average_buff * pFilter = 0;
-                sint16_t med = 0, max = 0, min = 0, gist = 0, wind = 0, av_type = 0;
+                drift_threshold tr_data;
 
                 if (argv[i][1] == 'x') {
-                    pSetThr = &set_x_acc_threshold;
+                    pThr = get_x_acc_threshold();
                     pFilter = get_x_drift_filter();
+                    fdata.addr = 0;
                 }
                 else if (argv[i][1] == 'y') {
-                    pSetThr = &set_y_acc_threshold;
+                    pThr = get_y_acc_threshold();
                     pFilter = get_y_drift_filter();
+                    fdata.addr = 1;
                 }
                 else if (argv[i][1] == 'z') {
-                    pSetThr = &set_z_acc_threshold;
+                    pThr = get_z_acc_threshold();
                     pFilter = get_z_drift_filter();
+                    fdata.addr = 2;
                 }
                 else if (argv[i][1] == 'p') {
-                    pSetThr = &set_pit_acc_threshold;
+                    pThr = get_pit_acc_threshold();
                     pFilter = get_pit_drift_filter();
+                    fdata.addr = 3;
                 }
                 else if (argv[i][1] == 'm') {
-                    pSetThr = &set_mod_acc_threshold;
+                    pThr = get_mod_acc_threshold();
                     pFilter = get_mod_drift_filter();
+                    fdata.addr = 4;
                 }
+    
+                tr_data.med = txt_to_bin(argv[++i]);
+                tr_data.up_front = txt_to_bin(argv[++i]);
+                tr_data.down_front = txt_to_bin(argv[++i]);
+                tr_data.gist = txt_to_bin(argv[++i]);
+                tr_data.wind_size = txt_to_bin(argv[++i]);
+                tr_data.average_type = txt_to_bin(argv[++i]);
 
-                med = txt_to_bin(argv[++i]);
-                max = txt_to_bin(argv[++i]);
-                min = txt_to_bin(argv[++i]);
-                gist = txt_to_bin(argv[++i]);
-                wind = txt_to_bin(argv[++i]);
-                av_type = txt_to_bin(argv[++i]);
+                if (pThr && pFilter) {
+                    set_acc_threshold(pThr, &tr_data);
+                    set_wind_size_average_filter(pFilter, tr_data.wind_size);
+                    set_average_type_filter(pFilter, tr_data.average_type);
 
-                if (pSetThr && pFilter) {
-                    pSetThr(med, max, min, gist);
-                    set_wind_size_average_filter(pFilter, wind);
-                    set_average_type_filter(pFilter, av_type);
+                    fdata.addr = ACC_FILTR_DATA_ADDR + fdata.addr * sizeof(drift_threshold);
+                    fdata.pBuff = (uint8_t *)&tr_data;
+                    fdata.len = sizeof(drift_threshold);
+                    write_app_settings(&fdata);
 
                     (*get_microrl_printf (pointerMicrorl))("\n\r");
                 } else {
@@ -339,6 +398,6 @@ int8_t ** complet (int32_t argc, const int8_t * const * argv) {
  */
 void sigint () {
     (*get_microrl_printf (pointerMicrorl))("^C\n\r");
-    microrl_init_printf(pointerMicrorl, 
+    microrl_init_printf(pointerMicrorl,
         get_microrl_printf (pointerMicrorl) == &serprintf ? NULL : &serprintf);
 }

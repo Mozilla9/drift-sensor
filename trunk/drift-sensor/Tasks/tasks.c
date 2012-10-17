@@ -7,19 +7,23 @@
 #include "Core\core.h"
 #include "Uart\v_printf.h"
 #include "Protothread\pt.h"
+#include "Sett\settings.h"
 #include "Led\led.h"
 #include "Lis3dh\lis3dh.h"
 #include "Compass\compass.h"
 #include "Drift\drift.h"
 #include "Tasks\tasks.h"
 
-static uint32_t flag_run_enabled = 0;
-static uint32_t enabled_tasks = 0;
-static uint16_t calibrating_state = 0;
 
 #define ACC_TASK          1
 #define ACC_MATRIX_TASK   2
 #define CALIBR_TASK       6
+
+
+
+static uint32_t flag_run_enabled = 0;
+static uint32_t enabled_tasks = 0x000004;
+static uint16_t calibrating_state = 0;
 
 static struct pt first_pt;
 static struct pt acc_pt;
@@ -65,10 +69,9 @@ static int calibr_task(struct pt * pt) {
                 case 0:      // initial state
                     init_calibrating_data();
                     time_count = get_sys_tick() + 3 * TIMER0_TICK;
-                    DEBUG_PRINTF("Starting calibration.\r\nStage 1 - accumulation quiet-data\r\nWait 3 sec...\r\n");
                     serprintf("$DRIFT,STAGE1\r\n");
                     calibrating_state++;
-                    
+
                     disable_acc_matrix_task();
                     break;
 
@@ -78,36 +81,31 @@ static int calibr_task(struct pt * pt) {
                         add_acc_samples_in_calibr(pA->x, pA->y, pA->z);
                         uint32_t tick = get_sys_tick();
                         if (tick > time_count) {
-                            DEBUG_PRINTF("\r\nStage 2 - Lets go! You have 20 sec.\r\n");
                             calibrating_state++;
-                            
+
                             commit_quiet_calibr_data();
                             time_count = tick + 20 * TIMER0_TICK;
-                        } else if (!(tick % (TIMER0_TICK / 2))) {
-                            DEBUG_PRINTF(".");
                         }
                     }
                     break;
 
                 //--------------------------------------------------------------
-                case 2:     // braking
+                case 2:     // acceleration
                     {
                         add_acc_samples_in_calibr(pA->x, pA->y, pA->z);
                         handle_acc_samples_in_calibr();
                         uint32_t tick = get_sys_tick();
                         if (tick > time_count) {
-                            DEBUG_PRINTF("\r\nStage 2 - finished.\r\n\r\n");
                             serprintf("$DRIFT,STAGE2\r\n");
                             calibrating_state++;
-                            
-                            sint16_t result = commit_motion_calibr_data();
-                            DEBUG_PRINTF("Result err = %d.\r\n\r\n", result);
-                            
+
+                            if (commit_motion_calibr_data() == 0) {
+                                commit_axis_calibr_data();
+                            }
+
                             print_calibr_results();
                             disable_calibr_task();
                             enable_acc_matrix_task();
-                        } else if (!(tick % TIMER0_TICK)) {
-                            DEBUG_PRINTF(".");
                         }
                     }
                     break;
@@ -307,14 +305,28 @@ void disable_calibr_task() {
  *
  */
 void init_tasks() {
+    __FMEM_DATA data;
+
     PT_INIT(&first_pt);
     PT_INIT(&led_pt);
     PT_INIT(&calibr_pt);
     PT_INIT(&acc_pt);
     PT_INIT(&acc_matrix_pt);
-    
-    enable_acc_matrix_task();
-    //enable_acc_task();
+
+    // read sett
+    data.addr = DEV_EN_TASKS_ADDR;
+    data.pBuff = (uint8_t *) &enabled_tasks;
+    data.len = 4;
+    read_app_settings(&data);
+}
+
+
+/*
+ * Get enabled tasks
+ *
+ */
+uint32_t get_en_tasks() {
+    return enabled_tasks;
 }
 
 

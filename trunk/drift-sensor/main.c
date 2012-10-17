@@ -16,10 +16,11 @@
 #include "Drift\drift.h"
 #include "Microrl\handlers.h"
 #include "Microrl\microrl.h"
+#include "Sett\settings.h"
 #include "Tasks\tasks.h"
 
 
-
+#define device_vers_tag    "\n\rDriftSensor v.13.3\n\r"
 
 
 /******************************************************************************/
@@ -37,23 +38,23 @@ void main()
 
     __enable_interrupt();
 
-    serprintf("\n\rSTART_t13_2\n\r");
-    serprintf("flash mem: %s %s %s\n\r",
-        get_flash_status_at25df() ? "on" : "off",
-        get_family_desc_at25df(),
-        get_density_desc_at25df());
-
     microrl_init (pointerMicrorl, &serprintf);
     microrl_set_execute_callback (pointerMicrorl, execute);
     microrl_set_complete_callback (pointerMicrorl, complet);
     microrl_set_sigint_callback (pointerMicrorl, sigint);
 
+    init_app_settings();
     enable_default_lis3dh();
     init_tasks();
     init_reco_drift();
-
-    microrl_insert_char(pointerMicrorl, '\n');
-    microrl_insert_char(pointerMicrorl, '\r');
+    
+    DEBUG_PRINTF(device_vers_tag);
+    DEBUG_PRINTF("flash mem: %s %s %s\n\r",
+        get_flash_status_at25df() ? "on" : "off",
+        get_family_desc_at25df(),
+        get_density_desc_at25df());
+        
+    DEBUG_PRINTF("\r\n\r\n");
 
     while (1) {
         if (is_ring_buff_empty(pointerRingBuff) == FALSE_T) {
