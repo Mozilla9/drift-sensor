@@ -2,8 +2,8 @@
 /*  Project "Compass" drift sensor                                            */
 /*  Soft: S. Maslyakov, rusoil.9@gmail.com                                    */
 /*                                                                            */
-/*  Revision:     1.1.0                                                       */
-/*  Date:         2012/10/08 01:03:33                                         */
+/*  Revision:     13.3.0                                                      */
+/*  Date:         2012/10/17 16:29:33                                         */
 /******************************************************************************/
 
 #include "data_types.h"
@@ -44,16 +44,16 @@ void main()
     microrl_set_sigint_callback (pointerMicrorl, sigint);
 
     init_app_settings();
+
+    DEBUG_PRINTF(device_vers_tag);
+    DEBUG_PRINTF("FlashMem: %s %s\n\r",
+        get_family_desc_at25df(),
+        get_density_desc_at25df());
+
     enable_default_lis3dh();
     init_tasks();
     init_reco_drift();
-    
-    DEBUG_PRINTF(device_vers_tag);
-    DEBUG_PRINTF("flash mem: %s %s %s\n\r",
-        get_flash_status_at25df() ? "on" : "off",
-        get_family_desc_at25df(),
-        get_density_desc_at25df());
-        
+
     DEBUG_PRINTF("\r\n\r\n");
 
     while (1) {

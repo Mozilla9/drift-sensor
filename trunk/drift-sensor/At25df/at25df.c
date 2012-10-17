@@ -111,14 +111,14 @@ static void write_enable() {
  * Write disable
  *
  */
-static void write_disable() {
+/*static void write_disable() {
     select_chip();
 
     SPI_BUFF = eAT25DF_WRITE_DIS;
     while (!(SPI_FREE));
 
     lock_chip();
-}
+}*/
 
 
 /*
@@ -147,7 +147,7 @@ static bool_t is_write_enable() {
  * Protect sector
  *
  */
-static uint32_t protect_sector(const __AT25DF_ADDRESS _addr) {
+/*static uint32_t protect_sector(const __AT25DF_ADDRESS _addr) {
 
     // Test write enable bit
     if (is_write_enable() == FALSE_T) {
@@ -175,7 +175,7 @@ static uint32_t protect_sector(const __AT25DF_ADDRESS _addr) {
     lock_chip();
 
     return eMEM_OK;
-}
+}*/
 
 
 /*

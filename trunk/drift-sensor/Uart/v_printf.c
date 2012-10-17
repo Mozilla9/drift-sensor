@@ -114,19 +114,18 @@ __arm static void uint_to_hex_uart(unsigned val, uint8_t digits) {
  * Float to uart
  *
  */
-__arm static void float_to_uart(float32_t val, uint8_t digits) {
-    const uint32_t sign = val >= 0.0 ? 0 : 1;
+__arm static void float_to_uart(const float32_t val, uint8_t digits) {
     const float32_t ff = val >= 0.0 ? val : (-1.0 * val);
     const uint32_t mnt = (uint32_t) ff;
     const uint32_t exp = (uint32_t)((ff - mnt) * 10000.0);
 
     // sign
-    if (sign) {
+    if (val < 0.0) {
         serial_putch('-');
     }
 
     // mantissa
-    u32_to_uart(mnt, 0);
+    u32_to_uart(mnt, digits);
     serial_putch('.');
 
     // leading zeros
@@ -144,7 +143,7 @@ __arm static void float_to_uart(float32_t val, uint8_t digits) {
     }
 
     // exp
-    u32_to_uart(exp, 0);
+    u32_to_uart(exp, digits);
 }
 
 
@@ -193,7 +192,7 @@ __arm uint32_t serprintf(const int8_t * format, ...) {
                 }
 
                 case 'f':
-                    float_to_uart(va_arg(args, float), j);
+                    float_to_uart(va_arg(args, double), j);
                     break;
 
                 case 'c':

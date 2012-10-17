@@ -446,9 +446,7 @@ void init_reco_drift() {
     data.len = 6;
     read_app_settings(&data);
 
-    if (get_trace()) {
-        print_calibr_results();
-    }
+    print_calibr_results();
 }
 
 

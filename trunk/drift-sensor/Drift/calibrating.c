@@ -197,40 +197,23 @@ void commit_axis_calibr_data() {
  *
  */
 void print_calibr_results() {
-    DEBUG_PRINTF("rotation matrix koeff:\r\n");
+    DEBUG_PRINTF("\r\nmatrix koeff:\r\n");
 
-    DEBUG_PRINTF("rotation[0] = %f\r\n", rotation[0]);
-    DEBUG_PRINTF("rotation[0] = %u\r\n", (uint32_t)rotation[0]);
-    
-    DEBUG_PRINTF("rotation[1] = %f\r\n", rotation[1]);
-    DEBUG_PRINTF("rotation[1] = %u\r\n", (uint32_t)rotation[1]);
-    
-    DEBUG_PRINTF("rotation[2] = %f\r\n", rotation[2]);
-    DEBUG_PRINTF("rotation[2] = %u\r\n", (uint32_t)rotation[2]);
-    
-    DEBUG_PRINTF("rotation[3] = %f\r\n", rotation[3]);
-    DEBUG_PRINTF("rotation[3] = %u\r\n", (uint32_t)rotation[3]);
-    
-    DEBUG_PRINTF("rotation[4] = %f\r\n", rotation[4]);
-    DEBUG_PRINTF("rotation[4] = %u\r\n", (uint32_t)rotation[4]);
-    
-    DEBUG_PRINTF("rotation[5] = %f\r\n", rotation[5]);
-    DEBUG_PRINTF("rotation[5] = %f\r\n", rotation[5]);
-    
-    DEBUG_PRINTF("rotation[6] = %f\r\n", rotation[6]);
-    DEBUG_PRINTF("rotation[6] = %u\r\n", (uint32_t)rotation[6]);
-    
-    DEBUG_PRINTF("rotation[7] = %f\r\n", rotation[7]);
-    DEBUG_PRINTF("rotation[7] = %u\r\n", (uint32_t)rotation[7]);
-    
-    DEBUG_PRINTF("rotation[8] = %f\r\n", rotation[8]);
-    DEBUG_PRINTF("rotation[8] = %u\r\n", (uint32_t)rotation[8]);
+    DEBUG_PRINTF("rot[0] = %f\r\n", rotation[0]);
+    DEBUG_PRINTF("rot[1] = %f\r\n", rotation[1]);
+    DEBUG_PRINTF("rot[2] = %f\r\n", rotation[2]);
+    DEBUG_PRINTF("rot[3] = %f\r\n", rotation[3]);
+    DEBUG_PRINTF("rot[4] = %f\r\n", rotation[4]);
+    DEBUG_PRINTF("rot[5] = %f\r\n", rotation[5]);
+    DEBUG_PRINTF("rot[6] = %f\r\n", rotation[6]);
+    DEBUG_PRINTF("rot[7] = %f\r\n", rotation[7]);
+    DEBUG_PRINTF("rot[8] = %f\r\n", rotation[8]);
 
-    DEBUG_PRINTF("axis matrix indx:\r\n");
+    DEBUG_PRINTF("\r\naxis matrix indx:\r\n");
 
-    DEBUG_PRINTF("x_idx = %u\r\n", axis_ind[0]);
-    DEBUG_PRINTF("y_idx = %u\r\n", axis_ind[1]);
-    DEBUG_PRINTF("z_idx = %u\r\n", axis_ind[2]);
+    DEBUG_PRINTF("x = %u\r\n", axis_ind[0]);
+    DEBUG_PRINTF("y = %u\r\n", axis_ind[1]);
+    DEBUG_PRINTF("z = %u\r\n", axis_ind[2]);
 }
 
 

@@ -318,6 +318,8 @@ void init_tasks() {
     data.pBuff = (uint8_t *) &enabled_tasks;
     data.len = 4;
     read_app_settings(&data);
+
+    DEBUG_PRINTF("\r\nTasks: 0x%8x\r\n", enabled_tasks);
 }
 
 

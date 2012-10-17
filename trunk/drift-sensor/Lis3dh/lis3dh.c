@@ -166,27 +166,29 @@ void enable_default_lis3dh() {
     uint8_t reg[2];
     __FMEM_DATA data;
 
+    DEBUG_PRINTF("\r\nLIS3DH settings:\r\n");
+
     // temp cfg
     data.addr = ACC_TEMP_CFG_REG_ADDR;
     data.pBuff = reg;
     data.len = 2;
     read_app_settings(&data);
-    
-    if (reg[0] == LIS3DH_TEMP_CFG_REG) {
-        write_acc_reg(LIS3DH_TEMP_CFG_REG, reg[1]);
-    } else {
-        write_acc_reg(LIS3DH_TEMP_CFG_REG, 0x00);
+
+    if (reg[0] != LIS3DH_TEMP_CFG_REG) {
+        reg[1] = 0x00;
     }
+    write_acc_reg(LIS3DH_TEMP_CFG_REG, reg[1]);
+    DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", LIS3DH_TEMP_CFG_REG, reg[1]);
 
     // reg1
     data.addr = ACC_CTRL_REG1_ADDR;
     read_app_settings(&data);
 
-    if (reg[0] == LIS3DH_CTRL_REG1) {
-        write_acc_reg(LIS3DH_CTRL_REG1, reg[1]);
-    } else {
-        write_acc_reg(LIS3DH_CTRL_REG1, 0x57);
+    if (reg[0] != LIS3DH_CTRL_REG1) {
+        reg[1] = 0x57;
     }
+    write_acc_reg(LIS3DH_CTRL_REG1, reg[1]);
+    DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", LIS3DH_CTRL_REG1, reg[1]);
 
     // reg2
     data.addr = ACC_CTRL_REG2_ADDR;
@@ -194,6 +196,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_CTRL_REG2) {
         write_acc_reg(LIS3DH_CTRL_REG2, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // reg3
@@ -202,17 +205,18 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_CTRL_REG3) {
         write_acc_reg(LIS3DH_CTRL_REG3, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // reg4
     data.addr = ACC_CTRL_REG4_ADDR;
     read_app_settings(&data);
 
-    if (reg[0] == LIS3DH_CTRL_REG4) {
-        write_acc_reg(LIS3DH_CTRL_REG4, reg[1]);
-    } else {
-        write_acc_reg(LIS3DH_CTRL_REG4, 0x10);
+    if (reg[0] != LIS3DH_CTRL_REG4) {
+        reg[1] = 0x10;
     }
+    write_acc_reg(LIS3DH_CTRL_REG4, reg[1]);
+    DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", LIS3DH_CTRL_REG4, reg[1]);
 
     // reg5
     data.addr = ACC_CTRL_REG5_ADDR;
@@ -220,6 +224,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_CTRL_REG5) {
         write_acc_reg(LIS3DH_CTRL_REG5, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // reg6
@@ -228,6 +233,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_CTRL_REG6) {
         write_acc_reg(LIS3DH_CTRL_REG6, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // preference
@@ -236,6 +242,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_REFERENCE) {
         write_acc_reg(LIS3DH_REFERENCE, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // fifo ctrl reg
@@ -244,6 +251,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_FIFO_CTRL_REG) {
         write_acc_reg(LIS3DH_FIFO_CTRL_REG, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // int1 cfg reg
@@ -252,6 +260,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_INT1_CFG) {
         write_acc_reg(LIS3DH_INT1_CFG, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // int1 ths reg
@@ -260,6 +269,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_INT1_THS) {
         write_acc_reg(LIS3DH_INT1_THS, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // int1 duration reg
@@ -268,6 +278,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_INT1_DURATION) {
         write_acc_reg(LIS3DH_INT1_DURATION, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // click cfg reg
@@ -276,6 +287,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_CLICK_CFG) {
         write_acc_reg(LIS3DH_CLICK_CFG, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // click ths reg
@@ -284,6 +296,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_CLICK_THS) {
         write_acc_reg(LIS3DH_CLICK_THS, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // time limit reg
@@ -292,6 +305,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_TIME_LIMIT) {
         write_acc_reg(LIS3DH_TIME_LIMIT, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // time latency reg
@@ -300,6 +314,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_TIME_LATENCY) {
         write_acc_reg(LIS3DH_TIME_LATENCY, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 
     // time window reg
@@ -308,6 +323,7 @@ void enable_default_lis3dh() {
 
     if (reg[0] == LIS3DH_TIME_WINDOW) {
         write_acc_reg(LIS3DH_TIME_WINDOW, reg[1]);
+        DEBUG_PRINTF("addr=0x%2x 0x%2x\r\n", reg[0], reg[1]);
     }
 }
 
