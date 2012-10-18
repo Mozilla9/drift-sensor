@@ -29,6 +29,7 @@
 
 static int8_t buf[12];
 static serprint_func pTrace = 0;
+static uint32_t ch_count;
 
 
 /*
@@ -53,7 +54,7 @@ __arm static uint32_t uart_putchar(const uint8_t c) {
 
 __arm static void inline serial_putch(uint8_t c) {
     while(uart_putchar(c) != 0);    // Returns -1 if full queue.
-                                    // We busy-wait.
+    ch_count++;                     // We busy-wait.
 }
 
 
@@ -157,6 +158,8 @@ __arm uint32_t serprintf(const int8_t * format, ...) {
     uint8_t c, j = 0;
     va_start(args, format);
 
+    ch_count = 0;
+
     while ((c = *format++)) {
         if (j) {
             switch(c) {
@@ -238,7 +241,7 @@ __arm uint32_t serprintf(const int8_t * format, ...) {
         }
     }
     va_end(args);
-    return 0;                    // Incorrect, but this is a sleazy version.
+    return ch_count;
 }
 
 

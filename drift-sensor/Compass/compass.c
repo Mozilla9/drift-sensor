@@ -103,7 +103,6 @@ static void init_irq() {
 
     VICINTENABLE_bit.UART0 = 1;
     VICINTENABLE_bit.TIMER0 = 1;
-    VICINTENABLE_bit.TIMER1 = 1;
     VICINTENABLE_bit.I2C0 = 1;
 }
 
