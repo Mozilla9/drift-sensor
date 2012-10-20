@@ -75,10 +75,11 @@ __arm static void u32_to_uart(uint32_t val, sint32_t digits) {
     }
     while (--digits > 0 || val > 0);
 
+    ++str;
     do {
-        serial_putch(*++str);
+        serial_putch(*str);
     }
-    while (str < buf + sizeof(buf) - 1);
+    while (*++str);
 }
 
 
