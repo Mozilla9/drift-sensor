@@ -8,12 +8,18 @@
 
 #define FMEMORY_VOLUME             (0x200000)
 
-/******************************** Generic settings ****************************/
+
+/******************************* Partition flash ******************************/
 #define GSETT_START_ADDR           (0)
 #define GSETT_SWAP_START_ADDR      (4096)
 #define GSETT_MEM_SIZE             (4096)
 
+#define FW_START_ADDR              (GSETT_START_ADDR + GSETT_MEM_SIZE)
+#define FW_MEM_SIZE                (31 * 4096)
 
+
+
+/******************************** Generic settings ****************************/
 #define DEV_ID_ADDR                (0)                            // device id (4 b)
 #define DEV_EN_TASKS_ADDR          (DEV_ID_ADDR + 4)              // enabled tasks (4 b)
 #define DEV_EN_TRACE_ADDR          (DEV_EN_TASKS_ADDR + 4)        // trace enable (4 b)
@@ -46,5 +52,17 @@
 
 
 #define DEF_SETT_FLAG_ADDR         (GSETT_MEM_SIZE - 4)           // default sett flag (4 b  0xaa55aa55)
+
+
+/*********************************** Firmware flash ***************************/
+#define FW_STAFF_MEM_ADDR          (FW_MEM_SIZE - 256)
+
+
+
+
+
+
+
+
 
 #endif

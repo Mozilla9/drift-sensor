@@ -1885,6 +1885,12 @@
     </file>
   </group>
   <group>
+    <name>SDP</name>
+    <file>
+      <name>$PROJ_DIR$\Sdp\sdp.c</name>
+    </file>
+  </group>
+  <group>
     <name>SETT</name>
     <file>
       <name>$PROJ_DIR$\Sett\settings.c</name>
