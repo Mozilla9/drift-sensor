@@ -1,0 +1,16 @@
+
+
+/*
+ * Packet = |header=07 0E| + |data len (cmd type incl)=max 30 bytes| + 
+ * |cmd type + data bytes| + |CRC8=summ data bytes|
+ *
+*/
+
+
+07 0E 01 35 35 96
+
+07 0E 01 34 33 99
+
+07 0E 01 34 31 9B
+
+07 0E 02 35 41 30 31 29
