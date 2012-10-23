@@ -1,0 +1,96 @@
+/*###ICF### Section handled by ICF editor, don't touch! ****/
+/*-Editor annotation file-*/
+/* IcfEditorFile="$TOOLKIT_DIR$\config\ide\IcfEditor\a_v1_0.xml" */
+
+/*-Specials-*/
+define symbol __ICFEDIT_intvec_start__     = 0x00000000;
+define symbol __ICFEDIT_cstartup_start__   = 0x00003000;
+
+define symbol _CRP_ADR__                   = 0x000001FC;
+define symbol _FW_CFG__                    = 0x00001FF4;
+
+
+/*-Memory Regions-*/
+define symbol __ICFEDIT_region_ROM_start__ = 0x00003000;
+define symbol __ICFEDIT_region_ROM_end__   = 0x00010000;
+define symbol __ICFEDIT_region_RAM_start__ = 0x40000100;
+define symbol __ICFEDIT_region_RAM_end__   = 0x40001CFF;
+
+
+/*-Specials Memory Regions-*/
+define symbol _region_SWIHANDLER_start__   = 0x00010200;
+define symbol _region_SWIHANDLER_end__     = 0x000103FF;
+define symbol _region_FIQHANDLER_start__   = 0x00010400;
+define symbol _region_FIQHANDLER_end__     = 0x000106FF;
+
+
+/*-USB Memory Regions-*/
+define symbol __region_USB_DMA_RAM_start__  = 0x7FD00000;
+define symbol __region_USB_DMA_RAM_end__    = 0x7FD01FFF;
+
+define symbol __region_EMAC_DMA_RAM_start__ = 0x7FE00000;
+define symbol __region_EMAC_DMA_RAM_end__   = 0x7FE03FFF;
+
+/*-Sizes-*/
+define symbol __ICFEDIT_size_cstack__       = 0x400;
+define symbol __ICFEDIT_size_svcstack__     = 0x40;
+define symbol __ICFEDIT_size_irqstack__     = 0x200;
+define symbol __ICFEDIT_size_fiqstack__     = 0x40;
+define symbol __ICFEDIT_size_undstack__     = 0x40;
+define symbol __ICFEDIT_size_abtstack__     = 0x40;
+define symbol __ICFEDIT_size_heap__         = 0x200;
+/**** End of ICF editor section. ###ICF###*/
+
+
+define memory mem with size = 4G;
+define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__  to __ICFEDIT_region_ROM_end__];
+define region RAM_region = mem:[from __ICFEDIT_region_RAM_start__  to __ICFEDIT_region_RAM_end__];
+
+
+define region SWIHANDLER_region = mem:[from _region_SWIHANDLER_start__  to _region_SWIHANDLER_end__];
+define region FIQHANDLER_region = mem:[from _region_FIQHANDLER_start__  to _region_FIQHANDLER_end__];
+
+
+define region USB_DMA_RAM_region = mem:[from __region_USB_DMA_RAM_start__    to __region_USB_DMA_RAM_end__];
+define region EMAC_DMA_RAM_region = mem:[from __region_EMAC_DMA_RAM_start__  to __region_EMAC_DMA_RAM_end__];
+
+
+define block CSTACK    with alignment = 8, size = __ICFEDIT_size_cstack__   { };
+define block SVC_STACK with alignment = 8, size = __ICFEDIT_size_svcstack__ { };
+define block IRQ_STACK with alignment = 8, size = __ICFEDIT_size_irqstack__ { };
+define block FIQ_STACK with alignment = 8, size = __ICFEDIT_size_fiqstack__ { };
+define block UND_STACK with alignment = 8, size = __ICFEDIT_size_undstack__ { };
+define block ABT_STACK with alignment = 8, size = __ICFEDIT_size_abtstack__ { };
+define block HEAP      with alignment = 8, size = __ICFEDIT_size_heap__     { };
+
+
+/* Place code at a fixed address */
+place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec };
+place at address mem:__ICFEDIT_cstartup_start__ { readonly section .CSTARTUP };
+
+
+place at address mem:_CRP_ADR__ { readonly section .CRP_CODE };
+place at address mem:_FW_CFG__{ readonly section .FW_CFG };
+
+
+place at address mem: _region_SWIHANDLER_start__ { readonly section .SWIHANDLER };
+place at address mem: _region_FIQHANDLER_start__ { readonly section .FIQHANDLER };
+
+
+initialize by copy { readwrite };
+do not initialize  { section .noinit };
+do not initialize  { section .CRP_CODE };
+do not initialize  { section .FW_CFG };
+
+
+do not initialize  { section USB_DMA_RAM };
+do not initialize  { section EMAC_DMA_RAM };
+
+
+place in ROM_region   { readonly };
+place in RAM_region   { readwrite,
+                        block CSTACK, block SVC_STACK, block IRQ_STACK, block FIQ_STACK,
+                        block UND_STACK, block ABT_STACK, block HEAP };
+
+place in USB_DMA_RAM_region   { section USB_DMA_RAM };
+place in EMAC_DMA_RAM_region  { section EMAC_DMA_RAM };

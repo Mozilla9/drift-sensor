@@ -356,5 +356,3 @@ void run_tasks() {
 
     flag_run_enabled = 0;
 }
-
-
