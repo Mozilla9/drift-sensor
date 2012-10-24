@@ -15,9 +15,32 @@
 #include "Compass\compass.h"
 
 
+static uint32_t proto_type = PROTO_TYPE_CONSOLE;
 static volatile uint32_t sys_tick = 0;
 static uint32_t device_id = 0;
 
+static uint8_t ring_buff[100];
+static __ring_buff r_buff = {ring_buff, 0, 0, 100};
+__ring_buff * const pointerRingBuff = &r_buff;
+
+
+
+/*
+ * Get protocol type
+ *
+ */
+uint32_t get_proto_type() {
+    return proto_type;
+}
+
+
+/*
+ * Set protocol type
+ *
+ */
+void set_proto_type(const uint32_t _proto) {
+    proto_type = _proto;
+}
 
 
 /*

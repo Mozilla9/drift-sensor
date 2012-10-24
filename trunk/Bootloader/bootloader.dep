@@ -6,11 +6,34 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\Ringbuff\ring_buffer.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\updater.pbi</file>
+      <file>$PROJ_DIR$\Sdp\sdp.c</file>
+      <file>$PROJ_DIR$\Led\led.c</file>
+      <file>$PROJ_DIR$\Iap\iap.c</file>
+      <file>$PROJ_DIR$\Lib\bin_to_bcd.c</file>
       <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\fmem.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\bl_iap.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\iap.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\led.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\tasks.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\bootloader.out</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart0.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\v_printf.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\bootloader.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\bin_to_bcd.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\float_to_txt.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\v_printf.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\tasks.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\ring_buffer.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\bootloader.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\fmem.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\at25df.o</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
@@ -21,156 +44,58 @@
       <file>$PROJ_DIR$\Tasks\tasks.h</file>
       <file>$PROJ_DIR$\Debug\Obj\sdp_handlers.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\core.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\fmem.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\at25df.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\bootloader.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\updater.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\cstartup.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\at25df.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\bootloader.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\bin_to_bcd.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\core.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\fmem.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\bl_iap.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\iap.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\led.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\float_to_txt.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\ring_buffer.o</file>
-      <file>$PROJ_DIR$\At25df\at25df.c</file>
-      <file>$PROJ_DIR$\Core\core.c</file>
-      <file>$PROJ_DIR$\Fmem\fmem.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\bootloader.pbi</file>
       <file>$PROJ_DIR$\Bootloader\bootloader.c</file>
+      <file>$PROJ_DIR$\Core\core.c</file>
+      <file>$PROJ_DIR$\At25df\at25df.c</file>
+      <file>$PROJ_DIR$\Fmem\fmem.c</file>
       <file>$PROJ_DIR$\Iap\bl_iap.c</file>
-      <file>$PROJ_DIR$\Iap\iap.c</file>
-      <file>$PROJ_DIR$\Led\led.c</file>
-      <file>$PROJ_DIR$\Spi\spi.c</file>
-      <file>$PROJ_DIR$\Sdp\sdp.c</file>
-      <file>$PROJ_DIR$\Lib\bin_to_bcd.c</file>
-      <file>$PROJ_DIR$\Lib\float_to_txt.c</file>
-      <file>$PROJ_DIR$\Ringbuff\ring_buffer.c</file>
-      <file>$PROJ_DIR$\Sdp\sdp_handlers.c</file>
-      <file>$PROJ_DIR$\Tasks\tasks.c</file>
-      <file>$PROJ_DIR$\Uart\uart0.c</file>
-      <file>$PROJ_DIR$\cstartup.s</file>
       <file>$PROJ_DIR$\main.c</file>
       <file>$PROJ_DIR$\Uart\v_printf.c</file>
+      <file>$PROJ_DIR$\cstartup.s</file>
       <file>$PROJ_DIR$\Updater\updater.c</file>
-      <file>$PROJ_DIR$\Debug\Obj\bl_iap.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
-      <file>$PROJ_DIR$\Core\core.h</file>
-      <file>$PROJ_DIR$\Uart\v_printf.h</file>
-      <file>$PROJ_DIR$\Sdp\sdp.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
-      <file>$PROJ_DIR$\Fmem\fmem_map.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
-      <file>$PROJ_DIR$\At25df\at25df.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\Ringbuff\ring_buffer.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
       <file>$PROJ_DIR$\Debug\Obj\iap.o</file>
+      <file>$PROJ_DIR$\At25df\at25df.h</file>
       <file>$PROJ_DIR$\Debug\Obj\sdp_handlers.o</file>
       <file>$PROJ_DIR$\Debug\Obj\led.o</file>
       <file>$PROJ_DIR$\Debug\Obj\sdp.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\bin_to_bcd.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\spi.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\v_printf.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\tasks.o</file>
       <file>$PROJ_DIR$\Debug\Obj\uart0.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\float_to_txt.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\ring_buffer.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\tasks.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\spi.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\v_printf.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\uart0.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\updater.pbi</file>
-      <file>$PROJ_DIR$\Debug\Exe\bootloader.out</file>
-      <file>$PROJ_DIR$\Debug\Obj\bootloader.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\bl_iap.o</file>
+      <file>$PROJ_DIR$\Core\core.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Sdp\sdp.h</file>
+      <file>$PROJ_DIR$\Uart\v_printf.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$PROJ_DIR$\Fmem\fmem_map.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\core.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\at25df.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\float_to_txt.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\ring_buffer.o</file>
+      <file>$PROJ_DIR$\Lib\float_to_txt.c</file>
+      <file>$PROJ_DIR$\Ringbuff\ring_buffer.c</file>
+      <file>$PROJ_DIR$\Sdp\sdp_handlers.c</file>
+      <file>$PROJ_DIR$\Spi\spi.c</file>
+      <file>$PROJ_DIR$\Tasks\tasks.c</file>
+      <file>$PROJ_DIR$\Uart\uart0.c</file>
     </outputs>
     <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 78</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\At25df\at25df.c</name>
+      <name>$PROJ_DIR$\Sdp\sdp.c</name>
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 16</file>
+          <file> 57</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 21</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Core\core.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 14</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 24</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Fmem\fmem.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 15</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 25</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Bootloader\bootloader.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 17</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 22</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Iap\bl_iap.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 50</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 26</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Iap\iap.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 61</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 27</file>
+          <file> 33</file>
         </tool>
       </outputs>
     </file>
@@ -179,33 +104,20 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 63</file>
+          <file> 56</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 28</file>
+          <file> 11</file>
         </tool>
       </outputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\Spi\spi.c</name>
+      <name>$PROJ_DIR$\Iap\iap.c</name>
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 66</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 73</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Sdp\sdp.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 64</file>
+          <file> 53</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -218,132 +130,11 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 65</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 23</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Lib\float_to_txt.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 29</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 70</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Ringbuff\ring_buffer.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 30</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 71</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Sdp\sdp_handlers.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 62</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 13</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Tasks\tasks.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 68</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 72</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Uart\uart0.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 69</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 75</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\cstartup.s</name>
-      <outputs>
-        <tool>
-          <name>AARM</name>
-          <file> 20</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\main.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
           <file> 19</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 76</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 9 1 8 52 6 5 3 56 57 59 2 7 4 58 53 54 60 0 55 12 11</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Uart\v_printf.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 67</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 74</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 51 8 52 6 5 3 56</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Updater\updater.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 77</file>
+          <file> 38</file>
         </tool>
       </outputs>
     </file>
@@ -352,9 +143,217 @@
       <inputs>
         <tool>
           <name>BILINK</name>
-          <file> 21 23 26 22 24 70 25 27 28 76 71 10 13 73 72 75 77 74</file>
+          <file> 70 38 9 39 67 20 8 10 11 0 24 33 36 14 13 16 1 17</file>
         </tool>
       </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 15</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Bootloader\bootloader.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 25</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Core\core.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 67</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\At25df\at25df.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 27</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 70</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Fmem\fmem.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 26</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 8</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Iap\bl_iap.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 59</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 9</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 32 50 31 12 29 28 52 61 64 65 49 30 6 66 60 63 54 51 62 35 34</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Uart\v_printf.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 22</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 7 31 12 29 28 52 61</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\cstartup.s</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 69</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Updater\updater.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 1</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Lib\float_to_txt.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 71</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 20</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Ringbuff\ring_buffer.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 72</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 24</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Sdp\sdp_handlers.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 55</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 36</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Spi\spi.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 21</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 14</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Tasks\tasks.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 23</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 13</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Uart\uart0.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 58</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16</file>
+        </tool>
+      </outputs>
     </file>
     <forcedrebuild>
       <name>[MULTI_TOOL]</name>
@@ -364,19 +363,575 @@
   <configuration>
     <name>Release</name>
     <outputs>
-      <file>$PROJ_DIR$\Bootloader\bootloader.c</file>
-      <file>$PROJ_DIR$\Iap\bl_iap.c</file>
-      <file>$PROJ_DIR$\Iap\iap.c</file>
+      <file>$PROJ_DIR$\Release\Obj\bin_to_bcd.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\bin_to_bcd.o</file>
+      <file>$PROJ_DIR$\Release\Obj\float_to_txt.o</file>
+      <file>$PROJ_DIR$\Release\Obj\fmem.o</file>
+      <file>$PROJ_DIR$\Release\Obj\sdp.o</file>
       <file>$PROJ_DIR$\Sdp\sdp.c</file>
-      <file>$PROJ_DIR$\Sdp\test.txt</file>
-      <file>$PROJ_DIR$\Sdp\sdp_handlers.c</file>
-      <file>$PROJ_DIR$\Tasks\tasks.c</file>
-      <file>$PROJ_DIR$\Uart\uart0.c</file>
-      <file>$PROJ_DIR$\cstartup.s</file>
+      <file>$PROJ_DIR$\Led\led.c</file>
+      <file>$PROJ_DIR$\Iap\iap.c</file>
+      <file>$PROJ_DIR$\Lib\bin_to_bcd.c</file>
+      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\data_types.h</file>
+      <file>$PROJ_DIR$\Bootloader\bootloader.h</file>
+      <file>$PROJ_DIR$\Tasks\tasks.h</file>
+      <file>$PROJ_DIR$\Bootloader\bootloader.c</file>
+      <file>$PROJ_DIR$\Core\core.c</file>
+      <file>$PROJ_DIR$\At25df\at25df.c</file>
+      <file>$PROJ_DIR$\Fmem\fmem.c</file>
+      <file>$PROJ_DIR$\Iap\bl_iap.c</file>
       <file>$PROJ_DIR$\main.c</file>
       <file>$PROJ_DIR$\Uart\v_printf.c</file>
+      <file>$PROJ_DIR$\cstartup.s</file>
       <file>$PROJ_DIR$\Updater\updater.c</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\Ringbuff\ring_buffer.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl4t_tln.a</file>
+      <file>$PROJ_DIR$\Release\Obj\iap.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\core.pbi</file>
+      <file>$PROJ_DIR$\Config\iolpc2364.h</file>
+      <file>$TOOLKIT_DIR$\lib\m4t_tl.a</file>
+      <file>$PROJ_DIR$\Release\Obj\at25df.o</file>
+      <file>$PROJ_DIR$\Config\LPC2364_Flash.icf</file>
+      <file>$PROJ_DIR$\Release\Obj\led.pbi</file>
+      <file>$PROJ_DIR$\Fmem\fmem.h</file>
+      <file>$PROJ_DIR$\Release\Obj\at25df.pbi</file>
+      <file>$PROJ_DIR$\Iap\bl_iap.h</file>
+      <file>$PROJ_DIR$\Sdp\sdp_def.h</file>
+      <file>$PROJ_DIR$\Release\Obj\spi.pbi</file>
+      <file>$PROJ_DIR$\Protothread\lc.h</file>
+      <file>$PROJ_DIR$\Iap\iap.h</file>
+      <file>$PROJ_DIR$\Release\Obj\tasks.pbi</file>
+      <file>$PROJ_DIR$\Protothread\pt.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\io_macros.h</file>
+      <file>$PROJ_DIR$\Release\Obj\bl_iap.o</file>
+      <file>$PROJ_DIR$\Release\Obj\ring_buffer.o</file>
+      <file>$PROJ_DIR$\Led\led_def.h</file>
+      <file>$PROJ_DIR$\Release\Obj\cstartup.o</file>
+      <file>$PROJ_DIR$\At25df\at25df_def.h</file>
+      <file>$PROJ_DIR$\Release\List\bootloader.map</file>
+      <file>$PROJ_DIR$\Core\core_def.h</file>
+      <file>$PROJ_DIR$\Release\Obj\led.o</file>
+      <file>$PROJ_DIR$\Release\Obj\updater.o</file>
+      <file>$PROJ_DIR$\Iap\iap_def.h</file>
+      <file>$PROJ_DIR$\Led\led.h</file>
+      <file>$TOOLKIT_DIR$\lib\rt4t_al.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$PROJ_DIR$\Release\Obj\uart0.o</file>
+      <file>$PROJ_DIR$\Updater\updater.h</file>
+      <file>$PROJ_DIR$\Spi\spi.h</file>
+      <file>$PROJ_DIR$\At25df\at25df.h</file>
+      <file>$PROJ_DIR$\Core\core.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Sdp\sdp.h</file>
+      <file>$PROJ_DIR$\Uart\v_printf.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$PROJ_DIR$\Fmem\fmem_map.h</file>
+      <file>$PROJ_DIR$\Release\Obj\v_printf.pbi</file>
+      <file>$PROJ_DIR$\Uart\uart0.h</file>
+      <file>$PROJ_DIR$\Release\Obj\uart0.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\bootloader.pbi</file>
+      <file>$PROJ_DIR$\Release\Exe\bootloader.out</file>
+      <file>$PROJ_DIR$\Protothread\lc-switch.h</file>
+      <file>$PROJ_DIR$\Release\Obj\spi.o</file>
+      <file>$PROJ_DIR$\Release\Obj\iap.o</file>
+      <file>$PROJ_DIR$\Release\Obj\tasks.o</file>
+      <file>$PROJ_DIR$\Release\Obj\sdp_handlers.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\sdp.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\float_to_txt.pbi</file>
+      <file>$PROJ_DIR$\Lib\bin_to_bcd.h</file>
+      <file>$PROJ_DIR$\Release\Obj\sdp_handlers.o</file>
+      <file>$PROJ_DIR$\Lib\float_to_txt.c</file>
+      <file>$PROJ_DIR$\Ringbuff\ring_buffer.c</file>
+      <file>$PROJ_DIR$\Sdp\test.txt</file>
+      <file>$PROJ_DIR$\Sdp\sdp_handlers.c</file>
+      <file>$PROJ_DIR$\Spi\spi.c</file>
+      <file>$PROJ_DIR$\Tasks\tasks.c</file>
+      <file>$PROJ_DIR$\Uart\uart0.c</file>
+      <file>$PROJ_DIR$\Release\Obj\main.o</file>
+      <file>$PROJ_DIR$\Release\Obj\core.o</file>
+      <file>$PROJ_DIR$\Release\Obj\ring_buffer.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\updater.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\bootloader.o</file>
+      <file>$PROJ_DIR$\Release\Obj\v_printf.o</file>
+      <file>$PROJ_DIR$\Uart\uart_def.h</file>
+      <file>$PROJ_DIR$\Lib\float_to_txt.h</file>
+      <file>$PROJ_DIR$\Release\Obj\bl_iap.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\fmem.pbi</file>
+      <file>$PROJ_DIR$\Release\Obj\bootloader.pbd</file>
+      <file>$PROJ_DIR$\Release\Exe\bootloader.hex</file>
+      <file>$PROJ_DIR$\Release\Obj\main.pbi</file>
     </outputs>
+    <file>
+      <name>$PROJ_DIR$\Sdp\sdp.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 84</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 70 86 69 43</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 70 86 69 43</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Led\led.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 57</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 52 60</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 52 60</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Iap\iap.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 81</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 59 46</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 59 46</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Lib\bin_to_bcd.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 1</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 86</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 86</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 78 55</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Bootloader\bootloader.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 99</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 77</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 75 101 60 70 66 54 30 64 42 59 18 17</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 75 101 60 70 66 54 30 64 42 59 18 17</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Core\core.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 96</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 34</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\At25df\at25df.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 41</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 65 66 54</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 65 66 54</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Fmem\fmem.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 3</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 104</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 66 54 40</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 66 54 40</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Iap\bl_iap.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 50</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 103</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 46 42 59</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 46 42 59</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 95</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 107</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 70 66 54 30 69 43 18 17</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 70 66 54 30 69 43 18 17</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Uart\v_printf.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 100</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 10 15 11 13 62 12 31 68 16 35 49 29 71 72 28 14 9 73 67 56 75 101 70</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 15 11 13 12 31 68 16 35 49 29 71 72 28 14 9 73 67 56 75 101 70</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\cstartup.s</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 53</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Updater\updater.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 58</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 98</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 66 54 40 46 64 42 59</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 66 54 40 46 64 42 59</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Release\Exe\bootloader.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 55</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 106</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 38 37 1 50 99 96 53 2 3 81 57 95 51 4 87 80 82 63 58 100 61 36 32</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Lib\float_to_txt.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 2</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 85</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 102</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 102</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Ringbuff\ring_buffer.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 51</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 97</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 30</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 30</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Sdp\sdp_handlers.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 87</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 83</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 70 66 54 86 40 42 59 17 69 43</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 70 66 54 86 40 42 59 17 69 43</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Spi\spi.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 80</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 44</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 65</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 65</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Tasks\tasks.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 82</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 70 48 45 79 60 64 42 59 17 18</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 70 48 45 79 60 64 42 59 17 18</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Uart\uart0.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 63</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 76</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 35 49 29 15 11 13 62 12 31 68 71 72 28 14 9 73 67 56 30 75 101</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 35 49 29 15 11 13 12 31 68 71 72 28 14 9 73 67 56 30 75 101</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Release\Obj\bootloader.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 41 0 103 77 34 85 104 33 39 107 97 84 83 44 47 76 98 74</file>
+        </tool>
+      </inputs>
+    </file>
   </configuration>
 </project>
 

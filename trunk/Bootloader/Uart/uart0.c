@@ -9,6 +9,9 @@
 #include "Uart\uart0.h"
 
 
+extern __ring_buff * const pointerRingBuff;
+
+
 /*
  * Init uart0
  *

@@ -18,8 +18,8 @@ static __sdp_data sdp;
  *
  */
 static void send_answer(const uint8_t answ) {
-    //serprintf("%c", answ);
-    serprintf("%2x", answ);
+    serprintf("%c", answ);
+    //serprintf("%2x", answ);
 }
 
 

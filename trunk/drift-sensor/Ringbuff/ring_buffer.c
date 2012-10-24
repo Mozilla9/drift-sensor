@@ -4,12 +4,7 @@
 
 #include "data_types.h"
 #include "Core\core.h"
-#include "Uart\uart0.h"
 #include "Ringbuff\ring_buffer.h"
-
-
-static __ring_buff r_buff;
-__ring_buff * const pointerRingBuff = &r_buff;
 
 
 /*
@@ -18,7 +13,7 @@ __ring_buff * const pointerRingBuff = &r_buff;
  */
 static void inc_tile(__ring_buff * const _pBuff) {
     if (_pBuff->tile > _pBuff->head) {
-        if (_pBuff->tile == RING_BUFF_LEN - 1) {
+        if (_pBuff->tile == _pBuff->buff_size - 1) {
             if (_pBuff->head > 0) {
                 _pBuff->tile = 0;
             }
@@ -43,7 +38,7 @@ static void inc_tile(__ring_buff * const _pBuff) {
  *
  */
 static void inc_head(__ring_buff * const _pBuff) {
-    if (_pBuff->head == RING_BUFF_LEN - 1) {
+    if (_pBuff->head == _pBuff->buff_size - 1) {
         _pBuff->head = 0;
     }
     else {
@@ -72,7 +67,7 @@ void init_ring_buff(__ring_buff * const _pBuff) {
  *
  */
 void put_in_ring_buff(__ring_buff * const _pBuff, const uint8_t _byte) {
-    _pBuff->buff[_pBuff->tile] = _byte;
+    _pBuff->pBuff[_pBuff->tile] = _byte;
     inc_tile(_pBuff);
 }
 
@@ -82,7 +77,7 @@ void put_in_ring_buff(__ring_buff * const _pBuff, const uint8_t _byte) {
  *
  */
 uint8_t get_from_ring_buff(__ring_buff * const _pBuff) {
-    uint8_t _byte = _pBuff->buff[_pBuff->head];
+    uint8_t _byte = _pBuff->pBuff[_pBuff->head];
 
     enter_cs();
     inc_head(_pBuff);
@@ -111,7 +106,7 @@ bool_t is_ring_buff_empty(__ring_buff * const _pBuff) {
  */
 uint16_t size_ring_buff(__ring_buff * const _pBuff) {
     if (_pBuff->head > _pBuff->tile) {
-        return RING_BUFF_LEN - _pBuff->head + _pBuff->tile;
+        return _pBuff->buff_size - _pBuff->head + _pBuff->tile;
     }
     else if (_pBuff->head < _pBuff->tile) {
         return _pBuff->tile - _pBuff->head;

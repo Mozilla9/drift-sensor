@@ -9,18 +9,16 @@
 #include "At25df\at25df.h"
 #include "Lib\bin_to_bcd.h"
 #include "Fmem\fmem.h"
-#include "Iap\bl_iap.h"
-#include "Bootloader\bootloader.h"
+#include "Compass\compass.h"
 #include "Sdp\sdp.h"
 
 
 
-#define CMD_GET_BL_VERS     1
-#define CMD_RESET_DEVICE    2
-#define CMD_UNLOCK_MCU      3
-
 static const __FMEM_SETT pg_mem = {FMEM_PAGE_SIZE, FMEM_SECTOR_SIZE, FW_START_ADDR, FW_MEM_SIZE};
 
+
+#define CMD_SWITCH_PROTO    1
+#define CMD_RESET_DEVICE    2
 
 
 /*
@@ -104,28 +102,12 @@ uint8_t invoke_user_cmd(const uint8_t * pData, const uint8_t len) {
     user_cmd |= nibble_to_bin(pData[1]);
 
     switch (user_cmd) {
-        case CMD_GET_BL_VERS:
-            serprintf(device_vers_tag);
-            break;
-
-        case CMD_RESET_DEVICE:
+        case 1:
             reset_device();
             break;
 
-        case CMD_UNLOCK_MCU:
-            if (len == 10) {
-                uint32_t unlock_code = 0;
-                uint16_t idx = 2;
-                
-                while (idx < 10) {
-                    unlock_code <<= 4;
-                    unlock_code |= nibble_to_bin(pData[idx++]);
-                    unlock_code <<= 4;
-                    unlock_code |= nibble_to_bin(pData[idx++]);
-                }
-
-                clear_mcu_iap(unlock_code);
-            }
+        case 2:
+            set_proto_type(PROTO_TYPE_CONSOLE);
             break;
 
         default:

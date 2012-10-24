@@ -29,8 +29,11 @@
 #define SDP_CMD_W            0x57                          // write to program-flash
 #define SDP_CMD_E            0x45                          // write to sett-flash
 #define SDP_CMD_U            0x55                          // invoke code
+#define SDP_CMD_Z            0x5A                          // invoke user-cmd
 
-
+#define SDP_STATE_WAIT_HDR   0
+#define SDP_STATE_WAIT_LEN   1
+#define SDP_STATE_DATA_RCV   2
 
 
 #endif

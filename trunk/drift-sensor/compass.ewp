@@ -1889,6 +1889,9 @@
     <file>
       <name>$PROJ_DIR$\Sdp\sdp.c</name>
     </file>
+    <file>
+      <name>$PROJ_DIR$\Sdp\sdp_handlers.c</name>
+    </file>
   </group>
   <group>
     <name>SETT</name>
