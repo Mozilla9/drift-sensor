@@ -124,22 +124,16 @@ void init_device() {
 
     init_irq();
 
-    // Testing main pin
+    // Testing main pin (for locked mode)
     if (FIO2PIN_bit.P2_10 == 0) {
         return;
     }
 
     // Fork
     if (is_need_update() == TRUE_T) {
-
-        DEBUG_PRINTF("enable_update_task()");
-
         enable_update_task();
     } else {
         if (*((uint32_t *)(IAP_MAIN_SECT_ADDR + SHIFT_FW_VALID_FLG)) != IAP_VALID_DATA) {
-
-            DEBUG_PRINTF("repair_flash_iap()");
-
             repair_flash_iap();
         }
 
@@ -163,9 +157,6 @@ void init_device() {
         }
 
         if (success_count > 0 && fw_crc) {
-
-            DEBUG_PRINTF("run_main_firmware()");
-
             run_main_firmware();
         }
     }

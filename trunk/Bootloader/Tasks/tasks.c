@@ -22,7 +22,7 @@
 
 static uint32_t flag_run_enabled = 0;
 static uint32_t enabled_tasks = 0x000000;
-static uint16_t upd_state = 0;
+static uint16_t upd_state;
 
 static struct pt first_pt;
 static struct pt upd_pt;
@@ -53,7 +53,6 @@ static int first_task(struct pt * pt) {
  *
  */
 static int update_task(struct pt * pt) {
-    static uint32_t time_count = 0;
     PT_BEGIN(pt);
 
     while(1) {
@@ -63,28 +62,51 @@ static int update_task(struct pt * pt) {
 
             switch (upd_state) {
                 //--------------------------------------------------------------
-                case 0:      // initial state
-
-                    upd_state++;
-
-                    break;
-
-                //--------------------------------------------------------------
-                case 1:
-                    {
-
+                case 0:      // init + erase mcu flash
+                    reset_update_state();
+                    if (erase_main_fw_area_upd()) {
+                        upd_state++;
+                    } else {
+                        disable_update_task();
                     }
                     break;
 
                 //--------------------------------------------------------------
-                case 2:
-                    {
-
+                case 1:      // read data block, decode
+                    if (read_block_from_flash_upd()) {
+                        // decode_block_upd();
+                        upd_state++;
+                    } else {
+                        disable_update_task();
                     }
+                    break;
+
+                //--------------------------------------------------------------
+                case 2:      // write block in mcu flash
+                    if (write_block_in_main_fw_upd()) {
+                        if (is_update_end()) {
+                            upd_state++;
+                        } else {
+                            upd_state--;
+                        }
+                    } else {
+                        disable_update_task();
+                    }
+                    break;
+
+                //--------------------------------------------------------------
+                case 3:
+                    erase_flg_need_update();
+                    if (finalize_update()) {
+                        DEBUG_PRINTF("Update successfully\r\n");
+                        reset_device();
+                    }
+                    disable_update_task();
                     break;
 
                 //--------------------------------------------------------------
                 default:
+                    disable_update_task();
                     break;
             }
         }
@@ -144,11 +166,11 @@ static int led_task(struct pt * pt) {
 
 
 /*
- * Test update task
+ * Test task
  *
  */
-static bool_t test_update_task() {
-    return BIT_TEST(enabled_tasks, UPDATE_TASK) ? TRUE_T : FALSE_T;
+static bool_t test_task(const uint32_t __task_num) {
+    return BIT_TEST(enabled_tasks, __task_num) ? TRUE_T : FALSE_T;
 }
 
 
@@ -158,11 +180,12 @@ static bool_t test_update_task() {
  */
 void enable_update_task() {
     BIT_SET(enabled_tasks, UPDATE_TASK);
+    upd_state = 0;
 }
 
 
 /*
- * Disable acc task
+ * Disable update task
  *
  */
 void disable_update_task() {
@@ -201,227 +224,9 @@ void run_tasks() {
     first_task(&first_pt);
     led_task(&led_pt);
 
-    if (test_update_task()) {
+    if (test_task(UPDATE_TASK)) {
         update_task(&upd_pt);
     }
 
     flag_run_enabled = 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-/*
-// App: Сброс девайса
-
-void MTASK::Reset() {
-    switch(queue.subTask)
-    {
-        //----------------------------------------------------------------------
-        case eSUBTASK1:   // Сбрсываем девайс сторожем
-          CORE::ResetDevice();
-          EndTask();
-          break;
-
-        //----------------------------------------------------------------------
-        default:
-          queue.subTask = eSUBTASK1;
-          queue.phaseTask = ePERFORM_TASK;
-          break;
-    };
-}
-
-
-
-
-
-// App: Разлочивание чипа
-
-void MTASK::Unlock() {
-    switch(queue.subTask)
-    {
-        //----------------------------------------------------------------------
-        case eSUBTASK1:   // Подготовка
-          // Запускаем сабаку
-          SetTaskTimerOnce(eTASK_WATCHDOG, 60UL);
-
-          queue.subTask = eSUBTASK2;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK2:   // Стираем основное FW
-          IAP::EraseFwFlash();
-          queue.subTask = eSUBTASK3;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK3:   // Стираем BL
-          IAP::EraseBlFlash();
-          queue.subTask = eSUBTASK4;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK4:   // Конец
-          // Выключаем сабаку
-          SetTaskTimerOnce(eTASK_WATCHDOG, TASK_FREE_TIMEOUT);
-
-          EndTask();
-          break;
-
-        //----------------------------------------------------------------------
-        default:
-          queue.subTask = eSUBTASK1;
-          queue.phaseTask = ePERFORM_TASK;
-          break;
-    };
-}
-
-
-
-
-
-// App: Загрузка нового Firmware
-
-void MTASK::Download() {
-    switch(queue.subTask)
-    {
-        //----------------------------------------------------------------------
-        case eSUBTASK1:   // Инициализация
-          SetTaskTimerOnce(eTASK_WATCHDOG, 300UL);
-          queue.subTask = eSUBTASK2;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK2:   // Отслеживаем таймаут
-          queue.subTask = (DEVICE::TestFlgDownloading() == TRUE_T) ? eSUBTASK3 : eSUBTASK4;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK3:   // Проверяем данные и записываем
-          queue.subTask = (DOWNLOADER::WriteDataToFlash() == TRUE_T) ? eSUBTASK4 : eSUBTASK2;
-          DOWNLOADER::TestAck();
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK4:   // Проверка CRC
-          queue.subTask = eSUBTASK6;
-          if(DOWNLOADER::ValidateDownloading() == TRUE_T) {
-              queue.subTask = eSUBTASK5;
-              SetDelay(2UL);
-              AddSubTaskInQueue(eTASK_DELAY);
-          };
-          DEVICE::ClearFlgDownloading();
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK5:   // Перезагрузка
-          queue.subTask = eSUBTASK6;
-          AddSubTaskInQueue(eTASK_RESET);
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK6:   // Конец
-          SetTaskTimerOnce(eTASK_WATCHDOG, TASK_FREE_TIMEOUT);
-
-          EndTask();
-          break;
-
-        //----------------------------------------------------------------------
-        default:
-          queue.subTask = eSUBTASK1;
-          queue.phaseTask = ePERFORM_TASK;
-          break;
-    };
-}
-
-
-
-
-
-// App: Обновление Firmware
-
-void MTASK::Update() {
-    switch(queue.subTask)
-    {
-        //----------------------------------------------------------------------
-        case eSUBTASK1:   // Инициализация
-          // Запускаем сабаку
-          SetTaskTimerOnce(eTASK_WATCHDOG, 60UL);
-
-          // Запускаем апдейтер
-          DEVICE::SetFlgUpdating();
-          UPDATER::ResetUpdater();
-
-          queue.subTask = eSUBTASK2;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK2:   // Стираем предварительно флэш контроллера
-          queue.subTask = (UPDATER::EraseFwFlash() == TRUE_T) ? eSUBTASK3 : eSUBTASK10;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK3:   // Считываем данные из внешней флэш
-          UPDATER::ReadDataExtFlash();
-          queue.subTask = eSUBTASK4;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK4:   // Расшифровка данных
-          queue.subTask = eSUBTASK5;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK5:   // Запись данных
-          queue.subTask = (UPDATER::WriteDataFw() == TRUE_T) ? eSUBTASK6 : eSUBTASK10;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK6:   // Проверка флага
-          queue.subTask = (UPDATER::TestFlgUpdateEnd() == TRUE_T) ? eSUBTASK7 : eSUBTASK3;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK7:   // Запись информации о Fw в флэш контроллера
-          queue.subTask = (UPDATER::EndFwUpdate() == TRUE_T) ? eSUBTASK8 : eSUBTASK10;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK8:   // Стираем флаги во внешней флэш
-          UPDATER::EraseFlgNeedUpdate();
-          queue.subTask = eSUBTASK9;
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK9:   // Перезагрузка
-          queue.subTask = eSUBTASK10;
-          CORE::ResetDevice();
-          break;
-
-        //----------------------------------------------------------------------
-        case eSUBTASK10:   // Конец
-          // Выключаем сабаку
-          SetTaskTimerOnce(eTASK_WATCHDOG, TASK_FREE_TIMEOUT);
-
-          // Сбрасываем флаг
-          DEVICE::ClearFlgUpdating();
-
-          EndTask();
-          break;
-
-        //----------------------------------------------------------------------
-        default:
-          queue.subTask = eSUBTASK1;
-          queue.phaseTask = ePERFORM_TASK;
-          break;
-    };
-}*/
-
-

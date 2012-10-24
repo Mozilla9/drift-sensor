@@ -9,6 +9,7 @@
 #include "At25df\at25df.h"
 #include "Lib\bin_to_bcd.h"
 #include "Fmem\fmem.h"
+#include "Iap\bl_iap.h"
 #include "Bootloader\bootloader.h"
 #include "Sdp\sdp.h"
 
@@ -113,6 +114,19 @@ uint8_t invoke_user_cmd(const uint8_t * pData, const uint8_t len) {
             break;
 
         case CMD_UNLOCK_MCU:
+            if (len == 10) {
+                uint32_t unlock_code = 0;
+                uint16_t idx = 2;
+                
+                while (idx < 10) {
+                    unlock_code <<= 4;
+                    unlock_code |= nibble_to_bin(pData[idx++]);
+                    unlock_code <<= 4;
+                    unlock_code |= nibble_to_bin(pData[idx++]);
+                }
+
+                clear_mcu_iap(unlock_code);
+            }
             break;
 
         default:

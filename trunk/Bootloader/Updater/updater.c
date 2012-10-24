@@ -43,7 +43,7 @@ void init_updater() {
  * Reset updater state
  *
  */
-void reset_updater() {
+void reset_update_state() {
     tools.flg_update_end = FALSE_T;
     tools.addr = FW_START_ADDRESS;
     tools.crc = 0UL;
@@ -83,10 +83,10 @@ void run_main_firmware() {
 
 
 /*
- * Erase mcu flash
+ * Erase fw area in mcu flash
  *
  */
-bool_t erase_fw_updater() {
+bool_t erase_main_fw_area_upd() {
     const uint32_t end_sector = determ_sector_num_iap(flash_data.fw_size + FW_START_ADDRESS - 16UL);
     uint32_t error;
 
@@ -109,7 +109,7 @@ bool_t erase_fw_updater() {
  * Read data from ext flash
  *
  */
-void read_flash_updater() {
+bool_t read_block_from_flash_upd() {
     __FMEM_DATA data;
 
     upd_buff_len = ((flash_data.fw_size - tools.data_counter) > UPD_BUFF_SIZE)
@@ -125,7 +125,7 @@ void read_flash_updater() {
     // Read
     if (read_data_fmem(&fw_mem, &data) != eMEM_OK) {
         tools.flg_update_end = TRUE_T;
-        return;
+        return FALSE_T;
     }
 
     // Inc counter
@@ -135,6 +135,8 @@ void read_flash_updater() {
     if (flash_data.fw_size == tools.data_counter) {
         tools.flg_update_end = TRUE_T;
     }
+
+    return TRUE_T;
 }
 
 
@@ -142,7 +144,7 @@ void read_flash_updater() {
  * Write data to mcu flash
  *
  */
-bool_t write_fw_updater() {
+bool_t write_block_in_main_fw_upd() {
     if (tools.flg_update_end == TRUE_T) {
         if (upd_buff_len < 16) {
             return FALSE_T;
@@ -189,7 +191,7 @@ bool_t write_fw_updater() {
  * Finalize update-process
  *
  */
-bool_t finalize_fw_update() {
+bool_t finalize_update() {
     // Validating crc
     tools.crc = 0UL - tools.crc;
 
