@@ -15,7 +15,6 @@ typedef struct
 } __ring_buff;
 
 
-void init_ring_buff(__ring_buff * const _pBuff);
 void put_in_ring_buff(__ring_buff * const _pBuff, const uint8_t _byte);
 uint8_t get_from_ring_buff(__ring_buff * const _pBuff);
 bool_t is_ring_buff_empty(__ring_buff * const _pBuff);

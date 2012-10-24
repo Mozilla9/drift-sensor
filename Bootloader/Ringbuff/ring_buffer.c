@@ -53,16 +53,6 @@ static void inc_head(__ring_buff * const _pBuff) {
 
 
 /*
- * Init new ring buff.
- *
- */
-void init_ring_buff(__ring_buff * const _pBuff) {
-    _pBuff->tile = 0;
-    _pBuff->head = 0;
-}
-
-
-/*
  * Put byte in ring buff.
  *
  */
