@@ -17,10 +17,10 @@
 typedef struct
 FMEM_SETT
 {
-    uint32_t page_size;
-    uint32_t sector_size;
-    uint32_t start_addr;
-    uint32_t allocated_size;
+    const uint32_t page_size;
+    const uint32_t sector_size;
+    const uint32_t start_addr;
+    const uint32_t allocated_size;
 } __FMEM_SETT;
 
 
