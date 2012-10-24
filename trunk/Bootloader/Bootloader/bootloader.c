@@ -116,7 +116,6 @@ void init_device() {
     init_timer0();
     init_at25df();
     init_led();
-    init_ring_buff(pointerRingBuff);
     init_updater();
     init_tasks();
 

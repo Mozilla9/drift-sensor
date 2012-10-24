@@ -155,7 +155,6 @@ void init_device() {
     init_at25df();
     init_led();
     init_lis3dh();
-    init_ring_buff(pointerRingBuff);
 
     init_uart0(57600, 3);
     INT_UART0RX_ON;
