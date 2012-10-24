@@ -17,8 +17,8 @@
 static const __FMEM_SETT pg_mem = {FMEM_PAGE_SIZE, FMEM_SECTOR_SIZE, FW_START_ADDR, FW_MEM_SIZE};
 
 
-#define CMD_SWITCH_PROTO    1
-#define CMD_RESET_DEVICE    2
+#define CMD_RESET_DEVICE    1
+#define CMD_SWITCH_PROTO    2
 
 
 /*
