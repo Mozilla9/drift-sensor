@@ -23,6 +23,7 @@
 #define IAP_BL_START_SECT         0
 #define IAP_BL_END_SECT           8
 
+#define CHIP_UNLOCK_CODE          123456789    // Code for chip erase
 #define IAP_VALID_DATA            0xAA55AA55   // Test value for segment writes
 #define SHIFT_FW_SIZE_ADDR        (4084)
 #define SHIFT_FW_CRC_ADDR         (4088)
@@ -32,6 +33,7 @@
 void repair_flash_iap();
 bool_t safety_write_flash_iap(const uint8_t * pData, const uint32_t shift, uint32_t len);
 uint32_t determ_sector_num_iap(const uint32_t addr);
+void clear_mcu_iap(const uint32_t __defend_code);
 
 
 

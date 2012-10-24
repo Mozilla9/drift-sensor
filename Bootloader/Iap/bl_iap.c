@@ -217,3 +217,59 @@ void repair_flash_iap() {
     erase_sector_iap(IAP_RESERV_SECTOR, IAP_RESERV_SECTOR);
 }
 
+
+/*
+ * Erase main fw area in mcu flash
+ *
+ */
+static bool_t erase_fw_area_iap() {
+    uint32_t error;
+
+    error = prepare_sector_iap(IAP_FW_START_SECT, IAP_FW_END_SECT);
+    if (error != IAP_CMD_SUCCESS) {
+        return FALSE_T;
+    }
+
+    error = erase_sector_iap(IAP_FW_START_SECT, IAP_FW_END_SECT);
+    if (error != IAP_CMD_SUCCESS) {
+        return FALSE_T;
+    }
+
+    error = blank_check_sector_iap(IAP_FW_START_SECT, IAP_FW_END_SECT);
+    return (error != IAP_CMD_SUCCESS) ? FALSE_T : TRUE_T;
+}
+
+
+/*
+ * Erase bl area in mcu flash
+ *
+ */
+static bool_t erase_bl_area_iap() {
+    uint32_t error;
+
+    error = prepare_sector_iap(IAP_BL_START_SECT, IAP_BL_END_SECT);
+    if (error != IAP_CMD_SUCCESS) {
+        return FALSE_T;
+    }
+
+    error = erase_sector_iap(IAP_BL_START_SECT, IAP_BL_END_SECT);
+    if (error != IAP_CMD_SUCCESS) {
+        return FALSE_T;
+    }
+
+    error = blank_check_sector_iap(IAP_BL_START_SECT, IAP_BL_END_SECT);
+    return (error != IAP_CMD_SUCCESS) ? FALSE_T : TRUE_T;
+}
+
+
+/*
+ * Clear mcu chip
+ *
+ */
+void clear_mcu_iap(const uint32_t __defend_code) {
+    if (__defend_code == CHIP_UNLOCK_CODE) {
+        if (erase_fw_area_iap()) {
+            erase_bl_area_iap();
+        }
+    }
+}
