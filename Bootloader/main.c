@@ -17,6 +17,9 @@
 #include "Bootloader\bootloader.h"
 
 
+extern __ring_buff * const pointerRingBuff;
+
+
 
 /******************************************************************************/
 /*                                                                            */

@@ -38,6 +38,7 @@
 #define _CMD_CALB            "calb"
 #define _CMD_WRSETT          "wrsett"
 #define _CMD_RDSETT          "rdsett"
+#define _CMD_SW_PROTO        "proto"
 
 
 // available  commands
@@ -62,10 +63,11 @@ int8_t * keyword [] = {
     _CMD_CALB,
     _CMD_WRSETT,
     _CMD_RDSETT,
+    _CMD_SW_PROTO,
     _CMD_CLEAR
 };
 
-#define _NUM_OF_CMD    21
+#define _NUM_OF_CMD    22
 
 
 // array for comletion
@@ -102,6 +104,7 @@ void print_help_cmd () {
     (*get_microrl_printf (pointerMicrorl)) ("\tam          - set acc Z_mod sett\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\twrsett      - write byte to sett mem (addr byte)\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\trdsett      - read byte from sett mem(addr)\n\r");
+    (*get_microrl_printf (pointerMicrorl)) ("\tproto       - switch protocol to sdp\n\r");
 }
 
 
@@ -124,6 +127,9 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
         }
         else if (strcmp (argv[i], _CMD_RESET) == 0) {
             reset_device();
+        }
+        else if (strcmp (argv[i], _CMD_SW_PROTO) == 0) {
+            set_proto_type(PROTO_TYPE_SDP);
         }
         else if (strcmp (argv[i], _CMD_TRACE) == 0) {
             if (++i < argc) {
