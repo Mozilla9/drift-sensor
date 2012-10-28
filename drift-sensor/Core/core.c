@@ -26,7 +26,7 @@ static void init_mam() {
  * Init PLL - external
  *
  */
-void init_pll() {
+static void init_pll() {
     // Dis PLL
     PLLCON_bit.PLLE = 0;
     PLLCON_bit.PLLC = 0;
@@ -38,7 +38,7 @@ void init_pll() {
     SCS_bit.OSCRANGE = 0;      // 1-20 Mhz
     SCS_bit.OSCEN = 1;         // Ext oscill en
 
-    while(!SCS_bit.OSCSTAT);   // Waiting
+    while (!SCS_bit.OSCSTAT);  // Waiting
 
     // Set suply for PLL
     CLKSRCSEL_bit.CLKSRC = 1;  // Main oscill
@@ -60,10 +60,10 @@ void init_pll() {
 
     // Configure PCLK
     //PCLKSEL0 = 0x00000000;     // PCLK = CCKL/4
-    PCLKSEL0 = 0xAAAAAAAA;     // PCLK = CCKL/2 for all modules
+    PCLKSEL0 = 0xAAAAAAAA;       // PCLK = CCKL/2 for all modules
     PCLKSEL1 = 0xAAAAAAAA;
 
-    while(!PLLSTAT_bit.PLOCK);
+    while (!PLLSTAT_bit.PLOCK);
 
     // Connect and en PLL
     PLLCON_bit.PLLE = 1;
@@ -71,7 +71,7 @@ void init_pll() {
     PLLFEED_bit.FEED = 0xAA;
     PLLFEED_bit.FEED = 0x55;
 
-    while(!PLLSTAT_bit.PLOCK);   // Waiting capture pll
+    while (!PLLSTAT_bit.PLOCK);   // Waiting capture pll
 }
 
 

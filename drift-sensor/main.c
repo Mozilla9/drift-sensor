@@ -2,8 +2,8 @@
 /*  Project "Compass" drift sensor                                            */
 /*  Soft: S. Maslyakov, rusoil.9@gmail.com                                    */
 /*                                                                            */
-/*  Revision:     13.3.0                                                      */
-/*  Date:         2012/10/17 16:29:33                                         */
+/*  Revision:     13.4.0                                                      */
+/*  Date:         2012/10/28 22:13:33                                         */
 /******************************************************************************/
 
 #include "data_types.h"
@@ -21,7 +21,7 @@
 #include "Tasks\tasks.h"
 
 
-#define device_vers_tag    "\n\rDriftSensor v.13.3\n\r"
+#define device_vers_tag    "\n\rDriftSensor v.13.4\n\r"
 
 extern __ring_buff * const pointerRingBuff;
 

@@ -64,7 +64,7 @@ static void acc_x_decision_reco_drift() {
             x_acc_stats.count = 1;
             gisteresis = x_acc_thr.gist;
         } else {
-            x_acc_stats.average += last_sample;
+            x_acc_stats.average = (x_acc_stats.average + last_sample) / 2;
             x_acc_stats.max = x_acc_stats.max > last_sample ? x_acc_stats.max : last_sample;
             x_acc_stats.min = x_acc_stats.min < last_sample ? x_acc_stats.min : last_sample;
             x_acc_stats.count++;
@@ -80,22 +80,21 @@ static void acc_x_decision_reco_drift() {
             x_acc_stats.count = 1;
             gisteresis = x_acc_thr.gist;
         } else {
-            x_acc_stats.average += last_sample;
+            x_acc_stats.average = (x_acc_stats.average + last_sample) / 2;
             x_acc_stats.max = x_acc_stats.max > last_sample ? x_acc_stats.max : last_sample;
             x_acc_stats.min = x_acc_stats.min < last_sample ? x_acc_stats.min : last_sample;
             x_acc_stats.count++;
         }
     }
     else {
+        const int8_t * pRes;
         switch (blank) {
             case 1:
-                serprintf("$DRIFT,XA,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
+                pRes = "XA";
                 break;
 
             case 2:
-                serprintf("$DRIFT,XB,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(x_acc_stats.average / x_acc_stats.count), x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
+                pRes = "XB";
                 break;
 
             default:
@@ -103,6 +102,8 @@ static void acc_x_decision_reco_drift() {
                 gisteresis = 0;
                 return;
         }
+        serprintf("$DRIFT,%s,%4x,%4x,%4x,%u\r\n",
+            pRes, x_acc_stats.average, x_acc_stats.max, x_acc_stats.min, x_acc_stats.count);
         blank = 0;
         gisteresis = 0;
     }
@@ -130,7 +131,7 @@ static void acc_y_decision_reco_drift() {
             y_acc_stats.count = 1;
             gisteresis = y_acc_thr.gist;
         } else {
-            y_acc_stats.average += last_sample;
+            y_acc_stats.average = (y_acc_stats.average + last_sample) / 2;
             y_acc_stats.max = y_acc_stats.max > last_sample ? y_acc_stats.max : last_sample;
             y_acc_stats.min = y_acc_stats.min < last_sample ? y_acc_stats.min : last_sample;
             y_acc_stats.count++;
@@ -146,22 +147,21 @@ static void acc_y_decision_reco_drift() {
             y_acc_stats.count = 1;
             gisteresis = y_acc_thr.gist;
         } else {
-            y_acc_stats.average += last_sample;
+            y_acc_stats.average = (y_acc_stats.average + last_sample) / 2;
             y_acc_stats.max = y_acc_stats.max > last_sample ? y_acc_stats.max : last_sample;
             y_acc_stats.min = y_acc_stats.min < last_sample ? y_acc_stats.min : last_sample;
             y_acc_stats.count++;
         }
     }
     else {
+        const int8_t * pRes;
         switch (blank) {
             case 1:
-                serprintf("$DRIFT,YL,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
+                pRes = "YL";
                 break;
 
             case 2:
-                serprintf("$DRIFT,YR,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(y_acc_stats.average / y_acc_stats.count), y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
+                pRes = "YR";
                 break;
 
             default:
@@ -169,6 +169,8 @@ static void acc_y_decision_reco_drift() {
                 gisteresis = 0;
                 return;
         }
+        serprintf("$DRIFT,%s,%4x,%4x,%4x,%u\r\n",
+            pRes, y_acc_stats.average, y_acc_stats.max, y_acc_stats.min, y_acc_stats.count);
         blank = 0;
         gisteresis = 0;
     }
@@ -196,7 +198,7 @@ static void acc_z_decision_reco_drift() {
             z_acc_stats.count = 1;
             gisteresis = z_acc_thr.gist;
         } else {
-            z_acc_stats.average += last_sample;
+            z_acc_stats.average = (z_acc_stats.average + last_sample) / 2;
             z_acc_stats.max = z_acc_stats.max > last_sample ? z_acc_stats.max : last_sample;
             z_acc_stats.min = z_acc_stats.min < last_sample ? z_acc_stats.min : last_sample;
             z_acc_stats.count++;
@@ -212,26 +214,21 @@ static void acc_z_decision_reco_drift() {
             z_acc_stats.count = 1;
             gisteresis = z_acc_thr.gist;
         } else {
-            z_acc_stats.average += last_sample;
+            z_acc_stats.average = (z_acc_stats.average + last_sample) / 2;
             z_acc_stats.max = z_acc_stats.max > last_sample ? z_acc_stats.max : last_sample;
             z_acc_stats.min = z_acc_stats.min < last_sample ? z_acc_stats.min : last_sample;
             z_acc_stats.count++;
         }
     }
     else {
+        const int8_t * pRes;
         switch (blank) {
             case 1:
-                DEBUG_PRINTF("$DRIFT,Z1,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
-                //serprintf("$DRIFT,Z1,%4x,%4x,%4x,%u\r\n",
-                //    (int16_t)(z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
+                pRes = "Z1";
                 break;
 
             case 2:
-                DEBUG_PRINTF("$DRIFT,Z2,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
-                //serprintf("$DRIFT,Z2,%4x,%4x,%4x,%u\r\n",
-                //    (int16_t)(z_acc_stats.average / z_acc_stats.count), z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
+                pRes = "Z2";
                 break;
 
             default:
@@ -239,6 +236,10 @@ static void acc_z_decision_reco_drift() {
                 gisteresis = 0;
                 return;
         }
+        DEBUG_PRINTF("$DRIFT,%s,%4x,%4x,%4x,%u\r\n",
+            pRes, z_acc_stats.average, z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
+        //serprintf("$DRIFT,%s,%4x,%4x,%4x,%u\r\n",
+        //    pRes, z_acc_stats.average, z_acc_stats.max, z_acc_stats.min, z_acc_stats.count);
         blank = 0;
         gisteresis = 0;
     }
@@ -266,9 +267,9 @@ static void acc_pit_decision_reco_drift() {
 
             if (pit_count) {
                 DEBUG_PRINTF("$DRIFT,ZA,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
+                    pit_acc_stats.average, pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
                 //serprintf("$DRIFT,ZA,%4x,%4x,%4x,%u\r\n",
-                //    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
+                //    pit_acc_stats.average, pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
             }
             pit_count = 13;
 
@@ -278,7 +279,7 @@ static void acc_pit_decision_reco_drift() {
             pit_acc_stats.count = 1;
             gisteresis = pit_acc_thr.gist;
         } else {
-            pit_acc_stats.average += last_sample;
+            pit_acc_stats.average = (pit_acc_stats.average + last_sample) / 2;
             pit_acc_stats.max = pit_acc_stats.max > last_sample ? pit_acc_stats.max : last_sample;
             pit_acc_stats.min = pit_acc_stats.min < last_sample ? pit_acc_stats.min : last_sample;
             pit_acc_stats.count++;
@@ -290,9 +291,9 @@ static void acc_pit_decision_reco_drift() {
 
             if (pit_count) {
                 DEBUG_PRINTF("$DRIFT,ZB,%4x,%4x,%4x,%u\r\n",
-                    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
+                    pit_acc_stats.average, pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
                 //serprintf("$DRIFT,ZB,%4x,%4x,%4x,%u\r\n",
-                //    (int16_t)(pit_acc_stats.average / pit_acc_stats.count), pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
+                //    pit_acc_stats.average, pit_acc_stats.max, pit_acc_stats.min, pit_acc_stats.count);
             }
             pit_count = 13;
 
@@ -302,7 +303,7 @@ static void acc_pit_decision_reco_drift() {
             pit_acc_stats.count = 1;
             gisteresis = pit_acc_thr.gist;
         } else {
-            pit_acc_stats.average += last_sample;
+            pit_acc_stats.average = (pit_acc_stats.average + last_sample) / 2;
             pit_acc_stats.max = pit_acc_stats.max > last_sample ? pit_acc_stats.max : last_sample;
             pit_acc_stats.min = pit_acc_stats.min < last_sample ? pit_acc_stats.min : last_sample;
             pit_acc_stats.count++;
@@ -365,7 +366,7 @@ static void acc_pit_mod_decision_reco_drift() {
             mod_acc_stats.count = 1;
             gisteresis = mod_acc_thr.gist;
         } else {
-            mod_acc_stats.average += last_sample;
+            mod_acc_stats.average = (mod_acc_stats.average + last_sample) / 2;
             mod_acc_stats.max = mod_acc_stats.max > last_sample ? mod_acc_stats.max : last_sample;
             mod_acc_stats.min = mod_acc_stats.min < last_sample ? mod_acc_stats.min : last_sample;
             mod_acc_stats.count++;
@@ -383,7 +384,7 @@ static void acc_pit_mod_decision_reco_drift() {
     else {
         if (blank == 1) {
             serprintf("$DRIFT,ZM,%4x,%4x,%4x,%u\r\n",
-                (int16_t)(mod_acc_stats.average / mod_acc_stats.count), mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count);
+                mod_acc_stats.average, mod_acc_stats.max, mod_acc_stats.min, mod_acc_stats.count);
         }
 
         blank = 0;
