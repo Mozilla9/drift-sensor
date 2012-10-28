@@ -84,7 +84,7 @@ static int calibr_task(struct pt * pt) {
                             calibrating_state++;
 
                             commit_quiet_calibr_data();
-                            time_count = tick + 20 * TIMER0_TICK;
+                            time_count = tick + 90 * TIMER0_TICK;
                         }
                     }
                     break;
