@@ -8,14 +8,14 @@
 
 typedef union
 {
-    uint32_t  data32;
-    uint8_t   data8[4];
+    uint32_t data32;
+    uint8_t data8[4];
 } __union_addr;
 
 
 typedef struct
 {
-    const uint8_t * pBuff;
+    uint8_t * const pBuff;
     uint16_t len;
 } __msdp_out_data;
 

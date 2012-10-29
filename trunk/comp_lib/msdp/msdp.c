@@ -29,11 +29,11 @@ static uint8_t calc_crc_sdp(const uint8_t * pData, uint8_t len) {
  *        'x' - 'a' - 'f'
  *
  */
-static uint8_t nibble_to_hex(const uint8_t nibble, const uint8_t _mode) {
-    if (nibble >= 0 && nibble <= 9) {
-        return nibble + 0x30;
-    } else if (nibble >= 0xA && nibble <= 0xF) {
-        return (_mode == 'x') ? nibble + 0x57 : nibble + 0x37;
+static uint8_t nibble_to_hex(const uint8_t _nibble, const uint8_t _mode) {
+    if (_nibble < 0xA && (_nibble > 0x0 || _nibble == 0x0)) {
+        return _nibble + 0x30;
+    } else if (_nibble > 0x9 && _nibble < 0x10) {
+        return (_mode == 'x') ? _nibble + 0x57 : _nibble + 0x37;
     } else {
         return 0;
     }
