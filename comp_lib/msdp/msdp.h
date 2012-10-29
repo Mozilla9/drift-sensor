@@ -6,6 +6,12 @@
 #define __MSDP_H
 
 
+typedef union
+{
+    uint32_t  data32;
+    uint8_t   data8[4];
+} __union_addr;
+
 
 typedef struct
 {
