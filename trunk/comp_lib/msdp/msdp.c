@@ -90,10 +90,11 @@ void write_pg_flash_msdp(__msdp_out_data * const pOutData, const __msdp_wr_data 
         pOutData->pBuff[pOutData->len++] = 0x37;
 
         // addr
-        uint32_t addr = pWrData->addr;
-        for (uint16_t i = 0; i < 6; i++) {
-            pOutData->pBuff[pOutData->len++] = nibble_to_hex(addr & 0xF, 'X');
-            addr >>= 4;
+        __union_addr uaddr = {pWrData->addr};
+        for (uint16_t i = 0; i < 3; i++) {
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
+            uaddr.data8[2 - i] >>= 4;
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
         }
 
         // data
@@ -129,10 +130,11 @@ void write_sett_flash_msdp(__msdp_out_data * const pOutData, const __msdp_wr_dat
         pOutData->pBuff[pOutData->len++] = 0x35;
 
         // addr
-        uint32_t addr = pWrData->addr;
-        for (uint16_t i = 0; i < 6; i++) {
-            pOutData->pBuff[pOutData->len++] = nibble_to_hex(addr & 0xF, 'X');
-            addr >>= 4;
+        __union_addr uaddr = {pWrData->addr};
+        for (uint16_t i = 0; i < 3; i++) {
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
+            uaddr.data8[2 - i] >>= 4;
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
         }
 
         // data
@@ -167,10 +169,11 @@ void invoke_code_msdp(__msdp_out_data * const pOutData, const uint32_t address) 
     pOutData->pBuff[pOutData->len++] = 0x35;
 
     // addr
-    uint32_t addr = address;
-    for (uint16_t i = 0; i < 6; i++) {
-        pOutData->pBuff[pOutData->len++] = nibble_to_hex(addr & 0xF, 'X');
-        addr >>= 4;
+    __union_addr uaddr = {address};
+    for (uint16_t i = 0; i < 3; i++) {
+        pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
+        uaddr.data8[2 - i] >>= 4;
+        pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
     }
 
     // crc
