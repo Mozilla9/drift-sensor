@@ -18,10 +18,10 @@
 #define IAP_MAIN_SECT_ADDR        SECTOR1
 #define IAP_RESERV_SECT_ADDR      SECTOR2
 
-#define IAP_FW_START_SECT         9
+#define IAP_FW_START_SECT         8
 #define IAP_FW_END_SECT           10
 #define IAP_BL_START_SECT         0
-#define IAP_BL_END_SECT           8
+#define IAP_BL_END_SECT           7
 
 #define CHIP_UNLOCK_CODE          123456789    // Code for chip erase
 #define IAP_VALID_DATA            0xAA55AA55   // Test value for segment writes
