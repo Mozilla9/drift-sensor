@@ -77,14 +77,14 @@ __irq __arm void __interrupt_handler_uart0() {
         //----------------------------------------------------------------------
         case IIR_RDA:
           for (uint32_t i = 0; i < UART0_FIFO_TRLEVEL; i++) {
-              put_in_ring_buff(pointerRingBuff, U0RBR);
+              pointerRingBuff->put(pointerRingBuff, U0RBR);
           }
           break;
 
         //----------------------------------------------------------------------
         case IIR_CTI:
           do {
-              put_in_ring_buff(pointerRingBuff, U0RBR);
+              pointerRingBuff->put(pointerRingBuff, U0RBR);
           } while (U0LSR & LSR_RDR);
           break;
 

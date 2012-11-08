@@ -8,17 +8,21 @@
 
 typedef struct
 {
-    uint8_t * const pBuff;
+    // data
+    uint8_t * pBuff;
+    uint16_t buff_size;
     volatile uint16_t tile;
     uint16_t head;
-    const uint16_t buff_size;
+
+    // interface
+    void (* reset)(void * const pRb);
+    void (* put)(void * const pRb, const uint8_t _byte);
+    uint8_t (* get)(void * const pRb);
+    uint16_t (* size)(void * const pRb);
 } __ring_buff;
 
 
-void put_in_ring_buff(__ring_buff * const _pBuff, const uint8_t _byte);
-uint8_t get_from_ring_buff(__ring_buff * const _pBuff);
-bool_t is_ring_buff_empty(__ring_buff * const _pBuff);
-uint16_t size_ring_buff(__ring_buff * const _pBuff);
+void create_ring_buff(__ring_buff * const _pRb, uint8_t * const _pBuff, const uint16_t _size);
 
 
 #endif

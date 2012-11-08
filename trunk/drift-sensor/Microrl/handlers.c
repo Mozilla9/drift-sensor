@@ -39,6 +39,7 @@
 #define _CMD_WRSETT          "wrsett"
 #define _CMD_RDSETT          "rdsett"
 #define _CMD_SW_PROTO        "proto"
+#define _CMD_AXIS_INV        "invert"
 
 
 // available  commands
@@ -64,10 +65,11 @@ int8_t * keyword [] = {
     _CMD_WRSETT,
     _CMD_RDSETT,
     _CMD_SW_PROTO,
+    _CMD_AXIS_INV,
     _CMD_CLEAR
 };
 
-#define _NUM_OF_CMD    22
+#define _NUM_OF_CMD    23
 
 
 // array for comletion
@@ -105,6 +107,7 @@ void print_help_cmd () {
     (*get_microrl_printf (pointerMicrorl)) ("\twrsett      - write byte to sett mem (addr byte)\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\trdsett      - read byte from sett mem(addr)\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tproto       - switch protocol to sdp\n\r");
+    (*get_microrl_printf (pointerMicrorl)) ("\tinvert      - inverting axises X, Y on/off\n\r");
 }
 
 
@@ -131,6 +134,34 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
         else if (strcmp (argv[i], _CMD_SW_PROTO) == 0) {
             set_proto_type(PROTO_TYPE_SDP);
         }
+        else if (strcmp (argv[i], _CMD_AXIS_INV) == 0) {
+            set_proto_type(PROTO_TYPE_SDP);
+
+            if (++i < argc) {
+                uint32_t flg = 0;
+                fdata.addr = ACC_INV_AXIS_FLG_ADDR;
+                fdata.pBuff = (uint8_t *) &flg;
+                fdata.len = 4;
+
+                if (strcmp (argv[i], "on") == 0) {
+                    set_axis_inv_flg(AXIS_INV_FLAG);
+
+                    flg = AXIS_INV_FLAG;
+                    write_app_settings(&fdata);
+                }
+                else if (strcmp (argv[i], "off") == 0) {
+                    set_axis_inv_flg(0);
+                    (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+
+                    write_app_settings(&fdata);
+                }
+                else {
+                    (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument");
+                }
+
+                (*get_microrl_printf (pointerMicrorl)) ("\n\r");
+            }
+        }
         else if (strcmp (argv[i], _CMD_TRACE) == 0) {
             if (++i < argc) {
                 uint32_t flg;
@@ -140,21 +171,21 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
 
                 if (strcmp (argv[i], "on") == 0) {
                     set_trace_func(&(*get_microrl_printf (pointerMicrorl)));
-                    (*get_microrl_printf (pointerMicrorl)) ("\n\r");
 
                     flg = 0xAA55AA55;
                     write_app_settings(&fdata);
                 }
                 else if (strcmp (argv[i], "off") == 0) {
                     set_trace_func(0);
-                    (*get_microrl_printf (pointerMicrorl)) ("\n\r");
 
                     flg = 0;
                     write_app_settings(&fdata);
                 }
                 else {
-                    (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument\n\r");
+                    (*get_microrl_printf (pointerMicrorl)) ("invalid cmd argument");
                 }
+
+                (*get_microrl_printf (pointerMicrorl)) ("\n\r");
             }
         }
         else if (strcmp (argv[i], _CMD_CALB) == 0) {

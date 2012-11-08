@@ -75,6 +75,12 @@ static void write_def_settings() {
     data.len = 6;
     write_data_fmem(&app_sett, &data);
 
+    // axis inv flag
+    data.addr = ACC_INV_AXIS_FLG_ADDR;
+    data.pBuff = (uint8_t *) get_axis_inv_flg();
+    data.len = 4;
+    write_data_fmem(&app_sett, &data);
+
     // drift filtres
     data.addr = ACC_FILTR_DATA_ADDR;
     data.pBuff = (uint8_t *) get_x_acc_threshold();

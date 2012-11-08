@@ -17,8 +17,8 @@
 static const __FMEM_SETT pg_mem = {FMEM_PAGE_SIZE, FMEM_SECTOR_SIZE, FW_START_ADDR, FW_MEM_SIZE};
 
 
-#define CMD_RESET_DEVICE    1
-#define CMD_SWITCH_PROTO    2
+#define CMD_SWITCH_PROTO    1
+#define CMD_RESET_DEVICE    2
 
 
 /*
@@ -102,12 +102,12 @@ uint8_t invoke_user_cmd(const uint8_t * pData, const uint8_t len) {
     user_cmd |= nibble_to_bin(pData[1]);
 
     switch (user_cmd) {
-        case 1:
-            reset_device();
+        case CMD_SWITCH_PROTO:
+            set_proto_type(PROTO_TYPE_CONSOLE);
             break;
 
-        case 2:
-            set_proto_type(PROTO_TYPE_CONSOLE);
+        case CMD_RESET_DEVICE:
+            reset_device();
             break;
 
         default:

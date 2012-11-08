@@ -10,6 +10,7 @@
 
 
 #define DEF_SETT_FLAG       0xAA55AA55
+#define AXIS_INV_FLAG       0xAA55AA55
 
 
 void init_app_settings();

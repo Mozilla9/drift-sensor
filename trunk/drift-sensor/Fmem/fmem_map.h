@@ -49,6 +49,7 @@
 #define ACC_MATRIX_KOEFF_ADDR      (ACC_TEMP_CFG_REG_ADDR + 40)   // matrix koeff 9 float (36 b)
 #define ACC_AXIS_MAP_ADDR          (ACC_MATRIX_KOEFF_ADDR + 36)   // axis mapping indx (6 b)
 #define ACC_FILTR_DATA_ADDR        (ACC_AXIS_MAP_ADDR + 6)        // filter sett 10 x 12 (120 b)
+#define ACC_INV_AXIS_FLG_ADDR      (ACC_FILTR_DATA_ADDR + 120)    // flg for inversing axis (4 b)
 
 
 #define DEF_SETT_FLAG_ADDR         (GSETT_MEM_SIZE - 4)           // default sett flag (4 b  0xaa55aa55)

@@ -46,6 +46,8 @@ calibr_data * get_calibr_quiet_data();
 calibr_data * get_calibr_motion_data();
 float32_t * get_rotation_matrix();
 uint16_t * get_axis_data();
+uint32_t * get_axis_inv_flg();
+void set_axis_inv_flg(const uint32_t flg); 
 void print_calibr_results();
 
 // drift func

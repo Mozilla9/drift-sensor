@@ -45,8 +45,8 @@ void main()
     DEBUG_PRINTF("\r\n\r\n");
 
     while (1) {
-        if (is_ring_buff_empty(pointerRingBuff) == FALSE_T) {
-            sdp_insert_char(get_from_ring_buff(pointerRingBuff));
+        if (pointerRingBuff->size(pointerRingBuff) > 0) {
+            sdp_insert_char(pointerRingBuff->get(pointerRingBuff));
         }
 
         run_tasks();

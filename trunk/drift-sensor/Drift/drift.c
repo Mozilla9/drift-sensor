@@ -454,6 +454,12 @@ void init_reco_drift() {
     data.pBuff = (uint8_t *) get_axis_data();
     data.len = 6;
     read_app_settings(&data);
+    
+    // init axis inverting flag
+    data.addr = ACC_INV_AXIS_FLG_ADDR;
+    data.pBuff = (uint8_t *) get_axis_inv_flg();
+    data.len = 4;
+    read_app_settings(&data);
 
     print_calibr_results();
 }
@@ -494,6 +500,13 @@ void add_acc_matrix_samples_in_reco_drift(const uint16_t x_acc, const uint16_t y
     rot_x = (sint16_t)output_vector[pAxis[0] < 3 ? pAxis[0] : 0];
     rot_y = (sint16_t)output_vector[pAxis[1] < 3 ? pAxis[1] : 1];
     rot_z = (sint16_t)output_vector[pAxis[2] < 3 ? pAxis[2] : 2];
+    
+    // inverting axises
+    if (*get_axis_inv_flg() == AXIS_INV_FLAG) {
+        rot_x *= -1;
+        rot_y *= -1;
+        //rot_z *= -1;
+    }
 
     add_sample_in_filter(&x_acc_filter, rot_x);
     add_sample_in_filter(&y_acc_filter, rot_y);

@@ -2,8 +2,8 @@
 /*  Project "Compass" drift sensor                                            */
 /*  Soft: S. Maslyakov, rusoil.9@gmail.com                                    */
 /*                                                                            */
-/*  Revision:     13.4.0                                                      */
-/*  Date:         2012/10/28 22:13:33                                         */
+/*  Revision:     13.5.0                                                      */
+/*  Date:         2012/11/08 04:13:33                                         */
 /******************************************************************************/
 
 #include "data_types.h"
@@ -21,7 +21,7 @@
 #include "Tasks\tasks.h"
 
 
-#define device_vers_tag    "\n\rDriftSensor v.13.4\n\r"
+#define device_vers_tag    "\n\rDriftSensor v.13.5\n\r"
 
 extern __ring_buff * const pointerRingBuff;
 
@@ -60,8 +60,8 @@ void main()
     DEBUG_PRINTF("\r\n\r\n");
 
     while (1) {
-        if (is_ring_buff_empty(pointerRingBuff) == FALSE_T) {
-            const uint8_t data = get_from_ring_buff(pointerRingBuff);
+        if (pointerRingBuff->size(pointerRingBuff) > 0) {
+            const uint8_t data = pointerRingBuff->get(pointerRingBuff);
             
             if (!get_proto_type()) {
                 microrl_insert_char (pointerMicrorl, data);
