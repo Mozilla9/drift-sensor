@@ -20,6 +20,7 @@ static average_buff z_acc_filter;
 
 static float32_t rotation[9] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
 static uint16_t axis_ind[3] = {0, 1, 2};
+static uint32_t axis_inv_flg = AXIS_INV_FLAG;
 
 /*
  * Init calibr data
@@ -214,6 +215,8 @@ void print_calibr_results() {
     DEBUG_PRINTF("x = %u\r\n", axis_ind[0]);
     DEBUG_PRINTF("y = %u\r\n", axis_ind[1]);
     DEBUG_PRINTF("z = %u\r\n", axis_ind[2]);
+
+    DEBUG_PRINTF("axis inverting = %s\r\n", axis_inv_flg == AXIS_INV_FLAG ? "on" : "off");
 }
 
 
@@ -253,4 +256,19 @@ uint16_t * get_axis_data() {
 }
 
 
+/*
+ * Get axis inv flg
+ *
+ */
+uint32_t * get_axis_inv_flg() {
+    return &axis_inv_flg;
+}
 
+
+/*
+ * Set axis inv flg
+ *
+ */
+void set_axis_inv_flg(const uint32_t flg) {
+    axis_inv_flg = flg;
+}

@@ -23,6 +23,7 @@ typedef struct
 {
     uint32_t flg_ok;
     uint32_t fw_size;
+    uint32_t row_fw_crc;
 } __FLASH_UPDATER;
 
 

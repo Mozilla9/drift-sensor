@@ -13,7 +13,7 @@
 
 static const __FMEM_SETT fw_mem = {FMEM_PAGE_SIZE, FMEM_SECTOR_SIZE, FW_START_ADDR, FW_MEM_SIZE};
 static __TOOLS_UPDATER tools = {0, 0, 0, 0, FALSE_T};
-static __FLASH_UPDATER flash_data = {0, 0};
+static __FLASH_UPDATER flash_data = {0, 0, 0};
 
 #pragma data_alignment = 4
 static uint8_t upd_buffer[UPD_BUFF_SIZE];
@@ -60,7 +60,28 @@ void reset_update_state() {
  *
  */
 bool_t is_need_update() {
-    return ((flash_data.flg_ok == FLG_NEED_UPDATE) && (flash_data.fw_size)) ? TRUE_T : FALSE_T;
+    if (flash_data.flg_ok == FLG_NEED_UPDATE) {
+        if (flash_data.fw_size && flash_data.fw_size < FW_MEM_SIZE) {
+            reset_update_state();
+
+            while (!tools.flg_update_end) {
+                if (read_block_from_flash_upd()) {
+                    for (uint32_t i = 0; i < upd_buff_len; i++) {
+                        tools.crc += upd_buffer[i];
+                    }
+                }
+            }
+
+            if (!(tools.crc + flash_data.row_fw_crc)) {
+                return TRUE_T;
+            }
+        }
+
+        // erase flag - fw is fake
+        erase_flg_need_update();
+    }
+
+    return FALSE_T;
 }
 
 

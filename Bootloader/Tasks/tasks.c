@@ -58,8 +58,6 @@ static int update_task(struct pt * pt) {
     while(1) {
         PT_WAIT_UNTIL(pt, flag_run_enabled);
         {
-
-
             switch (upd_state) {
                 //--------------------------------------------------------------
                 case 0:      // init + erase mcu flash

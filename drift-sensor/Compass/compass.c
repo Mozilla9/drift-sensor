@@ -20,7 +20,7 @@ static volatile uint32_t sys_tick = 0;
 static uint32_t device_id = 0;
 
 static uint8_t ring_buff[100];
-static __ring_buff r_buff = {ring_buff, 0, 0, 100};
+static __ring_buff r_buff;
 __ring_buff * const pointerRingBuff = &r_buff;
 
 
@@ -155,6 +155,8 @@ void init_device() {
     init_at25df();
     init_led();
     init_lis3dh();
+    
+    create_ring_buff(pointerRingBuff, ring_buff, sizeof(ring_buff));
 
     init_uart0(57600, 3);
     INT_UART0RX_ON;
