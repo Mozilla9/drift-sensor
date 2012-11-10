@@ -10,8 +10,8 @@
 #include "Iap\iap_def.h"
 
 
-#define SAFETY_BUFF_SIZE          (512)                // Buff len for safety-write func
-#define IAP_SECT_QNT              (11)                 // Qnt Flash sectors for LPC2364
+#define SAFETY_BUFF_SIZE          (512)        // Buff len for safety-write func
+#define IAP_SECT_QNT              (11)         // Qnt Flash sectors for LPC2364
 
 #define IAP_MAIN_SECTOR           1
 #define IAP_RESERV_SECTOR         2
@@ -20,6 +20,7 @@
 
 #define IAP_FW_START_SECT         8
 #define IAP_FW_END_SECT           10
+#define IAP_FW_START_ADDR         SECTOR8
 #define IAP_BL_START_SECT         0
 #define IAP_BL_END_SECT           7
 

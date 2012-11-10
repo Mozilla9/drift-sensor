@@ -18,8 +18,8 @@
 //__root static const uint32_t CRP_MODE   @ ".CRP_CODE" = CRP3;
 __root static const uint32_t FW_CFG[]   @ ".FW_CFG" =
 {
-    0x0000CA70,     // main fw len
-    0xffb81cc0,     // main fw crc
+    0x00006A80,     // main fw len
+    0xffd801b0,     // main fw crc
     IAP_VALID_DATA
 };
 
@@ -123,9 +123,6 @@ void init_device() {
     init_uart0(57600, 3);
     INT_UART0RX_ON;
 
-    // debug
-    set_trace(serprintf);
-
     init_irq();
 
     // Testing main pin (for locked mode)
@@ -135,9 +132,11 @@ void init_device() {
 
     // Fork
     if (is_need_update() == TRUE_T) {
+        DEBUG_PRINTF("BL:enable_update_task()\n\r");
         enable_update_task();
     } else {
         if (*((uint32_t *)(IAP_MAIN_SECT_ADDR + SHIFT_FW_VALID_FLG)) != IAP_VALID_DATA) {
+            DEBUG_PRINTF("BL:repair_flash_iap()\n\r");
             repair_flash_iap();
         }
 
@@ -145,6 +144,7 @@ void init_device() {
         const uint32_t fw_size = *((uint32_t *)(IAP_MAIN_SECT_ADDR + SHIFT_FW_SIZE_ADDR));
         const uint32_t fw_crc = *((uint32_t *)(IAP_MAIN_SECT_ADDR + SHIFT_FW_CRC_ADDR));
 
+        DEBUG_PRINTF("BL:fw_size=0x%8x, fw_crc=0x%8x\n\r", fw_size, fw_crc);
         for (uint32_t i = 0; i < 3; i++) {
             uint8_t * pFw = (uint8_t *)FW_START_ADDRESS;
             uint32_t crc = 0;
@@ -154,6 +154,7 @@ void init_device() {
             }
 
             crc = 0UL - crc;
+            DEBUG_PRINTF("BL:compute crc=0x%8x\n\r", crc);
             if (fw_crc == crc) {
                 success_count++;
                 break;
@@ -161,6 +162,7 @@ void init_device() {
         }
 
         if (success_count > 0 && fw_crc) {
+            DEBUG_PRINTF("BL:run_main_firmware()\n\r");
             run_main_firmware();
         }
     }
