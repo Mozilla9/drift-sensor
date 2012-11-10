@@ -6,8 +6,6 @@
 define symbol __ICFEDIT_intvec_start__   = 0x00000000;
 define symbol __ICFEDIT_cstartup_start__ = 0x00008000;
 
-define symbol _CRP_ADR__ = 0x000001FC;
-
 
 /*-Memory Regions-*/
 define symbol __ICFEDIT_region_ROM_start__ = 0x00008000;
@@ -62,12 +60,9 @@ define block HEAP      with alignment = 8, size = __ICFEDIT_size_heap__     { };
 place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec };
 place at address mem:__ICFEDIT_cstartup_start__ { readonly section .CSTARTUP };
 
-place at address mem:_CRP_ADR__ { readonly section .CRP_CODE };
-
 
 initialize by copy { readwrite };
 do not initialize  { section .noinit };
-do not initialize  { section .CRP_CODE };
 
 do not initialize  { section USB_DMA_RAM };
 do not initialize  { section EMAC_DMA_RAM };
