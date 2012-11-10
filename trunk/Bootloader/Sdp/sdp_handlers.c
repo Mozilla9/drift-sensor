@@ -19,6 +19,7 @@
 #define CMD_RESET_DEVICE    2
 #define CMD_GET_BL_VERS     3
 #define CMD_UNLOCK_MCU      4
+#define CMD_DEBUG_ON        5
 
 static const __FMEM_SETT pg_mem = {FMEM_PAGE_SIZE, FMEM_SECTOR_SIZE, FW_START_ADDR, FW_MEM_SIZE};
 
@@ -127,6 +128,10 @@ uint8_t invoke_user_cmd(const uint8_t * pData, const uint8_t len) {
 
                 clear_mcu_iap(unlock_code);
             }
+            break;
+
+        case CMD_DEBUG_ON:
+            set_trace(get_trace() == 0 ? serprintf : 0);
             break;
 
         default:

@@ -7,7 +7,7 @@
 #define __BOOTLOADER_H
 
 
-#define device_vers_tag    "\n\rBootloader v.1.0\n\r"
+#define device_vers_tag    "\n\rBootloader v.1.0 09/11/2012 03:43:33\n\r"
 
 
 void init_device();
