@@ -4,6 +4,7 @@
 
 
 #include "data_types.h"
+#include "Uart\v_printf.h"
 #include "At25df\at25df.h"
 #include "Fmem\fmem.h"
 #include "Iap\iap.h"
@@ -52,6 +53,8 @@ void reset_update_state() {
 
     fw_sett.fw_size = 0UL;
     fw_sett.fw_crc = 0UL;
+
+    DEBUG_PRINTF("BL:reset_update_state()\r\n");
 }
 
 
@@ -60,6 +63,10 @@ void reset_update_state() {
  *
  */
 bool_t is_need_update() {
+    DEBUG_PRINTF("BL:flg_need_update=0x%8x\r\n", flash_data.flg_ok);
+    DEBUG_PRINTF("BL:fw_size=0x%8x\r\n", flash_data.fw_size);
+    DEBUG_PRINTF("BL:fw_row_crc=0x%8x\r\n", flash_data.row_fw_crc);
+
     if (flash_data.flg_ok == FLG_NEED_UPDATE) {
         if (flash_data.fw_size && flash_data.fw_size < FW_MEM_SIZE) {
             reset_update_state();
@@ -73,14 +80,17 @@ bool_t is_need_update() {
             }
 
             if (!(tools.crc + flash_data.row_fw_crc)) {
+                DEBUG_PRINTF("BL:is_need_update() - true\r\n");
                 return TRUE_T;
             }
         }
 
         // erase flag - fw is fake
+        DEBUG_PRINTF("BL:erase_flg_need_update() - fw is fake\r\n");
         erase_flg_need_update();
     }
 
+    DEBUG_PRINTF("BL:is_need_update() - false\r\n");
     return FALSE_T;
 }
 
@@ -111,13 +121,16 @@ bool_t erase_main_fw_area_upd() {
     const uint32_t end_sector = determ_sector_num_iap(flash_data.fw_size + FW_START_ADDRESS - 16UL);
     uint32_t error;
 
+    DEBUG_PRINTF("BL:erase_main_fw_area_upd()\r\n");
     error = prepare_sector_iap(FW_START_SECT, end_sector);
     if (error != IAP_CMD_SUCCESS) {
+        DEBUG_PRINTF("BL:upd err - 1\r\n");
         return FALSE_T;
     }
 
     error = erase_sector_iap(FW_START_SECT, end_sector);
     if (error != IAP_CMD_SUCCESS) {
+        DEBUG_PRINTF("BL:upd err - 2\r\n");
         return FALSE_T;
     }
 
@@ -133,6 +146,7 @@ bool_t erase_main_fw_area_upd() {
 bool_t read_block_from_flash_upd() {
     __FMEM_DATA data;
 
+    DEBUG_PRINTF("BL:read_block_from_flash_upd()\r\n");
     upd_buff_len = ((flash_data.fw_size - tools.data_counter) > UPD_BUFF_SIZE)
         ? UPD_BUFF_SIZE : (flash_data.fw_size - tools.data_counter);
 
@@ -145,6 +159,7 @@ bool_t read_block_from_flash_upd() {
 
     // Read
     if (read_data_fmem(&fw_mem, &data) != eMEM_OK) {
+        DEBUG_PRINTF("BL:upd err - 3\r\n");
         tools.flg_update_end = TRUE_T;
         return FALSE_T;
     }
@@ -154,6 +169,7 @@ bool_t read_block_from_flash_upd() {
 
     // Testing by end
     if (flash_data.fw_size == tools.data_counter) {
+        DEBUG_PRINTF("BL:flg_update_end = TRUE_T\r\n");
         tools.flg_update_end = TRUE_T;
     }
 
@@ -166,8 +182,10 @@ bool_t read_block_from_flash_upd() {
  *
  */
 bool_t write_block_in_main_fw_upd() {
+    DEBUG_PRINTF("BL:write_block_in_main_fw_upd()\r\n");
     if (tools.flg_update_end == TRUE_T) {
         if (upd_buff_len < 16) {
+            DEBUG_PRINTF("BL:upd err - 4\r\n");
             return FALSE_T;
         }
 
@@ -191,16 +209,19 @@ bool_t write_block_in_main_fw_upd() {
         // Write to mcu flash
         error = prepare_sector_iap(start_sector, start_sector);
         if (error != IAP_CMD_SUCCESS) {
+            DEBUG_PRINTF("BL:upd err - 5\r\n");
             return FALSE_T;
         }
 
         error = copy_ram_to_flash_iap(tools.addr, (uint32_t)upd_buffer, upd_buff_len);
         if (error != IAP_CMD_SUCCESS) {
+            DEBUG_PRINTF("BL:upd err - 6\r\n");
             return FALSE_T;
         }
 
         error = compare_iap(tools.addr, (uint32_t)upd_buffer, upd_buff_len);
         if (error != IAP_CMD_SUCCESS) {
+            DEBUG_PRINTF("BL:upd err - 7\r\n");
             return FALSE_T;
         }
     }
@@ -213,6 +234,8 @@ bool_t write_block_in_main_fw_upd() {
  *
  */
 bool_t finalize_update() {
+    DEBUG_PRINTF("BL:finalize_update()\r\n");
+
     // Validating crc
     tools.crc = 0UL - tools.crc;
 
@@ -220,6 +243,7 @@ bool_t finalize_update() {
         return safety_write_flash_iap((uint8_t *)&fw_sett, SHIFT_FW_SIZE_ADDR, sizeof(__FW_SETT_UPDATER));
     }
 
+    DEBUG_PRINTF("BL:upd err - 8\r\n");
     return FALSE_T;
 }
 
@@ -232,6 +256,7 @@ void erase_flg_need_update() {
     const uint32_t flg = 0;
     __FMEM_DATA data;
 
+    DEBUG_PRINTF("BL:erase_flg_need_update()\r\n");
     data.addr = FW_STAFF_MEM_ADDR;
     data.pBuff = (uint8_t *)&flg;
     data.len = sizeof(flg);

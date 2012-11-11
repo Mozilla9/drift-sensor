@@ -13,6 +13,15 @@ extern __ring_buff * const pointerRingBuff;
 
 
 /*
+ * Waite while UART0 busy
+ *
+ */
+void waite_tx_all_uart0() {
+    while (!(U0LSR & LSR_THRE));
+}
+
+
+/*
  * Init uart0
  *
  */

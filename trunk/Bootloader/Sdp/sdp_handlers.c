@@ -30,6 +30,7 @@ static const __FMEM_SETT pg_mem = {FMEM_PAGE_SIZE, FMEM_SECTOR_SIZE, FW_START_AD
  *
  */
 uint8_t erase_pg_flash() {
+    DEBUG_PRINTF("erase_pg_flash()\r\n");
     return erase_memory_fmem(&pg_mem) ? SDP_NACK_x07 : SDP_ACK_x06;
 }
 
@@ -39,6 +40,7 @@ uint8_t erase_pg_flash() {
  *
  */
 uint8_t erase_sett_flash() {
+    DEBUG_PRINTF("erase_sett_flash()\r\n");
     return SDP_ACK_x06;
 }
 
@@ -59,18 +61,23 @@ uint8_t write_pg_flash(const uint8_t * pData, const uint8_t len) {
     // extract addr
     data.addr = 0;
     for (uint16_t i = 0; i < 6; i++) {
-        data.addr |= nibble_to_bin(pData[i]);
         data.addr <<= 4;
+        data.addr |= nibble_to_bin(pData[i]);
     }
+    DEBUG_PRINTF("write_pg_flash()\r\n");
+    DEBUG_PRINTF("pg_addr: 0x%8x\r\n", data.addr);
 
     // extract data
+    DEBUG_PRINTF("pg_data: ");
     data.len = (len - 6) / 2;
     data.pBuff = buff;
     for (uint16_t i = 0, k = 6; i < data.len; i++) {
-        buff[i] = nibble_to_bin(k++);
+        buff[i] = nibble_to_bin(pData[k++]);
         buff[i] <<= 4;
-        buff[i] |= nibble_to_bin(k++);
+        buff[i] |= nibble_to_bin(pData[k++]);
+        DEBUG_PRINTF("%2x ", buff[i]);
     }
+    DEBUG_PRINTF("\r\n");
 
     return write_data_fmem(&pg_mem, &data) ? SDP_NACK_x07 : SDP_ACK_x06;
 }
@@ -81,6 +88,7 @@ uint8_t write_pg_flash(const uint8_t * pData, const uint8_t len) {
  *
  */
 uint8_t write_sett_flash(const uint8_t * pData, const uint8_t len) {
+    DEBUG_PRINTF("write_sett_flash()\r\n");
     return SDP_ACK_x06;
 }
 
@@ -90,6 +98,23 @@ uint8_t write_sett_flash(const uint8_t * pData, const uint8_t len) {
  *
  */
 uint8_t invoke_code(const uint8_t * pData, const uint8_t len) {
+    uint32_t addr;
+
+    // vaildating
+    if (len < 8) {
+        return SDP_NACK_x07;
+    }
+
+    // extract addr
+    addr = 0;
+    for (uint16_t i = 0; i < 8; i++) {
+        addr <<= 4;
+        addr |= nibble_to_bin(pData[i]);
+    }
+    DEBUG_PRINTF("invoke_code: 0x%8x\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n", addr);
+
+    ((void (*) ())addr)();
+
     return SDP_ACK_x06;
 }
 
@@ -104,6 +129,8 @@ uint8_t invoke_user_cmd(const uint8_t * pData, const uint8_t len) {
     user_cmd = nibble_to_bin(pData[0]);
     user_cmd <<= 4;
     user_cmd |= nibble_to_bin(pData[1]);
+
+    DEBUG_PRINTF("user_cmd: 0x%2x\r\n", user_cmd);
 
     switch (user_cmd) {
         case CMD_RESET_DEVICE:
