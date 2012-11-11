@@ -92,15 +92,14 @@ void write_pg_flash_msdp(__msdp_out_data * const pOutData, const __msdp_wr_data 
         // addr
         __union_addr uaddr = {pWrData->addr};
         for (uint16_t i = 0; i < 3; i++) {
-            pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
-            uaddr.data8[2 - i] >>= 4;
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] >> 4, 'X');
             pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
         }
 
         // data
         for (uint16_t i = 0; i < pWrData->len; i++) {
-            pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] & 0xF, 'X');
             pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] >> 4, 'X');
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] & 0xF, 'X');
         }
 
         // crc
@@ -132,15 +131,14 @@ void write_sett_flash_msdp(__msdp_out_data * const pOutData, const __msdp_wr_dat
         // addr
         __union_addr uaddr = {pWrData->addr};
         for (uint16_t i = 0; i < 3; i++) {
-            pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
-            uaddr.data8[2 - i] >>= 4;
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] >> 4, 'X');
             pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
         }
 
         // data
         for (uint16_t i = 0; i < pWrData->len; i++) {
-            pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] & 0xF, 'X');
             pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] >> 4, 'X');
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] & 0xF, 'X');
         }
 
         // crc
@@ -171,8 +169,7 @@ void invoke_code_msdp(__msdp_out_data * const pOutData, const uint32_t address) 
     // addr
     __union_addr uaddr = {address};
     for (uint16_t i = 0; i < 3; i++) {
-        pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
-        uaddr.data8[2 - i] >>= 4;
+        pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] >> 4, 'X');
         pOutData->pBuff[pOutData->len++] = nibble_to_hex(uaddr.data8[2 - i] & 0xF, 'X');
     }
 
@@ -198,13 +195,13 @@ void invoke_user_cmd_msdp(__msdp_out_data * const pOutData, const __msdp_wr_data
         pOutData->pBuff[pOutData->len++] = pWrData->len + 1;  // cmd(1byte) + data
 
         // cmd 'Z'
-        pOutData->pBuff[pOutData->len++] = nibble_to_hex(SDP_CMD_Z & 0xF, 'X');
         pOutData->pBuff[pOutData->len++] = nibble_to_hex(SDP_CMD_Z >> 4, 'X');
+        pOutData->pBuff[pOutData->len++] = nibble_to_hex(SDP_CMD_Z & 0xF, 'X');
 
         // data
         for (uint16_t i = 0; i < pWrData->len; i++) {
-            pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] & 0xF, 'X');
             pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] >> 4, 'X');
+            pOutData->pBuff[pOutData->len++] = nibble_to_hex(pWrData->pBuff[i] & 0xF, 'X');
         }
 
         // crc
@@ -212,4 +209,3 @@ void invoke_user_cmd_msdp(__msdp_out_data * const pOutData, const __msdp_wr_data
         pOutData->len++;
     }
 }
-
