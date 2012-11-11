@@ -4,10 +4,16 @@
 
 
 #include "data_types.h"
-#include "Core\core.h"
-#include "Uart\v_printf.h"
-#include "Lib\bin_to_bcd.h"
-#include "Sdp\sdp.h"
+#include "sdp.h"
+
+
+extern uint32_t serprintf(const int8_t * format, ...);
+extern uint8_t erase_pg_flash();
+extern uint8_t erase_sett_flash();
+extern uint8_t write_pg_flash(const uint8_t * pData, const uint8_t len);
+extern uint8_t write_sett_flash(const uint8_t * pData, const uint8_t len);
+extern uint8_t invoke_code(const uint8_t * pData, const uint8_t len);
+extern uint8_t invoke_user_cmd(const uint8_t * pData, const uint8_t len);
 
 
 static __sdp_data sdp;
@@ -19,7 +25,6 @@ static __sdp_data sdp;
  */
 static void send_answer(const uint8_t answ) {
     serprintf("%c", answ);
-    //serprintf("%2x", answ);
 }
 
 
@@ -35,6 +40,23 @@ static uint8_t calc_crc_sdp(const uint8_t * pData, uint8_t len) {
     } while (--len);
 
     return 0 - crc;
+}
+
+
+/*
+ * nibble to bin
+ *
+ */
+static uint8_t nibble_to_bin(const uint8_t nibble) {
+    if (nibble >= '0' && nibble <= '9') {
+        return nibble - 0x30;
+    } else if (nibble >= 'A' && nibble <= 'F') {
+        return nibble - 0x37;
+    } else if (nibble >= 'a' && nibble <= 'f') {
+        return nibble - 0x57;
+    } else {
+        return 0;
+    }
 }
 
 
@@ -139,4 +161,3 @@ void sdp_insert_char(const uint8_t _char) {
         }
     }
 }
-

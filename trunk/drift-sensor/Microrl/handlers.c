@@ -36,8 +36,6 @@
 #define _CMD_ACC_Z_PIT       "ap"
 #define _CMD_ACC_Z_MOD       "am"
 #define _CMD_CALB            "calb"
-#define _CMD_WRSETT          "wrsett"
-#define _CMD_RDSETT          "rdsett"
 #define _CMD_SW_PROTO        "proto"
 #define _CMD_AXIS_INV        "invert"
 
@@ -62,14 +60,12 @@ int8_t * keyword [] = {
     _CMD_ACC_Z_PIT,
     _CMD_ACC_Z_MOD,
     _CMD_CALB,
-    _CMD_WRSETT,
-    _CMD_RDSETT,
     _CMD_SW_PROTO,
     _CMD_AXIS_INV,
     _CMD_CLEAR
 };
 
-#define _NUM_OF_CMD    23
+#define _NUM_OF_CMD    21
 
 
 // array for comletion
@@ -104,8 +100,6 @@ void print_help_cmd () {
     (*get_microrl_printf (pointerMicrorl)) ("\taz          - set acc Z sett\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tap          - set acc Z_pit sett\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tam          - set acc Z_mod sett\n\r");
-    (*get_microrl_printf (pointerMicrorl)) ("\twrsett      - write byte to sett mem (addr byte)\n\r");
-    (*get_microrl_printf (pointerMicrorl)) ("\trdsett      - read byte from sett mem(addr)\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tproto       - switch protocol to sdp\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tinvert      - inverting axises X, Y on/off\n\r");
 }
@@ -223,36 +217,6 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
 
                 if (func) (*func)();
                 (*get_microrl_printf (pointerMicrorl)) ("\n\r");
-            }
-        }
-        else if (strcmp (argv[i], _CMD_WRSETT) == 0) {
-            if ((i + 2) < argc) {
-                uint16_t addr = 0;
-                uint8_t byte_sett = 0;
-
-                addr = hex_to_bin(argv[++i]);
-                byte_sett = hex_to_bin(argv[++i]);
-
-                fdata.addr = addr;
-                fdata.pBuff = &byte_sett;
-                fdata.len = 1;
-                write_app_settings(&fdata);
-            } else {
-                (*get_microrl_printf (pointerMicrorl))("invalid cmd arguments\n\r");
-            }
-        }
-        else if (strcmp (argv[i], _CMD_RDSETT) == 0) {
-            if ((i + 1) < argc) {
-                uint8_t byte_sett = 0;
-
-                fdata.addr = hex_to_bin(argv[++i]);
-                fdata.pBuff = &byte_sett;
-                fdata.len = 1;
-                read_app_settings(&fdata);
-
-                (*get_microrl_printf (pointerMicrorl))("\r\n%2X\n\r", byte_sett);
-            } else {
-                (*get_microrl_printf (pointerMicrorl))("invalid cmd arguments\n\r");
             }
         }
         else if ((strcmp (argv[i], _CMD_ACC_TASK) == 0)

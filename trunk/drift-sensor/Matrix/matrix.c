@@ -26,11 +26,11 @@ static sint16_t rotate_z(const sint16_t acs_data[], float32_t rotation_z[]) {
     float32_t turn_cos = 0;
     float32_t turn_sin = 0;
     float32_t axis[DIM_SIZE] = {0, 0, 0};
-    
+
     /* axis vector length */
     axis_len = sqrt((float32_t)(acs_data[0] * acs_data[0] + acs_data[1] * acs_data[1]));
 
-    if(axis_len < EE)
+    if (axis_len < EE)
         return -1;
 
     /* axis vector coordinates */
@@ -40,7 +40,7 @@ static sint16_t rotate_z(const sint16_t acs_data[], float32_t rotation_z[]) {
     /* turn angle cos and sin */
     data_len = sqrt((float32_t)(acs_data[0] * acs_data[0] + acs_data[1] * acs_data[1] + acs_data[2] * acs_data[2]));
 
-    if(data_len < EE)
+    if (data_len < EE)
         return -2;
 
     turn_cos = acs_data[2] / data_len;
@@ -79,7 +79,7 @@ static sint16_t rotate_x(const sint16_t acs_data[], const float32_t rotation_z[]
 
     data_len = sqrt(turn_data[0] * turn_data[0] + turn_data[1] * turn_data[1]);
 
-    if(data_len < EE)
+    if (data_len < EE)
         return -1;
 
     /* rotation matrix components */
@@ -144,15 +144,15 @@ sint16_t rotate(const sint16_t acs_data1[], const sint16_t acs_data2[], float32_
     float32_t rotation_x[9];
     sint16_t rezult;
     rezult = rotate_z(acs_data1, rotation_z);
-    
-    if(rezult)
+
+    if (rezult)
         return rezult;
-    
+
     rezult = rotate_x(acs_data2, rotation_z, rotation_x);
-    
-    if(rezult)
+
+    if (rezult)
         return rezult;
-    
+
     matrix_multiply(rotation_x, rotation_z, rotation);
     return 0;
 }
