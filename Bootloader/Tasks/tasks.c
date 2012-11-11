@@ -22,7 +22,7 @@
 
 static uint32_t flag_run_enabled = 0;
 static uint32_t enabled_tasks = 0x000000;
-static uint16_t upd_state;
+static int16_t upd_state;
 
 static struct pt first_pt;
 static struct pt upd_pt;
@@ -61,11 +61,13 @@ static int update_task(struct pt * pt) {
             switch (upd_state) {
                 //--------------------------------------------------------------
                 case 0:      // init + erase mcu flash
+                    DEBUG_PRINTF("BL:Start update task\n\r");
                     reset_update_state();
                     if (erase_main_fw_area_upd()) {
                         upd_state++;
                     } else {
-                        disable_update_task();
+                        DEBUG_PRINTF("BL:updt err - 1\n\r");
+                        upd_state = -1;
                     }
                     break;
 
@@ -75,7 +77,8 @@ static int update_task(struct pt * pt) {
                         // decode_block_upd();
                         upd_state++;
                     } else {
-                        disable_update_task();
+                        DEBUG_PRINTF("BL:updt err - 2\n\r");
+                        upd_state = -1;
                     }
                     break;
 
@@ -88,7 +91,8 @@ static int update_task(struct pt * pt) {
                             upd_state--;
                         }
                     } else {
-                        disable_update_task();
+                        DEBUG_PRINTF("BL:updt err - 3\n\r");
+                        upd_state = -1;
                     }
                     break;
 
@@ -96,14 +100,16 @@ static int update_task(struct pt * pt) {
                 case 3:
                     erase_flg_need_update();
                     if (finalize_update()) {
-                        DEBUG_PRINTF("Update successfully\r\n");
+                        DEBUG_PRINTF("BL:Update successfully\r\n");
                         reset_device();
                     }
+                    DEBUG_PRINTF("BL:updt err - 4\n\r");
                     disable_update_task();
                     break;
 
                 //--------------------------------------------------------------
                 default:
+                    erase_flg_need_update();
                     disable_update_task();
                     break;
             }
@@ -199,7 +205,6 @@ void init_tasks() {
     PT_INIT(&first_pt);
     PT_INIT(&led_pt);
     PT_INIT(&upd_pt);
-
 
     DEBUG_PRINTF("\r\nTasks: 0x%8x\r\n", enabled_tasks);
 }

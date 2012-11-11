@@ -22,9 +22,12 @@
 
 #include <stdarg.h>
 #include "data_types.h"
-#include "Core\core.h"
-#include "Uart\uart0.h"
-#include "Uart\v_printf.h"
+#include "v_printf.h"
+
+
+extern uint32_t uart_putchar(const uint8_t c);
+extern void enter_cs();
+extern void exit_cs();
 
 
 static int8_t buf[12];
@@ -32,27 +35,7 @@ static serprint_func pTrace = 0;
 static uint32_t ch_count;
 
 
-/*
- * Lpc23xx implementation for UART0
- *
- */
-__arm static uint32_t uart_putchar(const uint8_t c) {
-    static uint32_t count = 16;
-
-    if ((U0LSR & LSR_THRE) || (U0LSR & LSR_TEMT)) {
-        count = 16;
-    }
-
-    if (count) {
-        U0THR = c;
-        count--;
-        return 0;
-    }
-    return 1;
-}
-
-
-__arm static void inline serial_putch(uint8_t c) {
+static void inline serial_putch(uint8_t c) {
     while(uart_putchar(c) != 0);    // Returns -1 if full queue.
     ch_count++;                     // We busy-wait.
 }
@@ -65,7 +48,7 @@ __arm static void inline serial_putch(uint8_t c) {
  * string is not terminated.
  *
  */
-__arm static void u32_to_uart(uint32_t val, sint32_t digits) {
+static void u32_to_uart(uint32_t val, sint32_t digits) {
     int8_t * str = buf + sizeof(buf) - 1;
     *str-- = 0;
 
@@ -87,7 +70,7 @@ __arm static void u32_to_uart(uint32_t val, sint32_t digits) {
  * Same thing in hex.
  *
  */
-__arm static void uint_to_hex_uart(unsigned val, uint8_t digits) {
+static void uint_to_hex_uart(unsigned val, uint8_t digits) {
     uint8_t nibble;
     int8_t * str = buf + sizeof(buf) - 1;
     *str-- = 0;
@@ -116,7 +99,7 @@ __arm static void uint_to_hex_uart(unsigned val, uint8_t digits) {
  * Float to uart
  *
  */
-__arm static void float_to_uart(const float32_t val, uint8_t digits) {
+static void float_to_uart(const float32_t val, uint8_t digits) {
     const float32_t ff = val >= 0.0 ? val : (-1.0 * val);
     const uint32_t mnt = (uint32_t) ff;
     const uint32_t exp = (uint32_t)((ff - mnt) * 10000.0);
@@ -154,7 +137,7 @@ __arm static void float_to_uart(const float32_t val, uint8_t digits) {
  *
  *
  */
-__arm uint32_t serprintf(const int8_t * format, ...) {
+uint32_t serprintf(const int8_t * format, ...) {
     va_list args;
     uint8_t c, j = 0;
     va_start(args, format);
@@ -274,4 +257,3 @@ serprint_func get_trace() {
 void set_trace(serprint_func func) {
     pTrace = func;
 }
-

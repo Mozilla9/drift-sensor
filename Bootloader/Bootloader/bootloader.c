@@ -10,16 +10,18 @@
 #include "Uart\v_printf.h"
 #include "At25df\at25df.h"
 #include "Ringbuff\ring_buffer.h"
+#include "Sett\settings.h"
 #include "Updater\updater.h"
 #include "Tasks\tasks.h"
 #include "Bootloader\bootloader.h"
 
 
+
 //__root static const uint32_t CRP_MODE   @ ".CRP_CODE" = CRP3;
 __root static const uint32_t FW_CFG[]   @ ".FW_CFG" =
 {
-    0x00006A80,     // main fw len
-    0xffd801b0,     // main fw crc
+    0x00006BCC,     // main fw len
+    0xffd74ade,     // main fw crc
     IAP_VALID_DATA
 };
 
@@ -118,6 +120,7 @@ void init_device() {
     init_led();
     init_updater();
     init_tasks();
+    init_app_settings();
     create_ring_buff(pointerRingBuff, ring_buff, sizeof(ring_buff));
 
     init_uart0(57600, 3);
@@ -163,6 +166,7 @@ void init_device() {
 
         if (success_count > 0 && fw_crc) {
             DEBUG_PRINTF("BL:run_main_firmware()\n\r");
+            waite_tx_all_uart0();
             run_main_firmware();
         }
     }

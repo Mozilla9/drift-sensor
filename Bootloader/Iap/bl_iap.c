@@ -12,7 +12,7 @@
 #pragma data_alignment = 4
 static uint8_t safety_buff[SAFETY_BUFF_SIZE];
 
-static const uint32_t sector_addr[IAP_SECT_QNT] = 
+static const uint32_t sector_addr[IAP_SECT_QNT] =
 {
     SECTOR0,  SECTOR1,  SECTOR2,  SECTOR3,  SECTOR4,  SECTOR5,  SECTOR6,
     SECTOR7,  SECTOR8,  SECTOR9,  SECTOR10 /*, SECTOR11, SECTOR12, SECTOR13,

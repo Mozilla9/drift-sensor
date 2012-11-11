@@ -14,7 +14,7 @@
 #define GSETT_SWAP_START_ADDR      (4096)
 #define GSETT_MEM_SIZE             (4096)
 
-#define FW_START_ADDR              (GSETT_START_ADDR + GSETT_MEM_SIZE)
+#define FW_START_ADDR              (GSETT_SWAP_START_ADDR + GSETT_MEM_SIZE)
 #define FW_MEM_SIZE                (31 * 4096)
 
 

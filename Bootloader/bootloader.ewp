@@ -1858,6 +1858,12 @@
     </file>
   </group>
   <group>
+    <name>SETT</name>
+    <file>
+      <name>$PROJ_DIR$\Sett\settings.c</name>
+    </file>
+  </group>
+  <group>
     <name>SPI</name>
     <file>
       <name>$PROJ_DIR$\Spi\spi.c</name>
@@ -1876,6 +1882,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\Uart\v_printf.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Uart\v_printf_impl.c</name>
     </file>
   </group>
   <group>
