@@ -166,7 +166,7 @@ void init_app_settings() {
     // trace func
     data.addr = DEV_EN_TRACE_ADDR;
     read_app_settings(&data);
-    set_trace(def_flag ? &serprintf: 0);
+    set_trace(def_flag ? &serprintf : 0);
 }
 
 
