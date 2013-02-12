@@ -1,6 +1,8 @@
-/******************************************************************************/
-/* sdp.c - serial download protocol                                           */
-/******************************************************************************/
+/*
+ * Serial download protocol
+ *
+ * $Id$
+ */
 
 
 #include "data_types.h"
@@ -94,7 +96,7 @@ static void parsing_packet_sdp() {
                 case SDP_CMD_U:
                     res = invoke_code(sdp.buff + 3, data_len - 2);
                     break;
-                    
+
                 case SDP_CMD_Z:
                     res = invoke_user_cmd(sdp.buff + 3, data_len - 2);
                     break;

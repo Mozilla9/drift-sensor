@@ -18,6 +18,8 @@
  * Originally written 2010-2011 by Donald Becker and William Carlson
  * for the QAR EV motor controller project.  Released under GPLv2.1
  * Contact the authors for use under other terms.
+ *
+ * $Id$
  */
 
 #include <stdarg.h>

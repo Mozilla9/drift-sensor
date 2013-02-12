@@ -6,7 +6,9 @@
 ;;
 ;; Copyright 2006 IAR Systems. All rights reserved.
 ;;
-;; $Revision: 21638 $
+;; Revision: 21638
+;;
+;; $Id$
 ;;
 
         MODULE  ?cstartup

@@ -1,6 +1,8 @@
-/******************************************************************************/
-/* msdp.c - serial download protocol (master)                                 */
-/******************************************************************************/
+/*
+ * Serial download protocol (master)
+ *
+ * $Id$
+ */
 
 #include "data_types.h"
 #include "msdp_def.h"
