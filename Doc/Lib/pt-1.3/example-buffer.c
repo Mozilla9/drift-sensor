@@ -30,7 +30,7 @@
  *
  * Author: Adam Dunkels <adam@sics.se>
  *
- * $Id: example-buffer.c,v 1.5 2005/10/07 05:21:33 adam Exp $
+ * $Id$
  */
 
 #ifdef _WIN32

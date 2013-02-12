@@ -1,6 +1,6 @@
-/******************************************************************************/
-/* sdp_def.h                                                                  */
-/******************************************************************************/
+/*
+ * $Id$
+ */
 
 #ifndef __SDP_DEF_H
 #define __SDP_DEF_H
@@ -8,7 +8,7 @@
 
 
 /*
- * Packet = |header=07 0E| + |data len (cmd type incl)=max 30 bytes| + 
+ * Packet = |header=07 0E| + |data len (cmd type incl)=max 30 bytes| +
  * |cmd type + data bytes| + |CRC8=summ data bytes|
  *
 */

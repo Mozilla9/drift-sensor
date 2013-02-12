@@ -28,7 +28,7 @@
  *
  * Author: Adam Dunkels <adam@sics.se>
  *
- * $Id: pt.h,v 1.6 2006/06/03 11:29:43 adam Exp $
+ * $Id$
  */
 
 /**

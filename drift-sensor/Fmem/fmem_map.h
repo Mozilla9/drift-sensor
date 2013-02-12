@@ -1,7 +1,8 @@
-/******************************************************************************/
-/*  Flash memory map for Compass                                              */
-/*                                                                            */
-/******************************************************************************/
+/*
+ * Flash memory map for Compass
+ *
+ * $Id$
+ */
 
 #ifndef __FMEM_MAP_H
 #define __FMEM_MAP_H
@@ -24,8 +25,8 @@
 #define DEV_EN_TASKS_ADDR          (DEV_ID_ADDR + 4)              // enabled tasks (4 b)
 #define DEV_EN_TRACE_ADDR          (DEV_EN_TASKS_ADDR + 4)        // trace enable (4 b)
 
-#define DEV_RESERVED_ADDR_ST       (DEV_EN_TRACE_ADDR + 4)        // 
-#define DEV_RESERVED_ADDR_ED       (255)                          // 
+#define DEV_RESERVED_ADDR_ST       (DEV_EN_TRACE_ADDR + 4)        //
+#define DEV_RESERVED_ADDR_ED       (255)                          //
 
 #define ACC_TEMP_CFG_REG_ADDR      (DEV_RESERVED_ADDR_ED + 1)     // acc lis3dh sett (40 b)
 #define ACC_CTRL_REG1_ADDR         (ACC_TEMP_CFG_REG_ADDR + 2)    //

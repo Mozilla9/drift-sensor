@@ -30,7 +30,7 @@
  *
  * Author: Adam Dunkels <adam@sics.se>
  *
- * $Id: example-codelock.c,v 1.5 2005/10/06 07:57:08 adam Exp $
+ * $Id$
  */
 
 /*

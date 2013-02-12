@@ -6,7 +6,9 @@
 ;;
 ;; Copyright 2006 IAR Systems. All rights reserved.
 ;;
-;; $Revision: 21638 $
+;; Revision: 21638
+;;
+;; $Id$
 ;;
 
         MODULE  ?cstartup
@@ -32,21 +34,21 @@
         PUBLIC  __vector
         PUBLIC  __iar_program_start
         PUBLIC  __vector_0x14
-		    
+
         EXTERN	undef_handler, swi_handler, prefetch_handler
         EXTERN	data_handler, irq_handler, fiq_handler
-        ARM	; Always ARM mode after reset	
-        
+        ARM	; Always ARM mode after reset
+
 __vector:
 		ldr	pc,[pc,#24]	; Absolute jump can reach 4 GByte
-                
+
 __undef_handler:
                 ldr	pc,[pc,#24]	; Branch to undef_handler
                 ;;B .
-    
+
 __swi_handler:
 		ldr	pc,[pc,#24]	; Branch to swi_handler
-                
+
 __prefetch_handler:
 		ldr	pc,[pc,#24]	; Branch to prefetch_handler
                 ;;B .
@@ -54,20 +56,20 @@ __prefetch_handler:
 __data_handler
 		ldr	pc,[pc,#24]	; Branch to data_handler
                 ;;B .
-                
-                
+
+
 __vector_0x14
                 dc32    0xFFFFFFFF
-                
+
 __irq_handler:
 		ldr     pc,[pc, #-0x0120] ; Branch to irq_handler
-                
+
 __fiq_handler:
 		ldr	pc,[pc,#24]	; Branch to fiq_handler
-                
+
 ; ------------------------------------------------------------------------------
 ; Constant table entries (for ldr pc) will be placed at 0x20
-      
+
       dc32	__iar_program_start
       dc32	0x00000000          ;__undef_handler
       dc32	0x00010200          ;__swi_handler

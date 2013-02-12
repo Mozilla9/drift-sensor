@@ -1,6 +1,6 @@
-/******************************************************************************/
-/* compass.c                                                                  */
-/******************************************************************************/
+/*
+ * $Id$
+ */
 
 
 #include "data_types.h"
@@ -155,7 +155,7 @@ void init_device() {
     init_at25df();
     init_led();
     init_lis3dh();
-    
+
     create_ring_buff(pointerRingBuff, ring_buff, sizeof(ring_buff));
 
     init_uart0(57600, 3);
