@@ -44,14 +44,13 @@ void init_uart0(const uint32_t _baudrate, const uint8_t _key) {
     U0FDR_bit.DIVADDVAL = 0;
     U0FDR_bit.MULVAL = 0;
 
+    // ! for FPCLK = 24 MHz
     uint32_t Br;
-
     if(_baudrate == 115200) {
-        // ! for FPCLK=28800000
         U0DLM = 0;
-        U0DLL = 13;
-        U0FDR_bit.DIVADDVAL = 1;
-        U0FDR_bit.MULVAL = 5;
+        U0DLL = 11;
+        U0FDR_bit.DIVADDVAL = 2;
+        U0FDR_bit.MULVAL = 11;
     }
     else {
         Br = (FPCLK / 16) / _baudrate;

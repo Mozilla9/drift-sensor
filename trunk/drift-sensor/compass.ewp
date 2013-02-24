@@ -1797,7 +1797,37 @@
       <name>$PROJ_DIR$\At25df\at25df.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\At25df\at25df.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\At25df\at25df_def.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Spi\spi.c</name>
+    </file>
+  </group>
+  <group>
+    <name>CAN</name>
+    <file>
+      <name>$PROJ_DIR$\Can\can.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Can\can.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Can\can_baud_table.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Can\can_def.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Can\can_handlers.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Can\can_handlers.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Can\can_sig.h</name>
     </file>
   </group>
   <group>
@@ -1904,6 +1934,9 @@
     <file>
       <name>$PROJ_DIR$\Tasks\tasks.c</name>
     </file>
+    <file>
+      <name>$PROJ_DIR$\Tasks\tasks.h</name>
+    </file>
   </group>
   <group>
     <name>UART</name>
@@ -1922,6 +1955,12 @@
   </group>
   <file>
     <name>$PROJ_DIR$\cstartup.s</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\data_types.h</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\Config\iolpc2364.h</name>
   </file>
   <file>
     <name>$PROJ_DIR$\main.c</name>

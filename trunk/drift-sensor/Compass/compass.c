@@ -12,6 +12,7 @@
 #include "At25df\at25df.h"
 #include "Ringbuff\ring_buffer.h"
 #include "Lis3dh\lis3dh.h"
+#include "Can\can.h"
 #include "Compass\compass.h"
 
 
@@ -119,14 +120,19 @@ static void init_irq() {
 
     VICINTSELECT_bit.I2C0 = 0;
     VICVECTPRIORITY9_bit.PRIORITY = 9;
+    
+    VICINTSELECT_bit.CAN12 = 0;
+    VICVECTPRIORITY23_bit.PRIORITY = 3;
 
     VICVECTADDR4 = (uint32_t)__interrupt_handler_timer0;
     VICVECTADDR6 = (uint32_t)__interrupt_handler_uart0;
     VICVECTADDR9 = (uint32_t)__interrupt_handler_i2c0;
+    VICVECTADDR23 = (uint32_t)__interrupt_handler_can12;
 
     VICINTENABLE_bit.UART0 = 1;
     VICINTENABLE_bit.TIMER0 = 1;
     VICINTENABLE_bit.I2C0 = 1;
+    VICINTENABLE_bit.CAN12 = 1;
 }
 
 
@@ -153,6 +159,7 @@ void init_device() {
 
     init_timer0();
     init_at25df();
+    init_can();
     init_led();
     init_lis3dh();
 

@@ -12,11 +12,13 @@
 #include "Lis3dh\lis3dh.h"
 #include "Compass\compass.h"
 #include "Drift\drift.h"
+#include "Can\can_handlers.h"
 #include "Tasks\tasks.h"
 
 
 #define ACC_TASK          1
 #define ACC_MATRIX_TASK   2
+#define CAN_TASK          3
 #define CALIBR_TASK       6
 
 
@@ -30,6 +32,7 @@ static struct pt acc_pt;
 static struct pt acc_matrix_pt;
 static struct pt calibr_pt;
 static struct pt led_pt;
+static struct pt can_pt;
 
 
 /*
@@ -149,6 +152,44 @@ static int acc_task(struct pt * pt) {
 
 
 /*
+ * Can task
+ *
+ */
+static int can_task(struct pt * pt) {
+    static uint32_t time_count = 0;
+    PT_BEGIN(pt);
+
+    while(1) {
+        PT_WAIT_UNTIL(pt, flag_run_enabled);
+        {
+            uint32_t tick = get_sys_tick();
+            if (tick > time_count) {
+                time_count = tick + 3 * TIMER0_TICK;
+
+                __UNION_UINT64 data;
+                __can_param_t * param = 0;
+                uint16_t idx = 1;
+                param = get_next_can_data(idx++);
+
+                while (param) {
+                    data.data64 = param->data;
+
+                    DEBUG_PRINTF("%s:%8X%8X\r\n", param->pLabel, data.data32[0], data.data32[1]);
+                    
+                    param->data = 0;
+
+                    param = get_next_can_data(idx++);
+                }
+            }
+        }
+        PT_WAIT_UNTIL(pt, !flag_run_enabled);
+    }
+
+    PT_END(pt);
+}
+
+
+/*
  * Accelerometer matrix task
  *
  */
@@ -246,6 +287,33 @@ void disable_acc_task() {
 
 
 /*
+ * Test can task
+ *
+ */
+static bool_t test_can_task() {
+    return BIT_TEST(enabled_tasks, CAN_TASK) ? TRUE_T : FALSE_T;
+}
+
+
+/*
+ * Enable can task
+ *
+ */
+void enable_can_task() {
+    BIT_SET(enabled_tasks, CAN_TASK);
+}
+
+
+/*
+ * Disable can task
+ *
+ */
+void disable_can_task() {
+    BIT_CLEAR(enabled_tasks, CAN_TASK);
+}
+
+
+/*
  * Test acc matrix task
  *
  */
@@ -312,6 +380,7 @@ void init_tasks() {
     PT_INIT(&calibr_pt);
     PT_INIT(&acc_pt);
     PT_INIT(&acc_matrix_pt);
+    PT_INIT(&can_pt);
 
     // read sett
     data.addr = DEV_EN_TASKS_ADDR;
@@ -352,6 +421,10 @@ void run_tasks() {
 
     if (test_acc_task()) {
         acc_task(&acc_pt);
+    }
+
+    if (test_can_task()) {
+        can_task(&can_pt);
     }
 
     flag_run_enabled = 0;
