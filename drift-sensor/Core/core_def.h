@@ -9,13 +9,14 @@
 /******************************** Macros for core *****************************/
 #define   FOSC              (12000000)      // Oscill 12 Mhz
 
-#define   PLL_MValue        (11)            // Fcclk = 57.6Mhz, Fpllclk = 288Mhz, and USB = 48Mhz
+#define   PLL_MValue        (11)            // Fcclk = 48Mhz, Fpllclk = 288Mhz, and USB = 48Mhz
 #define   PLL_NValue        (0)
-#define   CCLK_DIV          (4)
+#define   CCLK_DIV          (5)
 #define   USB_CLK_DIV       (5)
+#define   CAN_CLK_DIV       (5)
 
-#define   FCCLK             (57600000)      // Freq CPU in Hz
-#define   FCCLK_kHz         (FCCLK/1000)    // Freq CPU in kHz
+#define   FCCLK             (48000000)      // Freq CPU in Hz
+#define   FCCLK_KHZ         (FCCLK/1000)    // Freq CPU in kHz
 #define   FPLLCLK           (288000000)     // Freq at PLL
 #define   FPCLK             (FCCLK/2)       // Freq peripherals
 

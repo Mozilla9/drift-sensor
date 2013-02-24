@@ -59,7 +59,6 @@ static void init_pll() {
     USBCLKCFG_bit.USBSEL = USB_CLK_DIV;
 
     // Configure PCLK
-    //PCLKSEL0 = 0x00000000;     // PCLK = CCKL/4
     PCLKSEL0 = 0xAAAAAAAA;       // PCLK = CCKL/2 for all modules
     PCLKSEL1 = 0xAAAAAAAA;
 

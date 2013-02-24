@@ -38,6 +38,7 @@
 #define _CMD_CALB            "calb"
 #define _CMD_SW_PROTO        "proto"
 #define _CMD_AXIS_INV        "invert"
+#define _CMD_CAN_TASK        "can"
 
 
 // available  commands
@@ -48,6 +49,7 @@ int8_t * keyword [] = {
     _CMD_TRACE,
     _CMD_LED,
     _CMD_ACC_TASK,
+    _CMD_CAN_TASK,
     _CMD_ACC_MATRIX_TASK,
     _CMD_ACC_XX,
     _CMD_ACC_YY,
@@ -65,7 +67,7 @@ int8_t * keyword [] = {
     _CMD_CLEAR
 };
 
-#define _NUM_OF_CMD    21
+#define _NUM_OF_CMD    22
 
 
 // array for comletion
@@ -90,6 +92,7 @@ void print_help_cmd () {
     (*get_microrl_printf (pointerMicrorl)) ("\tcalb        - on/off run calibrating\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tmtr         - on/off acc matrix task\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tacc         - on/off acc task\n\r");
+    (*get_microrl_printf (pointerMicrorl)) ("\tcan         - on/off can task\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tax?         - get acc X sett (med, up, down, gist, wind, average)\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\tay?         - get acc Y sett\n\r");
     (*get_microrl_printf (pointerMicrorl)) ("\taz?         - get acc Z sett\n\r");
@@ -220,7 +223,8 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
             }
         }
         else if ((strcmp (argv[i], _CMD_ACC_TASK) == 0)
-                    || (strcmp (argv[i], _CMD_ACC_MATRIX_TASK) == 0)) {
+                    || (strcmp (argv[i], _CMD_ACC_MATRIX_TASK) == 0)
+                    || (strcmp (argv[i], _CMD_CAN_TASK) == 0)) {
             if ((i + 1) < argc) {
                 void (* pFunc) () = 0;
                 uint16_t isEn = 0;
@@ -238,6 +242,9 @@ int32_t execute (const int32_t argc, const int8_t * const * argv) {
                     }
                     else if (argv[i][1] == 't') {
                         pFunc = isEn == 1 ? &enable_acc_matrix_task : &disable_acc_matrix_task;
+                    }
+                    else if (argv[i][1] == 'a') {
+                        pFunc = isEn == 1 ? &enable_can_task : &disable_can_task;
                     }
                 }
 

@@ -20,6 +20,7 @@
 #include "Microrl\handlers.h"
 #include "Microrl\microrl.h"
 #include "Sdp\sdp.h"
+#include "Can\can_handlers.h"
 #include "Sett\settings.h"
 #include "Tasks\tasks.h"
 
@@ -59,6 +60,7 @@ void main()
     enable_default_lis3dh();
     init_tasks();
     init_reco_drift();
+    init_can_j1939();
 
     DEBUG_PRINTF("\r\n\r\n");
 
@@ -72,6 +74,8 @@ void main()
                 sdp_insert_char(data);
             }
         }
+
+        poll_can_msg();
 
         run_tasks();
 

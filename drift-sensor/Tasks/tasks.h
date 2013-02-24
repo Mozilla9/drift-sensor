@@ -22,6 +22,9 @@ void disable_acc_task();
 void enable_acc_matrix_task();
 void disable_acc_matrix_task();
 
+void enable_can_task();
+void disable_can_task();
+
 
 
 #endif
