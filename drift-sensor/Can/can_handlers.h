@@ -12,7 +12,7 @@ typedef struct
     uint32_t  pgn;          // param id
     uint8_t   pos;          // pos in bits
     uint8_t   len;          // len in bits
-    const int8_t * pLabel;  // text name
+    uint16_t  label;        // text name
     ulong64_t data;         // data
 } __can_param_t;
 #pragma pack()

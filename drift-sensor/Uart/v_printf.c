@@ -231,7 +231,6 @@ uint32_t serprintf(const int8_t * format, ...) {
 }
 
 
-
 /*
  * Enable trace function
  *
