@@ -52,9 +52,9 @@ static void print_hist (ring_history_t * pThis)
 
 //*****************************************************************************
 // fake printf for prodaction 21-09-2012
-static uint32_t fake_serprintf(const int8_t * format, ...) 
-{ 
-    return 0; 
+static uint32_t fake_serprintf(const int8_t * format, ...)
+{
+    return 0;
 }
 
 //*****************************************************************************
@@ -368,7 +368,7 @@ void microrl_set_sigint_callback (microrl_t * pThis, void (*sigintf)(void))
 #endif
 
 #ifdef _USE_ESC_SEQ
-static void hist_search (microrl_t * pThis, int32_t dir) 
+static void hist_search (microrl_t * pThis, int32_t dir)
 {
     int32_t len = hist_restore_line (&pThis->ring_hist, pThis->cmdline, dir);
     if (len) {
@@ -673,7 +673,7 @@ void microrl_insert_char (microrl_t * pThis, int32_t ch)
             break;
             //-----------------------------------------------------
             case KEY_DEL: // Backspace
-            case KEY_BS: // ^U
+            case KEY_BS:  // ^U
                 microrl_backspace (pThis);
                 terminal_print_line (pThis, pThis->cursor, pThis->cursor);
             break;

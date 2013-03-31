@@ -24,7 +24,7 @@
 
 
 static uint32_t flag_run_enabled = 0;
-static uint32_t enabled_tasks = 0x000004;
+static uint32_t enabled_tasks = 0x00000C;  // ACC_MATRIX_TASK, CAN_TASK enabled by default
 static uint16_t calibrating_state = 0;
 
 static struct pt first_pt;
@@ -164,7 +164,7 @@ static int can_task(struct pt * pt) {
         {
             uint32_t tick = get_sys_tick();
             if (tick > time_count) {
-                time_count = tick + 3 * TIMER0_TICK;
+                time_count = tick + TIMER0_TICK;
 
                 __UNION_UINT64 data;
                 __can_param_t * param = 0;
@@ -174,8 +174,8 @@ static int can_task(struct pt * pt) {
                 while (param) {
                     data.data64 = param->data;
 
-                    DEBUG_PRINTF("%s:%8X%8X\r\n", param->pLabel, data.data32[0], data.data32[1]);
-                    
+                    serprintf("$CAN,%4X,%8X,%8X\r\n", param->label, data.data32[0], data.data32[1]);
+
                     param->data = 0;
 
                     param = get_next_can_data(idx++);

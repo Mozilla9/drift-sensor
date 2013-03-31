@@ -1950,6 +1950,9 @@
       <name>$PROJ_DIR$\Uart\v_printf.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\Uart\v_printf.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Uart\v_printf_impl.c</name>
     </file>
   </group>

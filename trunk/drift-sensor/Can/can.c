@@ -65,7 +65,7 @@ inline static void ci_memset(uint8_t * __addr, const uint8_t __value, const uint
  */
 inline static void sleep_100mks() {
     uint32_t i;
-    for (i = 0; i < 270; i++);
+    for (i = 0; i < 2700; i++);
 }
 
 
@@ -75,7 +75,7 @@ inline static void sleep_100mks() {
  */
 inline static void sleep_10mks() {
     uint32_t i;
-    for (i = 0; i < 27; i++);
+    for (i = 0; i < 270; i++);
 }
 
 
@@ -616,7 +616,7 @@ void ci_poll_sigs() {
         for (uint16_t i = 0; i < __cans_dev[chan_idx].sslot_size; i++) {
             if (__cans_dev[chan_idx].sslot[i].hdl) {
                 while (__cans_dev[chan_idx].sslot[i].sigcnt > 0) {
-                    __enable_can_int();
+                    __disable_can_int();
                     __cans_dev[chan_idx].sslot[i].sigcnt--;;
                     __enable_can_int();
                     __cans_dev[chan_idx].sslot[i].hdl(i);
