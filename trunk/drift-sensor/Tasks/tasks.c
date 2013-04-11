@@ -164,20 +164,48 @@ static int can_task(struct pt * pt) {
         {
             uint32_t tick = get_sys_tick();
             if (tick > time_count) {
+                __can_param_t * param;
+                int8_t * pPattern;
+                uint32_t res;
+                uint16_t idx;
+
+                idx = 1;
+                param = get_next_can_data(idx++);
                 time_count = tick + TIMER0_TICK;
 
-                __UNION_UINT64 data;
-                __can_param_t * param = 0;
-                uint16_t idx = 1;
-                param = get_next_can_data(idx++);
-
                 while (param) {
-                    data.data64 = param->data;
+                    res = (uint32_t)(param->data >> param->pos);
 
-                    serprintf("$CAN,%4X,%8X,%8X\r\n", param->label, data.data32[0], data.data32[1]);
+                    switch (param->len) {
+                      case 2:
+                        res &= 0x00000003;
+                        pPattern = "$CAN,%2X,%2X\r\n";
+                        break;
+
+                      case 8:
+                        res &= 0x000000FF;
+                        pPattern = "$CAN,%2X,%2X\r\n";
+                        break;
+
+                      case 16:
+                        res &= 0x0000FFFF;
+                        pPattern = "$CAN,%2X,%4X\r\n";
+                        break;
+
+                      case 32:
+                        pPattern = "$CAN,%2X,%8X\r\n";
+                        break;
+
+                      default:
+                        continue;
+
+                    }
+
+                    serprintf(pPattern, param->label, res);
 
                     param->data = 0;
-
+                    param->len = 0;
+                    param->pos = 0;
                     param = get_next_can_data(idx++);
                 }
             }
