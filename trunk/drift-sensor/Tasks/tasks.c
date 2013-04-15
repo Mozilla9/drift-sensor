@@ -156,24 +156,21 @@ static int acc_task(struct pt * pt) {
  *
  */
 static int can_task(struct pt * pt) {
-    static uint32_t time_count = 0;
     PT_BEGIN(pt);
 
     while(1) {
         PT_WAIT_UNTIL(pt, flag_run_enabled);
         {
-            uint32_t tick = get_sys_tick();
-            if (tick > time_count) {
-                __can_param_t * param;
-                int8_t * pPattern;
-                uint32_t res;
-                uint16_t idx;
+            __can_param_t * param;
+            int8_t * pPattern;
+            uint32_t res;
+            uint16_t idx;
 
-                idx = 1;
+            idx = 1;
+            while (idx < CAN_LISTEN_PARAM) {
                 param = get_next_can_data(idx++);
-                time_count = tick + TIMER0_TICK;
-
-                while (param) {
+                
+                if (param) {
                     res = (uint32_t)(param->data >> param->pos);
 
                     switch (param->len) {
@@ -198,7 +195,6 @@ static int can_task(struct pt * pt) {
 
                       default:
                         continue;
-
                     }
 
                     serprintf(pPattern, param->label, res);
@@ -206,7 +202,6 @@ static int can_task(struct pt * pt) {
                     param->data = 0;
                     param->len = 0;
                     param->pos = 0;
-                    param = get_next_can_data(idx++);
                 }
             }
         }

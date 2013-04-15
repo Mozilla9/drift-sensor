@@ -25,7 +25,7 @@
 #include "Tasks\tasks.h"
 
 
-#define device_vers_tag    "\n\rDriftSensor v.13.6\n\r"
+#define device_vers_tag    "\n\rDriftSensor v.13.7\n\r"
 
 extern __ring_buff * const pointerRingBuff;
 
