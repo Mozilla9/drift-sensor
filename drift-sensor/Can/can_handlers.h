@@ -6,6 +6,10 @@
 #define __CAN_HANDLERS_H
 
 
+#define CAN_LISTEN_PARAM     22
+#define CAN1_CHAN            0
+
+
 #pragma pack(1)
 typedef struct
 {
@@ -13,6 +17,7 @@ typedef struct
     uint8_t   pos;          // pos in bits
     uint8_t   len;          // len in bits
     uint8_t   label;        // short id
+    uint8_t   ready;        // data ready flag 
     ulong64_t data;         // data
 } __can_param_t;
 #pragma pack()

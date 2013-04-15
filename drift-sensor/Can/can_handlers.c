@@ -12,11 +12,7 @@
 #include "Can\can_handlers.h"
 
 
-#define LISTEN_PARAM     22
-#define CAN1_CHAN        0
-
-
-static __can_param_t __can_params[LISTEN_PARAM];
+static __can_param_t __can_params[CAN_LISTEN_PARAM];
 
 
 /*
@@ -32,6 +28,7 @@ static void init_params_data() {
     __can_params[1].pos = 8;
     __can_params[1].len = 8;
     __can_params[1].label = 1;
+    __can_params[1].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[1].label);
 
     //2
@@ -39,6 +36,7 @@ static void init_params_data() {
     __can_params[2].pos = 8;
     __can_params[2].len = 8;
     __can_params[2].label = 2;
+    __can_params[2].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[2].label);
 
     //3
@@ -46,6 +44,7 @@ static void init_params_data() {
     __can_params[3].pos = 0;
     __can_params[3].len = 8;
     __can_params[3].label = 3;
+    __can_params[3].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[3].label);
 
     //4
@@ -53,6 +52,7 @@ static void init_params_data() {
     __can_params[4].pos = 24;
     __can_params[4].len = 16;
     __can_params[4].label = 4;
+    __can_params[4].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[4].label);
 
     //5
@@ -60,6 +60,7 @@ static void init_params_data() {
     __can_params[5].pos = 8;
     __can_params[5].len = 8;
     __can_params[5].label = 5;
+    __can_params[5].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[5].label);
 
     //6
@@ -67,6 +68,7 @@ static void init_params_data() {
     __can_params[6].pos = 0;
     __can_params[6].len = 16;
     __can_params[6].label = 6;
+    __can_params[6].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[6].label);
 
     //7
@@ -74,6 +76,7 @@ static void init_params_data() {
     __can_params[7].pos = 32;
     __can_params[7].len = 2;
     __can_params[7].label = 7;
+    __can_params[7].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[7].label);
 
     //8
@@ -81,6 +84,7 @@ static void init_params_data() {
     __can_params[8].pos = 8;
     __can_params[8].len = 8;
     __can_params[8].label = 8;
+    __can_params[8].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[8].label);
 
     //9
@@ -88,6 +92,7 @@ static void init_params_data() {
     __can_params[9].pos = 32;
     __can_params[9].len = 8;
     __can_params[9].label = 9;
+    __can_params[9].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[9].label);
 
     //10
@@ -95,6 +100,7 @@ static void init_params_data() {
     __can_params[10].pos = 32;
     __can_params[10].len = 8;
     __can_params[10].label = 10;
+    __can_params[10].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[10].label);
 
     //11
@@ -102,6 +108,7 @@ static void init_params_data() {
     __can_params[11].pos = 0;
     __can_params[11].len = 32;
     __can_params[11].label = 11;
+    __can_params[11].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[11].label);
 
     //12
@@ -109,6 +116,7 @@ static void init_params_data() {
     __can_params[12].pos = 15;
     __can_params[12].len = 2;
     __can_params[12].label = 12;
+    __can_params[12].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[12].label);
 
     //13
@@ -116,6 +124,7 @@ static void init_params_data() {
     __can_params[13].pos = 44;
     __can_params[13].len = 2;
     __can_params[13].label = 13;
+    __can_params[13].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[13].label);
 
     //14
@@ -123,6 +132,7 @@ static void init_params_data() {
     __can_params[14].pos = 10;
     __can_params[14].len = 2;
     __can_params[14].label = 14;
+    __can_params[14].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[14].label);
 
     //15
@@ -130,6 +140,7 @@ static void init_params_data() {
     __can_params[15].pos = 48;
     __can_params[15].len = 16;
     __can_params[15].label = 15;
+    __can_params[15].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[15].label);
 
     //16
@@ -137,6 +148,7 @@ static void init_params_data() {
     __can_params[16].pos = 32;
     __can_params[16].len = 32;
     __can_params[16].label = 16;
+    __can_params[16].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[16].label);
 
     //17
@@ -144,6 +156,7 @@ static void init_params_data() {
     __can_params[17].pos = 0;
     __can_params[17].len = 32;
     __can_params[17].label = 17;
+    __can_params[17].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[17].label);
 
     //18
@@ -151,6 +164,7 @@ static void init_params_data() {
     __can_params[18].pos = 32;
     __can_params[18].len = 32;
     __can_params[18].label = 18;
+    __can_params[18].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[18].label);
 
     //19
@@ -158,6 +172,7 @@ static void init_params_data() {
     __can_params[19].pos = 8;
     __can_params[19].len = 16;
     __can_params[19].label = 19;
+    __can_params[19].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[19].label);
 
     //20
@@ -165,6 +180,7 @@ static void init_params_data() {
     __can_params[20].pos = 0;
     __can_params[20].len = 16;
     __can_params[20].label = 20;
+    __can_params[20].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[20].label);
 
     //21
@@ -172,6 +188,7 @@ static void init_params_data() {
     __can_params[21].pos = 0;
     __can_params[21].len = 16;
     __can_params[21].label = 21;
+    __can_params[21].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[21].label);
 }
 
@@ -215,7 +232,7 @@ static void cb_rcv_can1(const sint16_t sig) {
             pgn_no = (uint32_t) ((rx.id >> 8) & (uint32_t) 0x0003ffff);
         }
 
-        for (uint16_t i = 1; i < LISTEN_PARAM; i++) {
+        for (uint16_t i = 1; i < CAN_LISTEN_PARAM; i++) {
             if (pgn_no == __can_params[i].pgn) {
                 for (uint16_t cnt = 0; cnt < 8; cnt++) {
                     ((uint8_t *)&xtracted)[cnt] = rx.data[cnt];
@@ -225,7 +242,9 @@ static void cb_rcv_can1(const sint16_t sig) {
                 xtracted = xtracted << (64 - __can_params[i].len);   // clr high sig bits
                 xtracted = xtracted >> (64 - __can_params[i].len);
 
+                __can_params[i].ready = 1;
                 __can_params[i].data = xtracted;
+                break;
             }
         }
     }
@@ -274,8 +293,13 @@ void init_can_j1939() {
  *
  */
 __can_param_t * get_next_can_data(const uint16_t idx) {
-    if (idx == 0 || idx >= LISTEN_PARAM)
+    if (idx == 0 || idx >= CAN_LISTEN_PARAM)
         return 0;
 
-    return __can_params + idx;
+    if (__can_params[idx].ready > 0) {
+        __can_params[idx].ready = 0;
+        return __can_params + idx;
+    } else {
+        return 0;
+    }
 }
