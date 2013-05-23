@@ -20,8 +20,8 @@
 //__root static const uint32_t CRP_MODE   @ ".CRP_CODE" = CRP3;
 __root static const uint32_t FW_CFG[]   @ ".FW_CFG" =
 {
-    0x00006BCC,     // main fw len
-    0xffd74ade,     // main fw crc
+    0x00007D04,     // main fw len
+    0xffd0c8cd,     // main fw crc
     IAP_VALID_DATA
 };
 

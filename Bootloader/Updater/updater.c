@@ -65,7 +65,7 @@ void reset_update_state() {
 bool_t is_need_update() {
     DEBUG_PRINTF("BL:flg_need_update=0x%8x\r\n", flash_data.flg_ok);
     DEBUG_PRINTF("BL:fw_size=0x%8x\r\n", flash_data.fw_size);
-    DEBUG_PRINTF("BL:fw_row_crc=0x%8x\r\n", flash_data.row_fw_crc);
+    DEBUG_PRINTF("BL:fw_raw_crc=0x%8x\r\n", flash_data.raw_fw_crc);
 
     if (flash_data.flg_ok == FLG_NEED_UPDATE) {
         if (flash_data.fw_size && flash_data.fw_size < FW_MEM_SIZE) {
@@ -79,7 +79,7 @@ bool_t is_need_update() {
                 }
             }
 
-            if (!(tools.crc + flash_data.row_fw_crc)) {
+            if (!(tools.crc + flash_data.raw_fw_crc)) {
                 DEBUG_PRINTF("BL:is_need_update() - true\r\n");
                 return TRUE_T;
             }
