@@ -13,10 +13,10 @@
 #pragma pack(1)
 typedef struct
 {
-    uint32_t  pgn;          // param id
-    uint8_t   pos;          // pos in bits
-    uint8_t   len;          // len in bits
-    uint8_t   label;        // short id
+    uint32_t  pgn;          // param id    (it must be const)
+    uint8_t   pos;          // pos in bits (it must be const)
+    uint8_t   len;          // len in bits (it must be const)
+    uint8_t   label;        // short id    (it must be const)
     uint8_t   ready;        // data ready flag 
     ulong64_t data;         // data
 } __can_param_t;

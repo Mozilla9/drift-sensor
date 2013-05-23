@@ -222,6 +222,7 @@ static void cb_rcv_can1(const sint16_t sig) {
     uint32_t pgn_no = 0x0;
     uint8_t pdu_f = 0;
     ulong64_t xtracted;
+    __can_param_t * prm;
 
     if (ci_read(CAN1_CHAN, &rx, 1) > 0) {
         pdu_f = (uint8_t) ((rx.id >> 16) & 0xff);
@@ -233,17 +234,18 @@ static void cb_rcv_can1(const sint16_t sig) {
         }
 
         for (uint16_t i = 1; i < CAN_LISTEN_PARAM; i++) {
-            if (pgn_no == __can_params[i].pgn) {
+            prm = __can_params + i;
+            if (pgn_no == prm->pgn) {
                 for (uint16_t cnt = 0; cnt < 8; cnt++) {
                     ((uint8_t *)&xtracted)[cnt] = rx.data[cnt];
                 }
 
-                xtracted = xtracted >> __can_params[i].pos;          // clr low sig bits
-                xtracted = xtracted << (64 - __can_params[i].len);   // clr high sig bits
-                xtracted = xtracted >> (64 - __can_params[i].len);
+                xtracted = xtracted >> prm->pos;          // clr low sig bits
+                xtracted = xtracted << (64 - prm->len);   // clr high sig bits
+                xtracted = xtracted >> (64 - prm->len);
 
-                __can_params[i].ready = 1;
-                __can_params[i].data = xtracted;
+                prm->ready = 1;
+                prm->data = xtracted;
                 break;
             }
         }
@@ -274,8 +276,8 @@ void init_can_j1939() {
     DEBUG_PRINTF("\r\nci_open(BCI_250K), %d\r\n", error);
 
     // uncomment if need listen only mode
-    error = ci_set_lom(CAN1_CHAN, CI_LOM_ON);
-    DEBUG_PRINTF("ci_set_lom(), %d\n\r", error);
+    //error = ci_set_lom(CAN1_CHAN, CI_LOM_ON);
+    //DEBUG_PRINTF("ci_set_lom(), %d\n\r", error);
 
     error = ci_set_cb(CAN1_CHAN, CIEV_RC, cb_rcv_can1);
     DEBUG_PRINTF("ci_set_cb(rc), %d\n\r", error);
