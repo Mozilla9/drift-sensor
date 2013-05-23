@@ -640,7 +640,7 @@ static __arm void __can_interrupt(const uint8_t chan_idx, const uint32_t canicr_
     if (chan_idx >= CI_CHAN_NUMS)
         return;
 
-    if (CAN1GSR_bit.RBS) {   //RX
+    if (CAN1GSR_bit.RBS) {    // RX
         if (CAN1RFS_bit.FF) { // EFF 29 bits
             if (!(__cans_dev[chan_idx].flags & CIO_CAN29) ) {
                 CAN1CMR_bit.RRB = 1;

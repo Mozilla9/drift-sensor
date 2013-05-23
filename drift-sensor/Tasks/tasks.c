@@ -200,8 +200,6 @@ static int can_task(struct pt * pt) {
                     serprintf(pPattern, param->label, res);
 
                     param->data = 0;
-                    param->len = 0;
-                    param->pos = 0;
                 }
             }
         }
