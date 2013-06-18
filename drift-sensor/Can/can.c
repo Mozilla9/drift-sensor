@@ -119,10 +119,9 @@ static sint16_t cansig_que_retr(__canque_t * const q, __canmsg_t * const  msg, c
 
     ret = (q->count > num) ? num : q->count;
     for (sint16_t i = 0; i < ret; i++) {
-        msg[i] = q->d[q->rloc];
-        q->rloc += 1;
+        msg[i] = q->d[q->rloc++];
 
-        if ( q->rloc >= q->size )
+        if (q->rloc >= q->size)
             q->rloc = 0;
 
         q->count--;

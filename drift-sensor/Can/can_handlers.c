@@ -219,7 +219,7 @@ static void cb_err_can1(const sint16_t sig) {
  */
 static void cb_rcv_can1(const sint16_t sig) {
     __canmsg_t rx;
-    uint32_t pgn_no = 0x0;
+    uint32_t pgn_no = 0;
     uint8_t pdu_f = 0;
     ulong64_t xtracted;
     __can_param_t * prm;
@@ -233,6 +233,9 @@ static void cb_rcv_can1(const sint16_t sig) {
             pgn_no = (uint32_t) ((rx.id >> 8) & (uint32_t) 0x0003ffff);
         }
 
+        // CAN_DATA_RX:      0x0011223344556677
+        // CAN_DATA_CONVERS: 0x0000000000000011
+        // $CAN,02,11
         for (uint16_t i = 1; i < CAN_LISTEN_PARAM; i++) {
             prm = __can_params + i;
             if (pgn_no == prm->pgn) {
