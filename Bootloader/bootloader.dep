@@ -658,7 +658,7 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 64 15 81 79 65 111 24 116 11 23 27 12 21 14 61 60 112 83 40 38 18 44 19 29 115</file>
+          <file> 64 15 81 79 65 111 24 116 11 23 27 12 87 21 14 61 60 112 83 40 38 18 44 19 29 115</file>
         </tool>
       </inputs>
     </file>
@@ -678,6 +678,10 @@
         <tool>
           <name>BICOMP</name>
           <file> 2 67 28 96 101 99 0 98 1 102 94 89 95 100 92 72 93 36</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 2 67 28 96 101 99 0 63 98 1 102 94 89 95 100 92 72 93 36</file>
         </tool>
       </inputs>
     </file>
@@ -709,7 +713,7 @@
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 2 67 28 96 101 99 0 63 98 1 102 94 89 95 100 92 72 71 54 93 97 20 70 91 68 90 10</file>
+          <file> 2 67 28 96 101 99 0 63 98 1 102 94 89 95 100 92 72 36 71 54 93 97 20 70 91 68 90 10</file>
         </tool>
       </inputs>
     </file>
@@ -1007,10 +1011,6 @@
         </tool>
       </inputs>
     </file>
-    <forcedrebuild>
-      <name>[MULTI_TOOL]</name>
-      <tool>ILINK</tool>
-    </forcedrebuild>
   </configuration>
 </project>
 
