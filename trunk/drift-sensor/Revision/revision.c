@@ -42,8 +42,8 @@ const int8_t * get_revision() {
         rev_buff[i++] = '.';
 
         // Lo
-        while (pLoRevision[i + 7] != ' ' && pLoRevision[i + 7] != 0) {
-            rev_buff[i] = pLoRevision[i + 7];
+        while (pLoRevision[i + 8] != ' ' && pLoRevision[i + 8] != 0) {
+            rev_buff[i] = pLoRevision[i + 8];
             i++;
         }
         rev_buff[i] = 0;
@@ -83,6 +83,7 @@ void get_formatted_rev(int8_t * const str) {
     strcat(str, " ");
     strcat(str, pTime);
 }
+
 
 /*
  *
