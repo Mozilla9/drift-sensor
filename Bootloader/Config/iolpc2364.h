@@ -7,7 +7,7 @@
  **
  **    (c) Copyright IAR Systems 2006
  **
- **    $Revision: 24053 $
+ **    $Revision$
  **
  **    Note: Only little endian addressing of 8 bit registers.
  ***************************************************************************/
