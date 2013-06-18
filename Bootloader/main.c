@@ -10,6 +10,7 @@
 
 
 #include "data_types.h"
+#include "Revision\revision.h"
 #include "Core\core.h"
 #include "Uart\v_printf.h"
 #include "At25df\at25df.h"
@@ -38,7 +39,7 @@ void main()
 
     __enable_interrupt();
 
-    DEBUG_PRINTF(device_vers_tag);
+    print_revision();
     DEBUG_PRINTF("FlashMem: %s %s\n\r",
         get_family_desc_at25df(),
         get_density_desc_at25df());
