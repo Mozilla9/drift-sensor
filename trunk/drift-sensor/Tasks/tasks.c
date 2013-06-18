@@ -169,9 +169,9 @@ static int can_task(struct pt * pt) {
             idx = 1;
             while (idx < CAN_LISTEN_PARAM) {
                 param = get_next_can_data(idx++);
-                
+
                 if (param) {
-                    res = (uint32_t)(param->data >> param->pos);
+                    res = (uint32_t)(param->data);
 
                     switch (param->len) {
                       case 2:

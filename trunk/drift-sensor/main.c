@@ -10,6 +10,7 @@
 
 
 #include "data_types.h"
+#include "Revision\revision.h"
 #include "Core\core.h"
 #include "At25df\at25df.h"
 #include "Uart\v_printf.h"
@@ -24,8 +25,6 @@
 #include "Sett\settings.h"
 #include "Tasks\tasks.h"
 
-
-#define device_vers_tag    "\n\rDriftSensor v.13.7\n\r"
 
 extern __ring_buff * const pointerRingBuff;
 
@@ -52,7 +51,7 @@ void main()
 
     init_app_settings();
 
-    DEBUG_PRINTF(device_vers_tag);
+    print_revision();
     DEBUG_PRINTF("FlashMem: %s %s\n\r",
         get_family_desc_at25df(),
         get_density_desc_at25df());

@@ -1909,6 +1909,15 @@
     </file>
   </group>
   <group>
+    <name>REVISION</name>
+    <file>
+      <name>$PROJ_DIR$\Revision\revision.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Revision\revision.h</name>
+    </file>
+  </group>
+  <group>
     <name>RINGBUFF</name>
     <file>
       <name>$PROJ_DIR$\Ringbuff\ring_buffer.c</name>
