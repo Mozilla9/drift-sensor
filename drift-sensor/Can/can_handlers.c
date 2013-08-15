@@ -73,8 +73,8 @@ static void init_params_data() {
 
     //7
     __can_params[7].pgn = 61444; // spn190 – Engine Speed
-    __can_params[7].pos = 32;
-    __can_params[7].len = 2;
+    __can_params[7].pos = 24;
+    __can_params[7].len = 16;
     __can_params[7].label = 7;
     __can_params[7].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[7].label);
@@ -89,7 +89,7 @@ static void init_params_data() {
 
     //9
     __can_params[9].pgn = 61442; // spn522 – Percent Clutch Slip
-    __can_params[9].pos = 32;
+    __can_params[9].pos = 24;
     __can_params[9].len = 8;
     __can_params[9].label = 9;
     __can_params[9].ready = 0;
@@ -97,15 +97,15 @@ static void init_params_data() {
 
     //10
     __can_params[10].pgn = 61445; // spn523 – Current Gear
-    __can_params[10].pos = 32;
+    __can_params[10].pos = 24;
     __can_params[10].len = 8;
     __can_params[10].label = 10;
     __can_params[10].ready = 0;
     DEBUG_PRINTF("SPN %4x\r\n", __can_params[10].label);
 
     //11
-    __can_params[11].pgn = 65217; // spn917 – High Resolution Total Vehicle Distance
-    __can_params[11].pos = 0;
+    __can_params[11].pgn = 65248; // spn245 – Total Vehicle Distance
+    __can_params[11].pos = 32;
     __can_params[11].len = 32;
     __can_params[11].label = 11;
     __can_params[11].ready = 0;

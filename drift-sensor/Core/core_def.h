@@ -17,7 +17,7 @@
 
 #define   FCCLK             (48000000)      // Freq CPU in Hz
 #define   FCCLK_KHZ         (FCCLK/1000)    // Freq CPU in kHz
-#define   FPLLCLK           (288000000)     // Freq at PLL
+#define   FPLLCLK           (240000000)     // Freq at PLL
 #define   FPCLK             (FCCLK/2)       // Freq peripherals
 
 #define   WDT_VALUE         (0x02255100)    // Timeout = Tfpclk * WDT_VALUE * 4
