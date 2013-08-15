@@ -32,7 +32,7 @@ const int8_t * get_project_name() {
  *
  */
 const int8_t * get_revision() {
-    return rev_buff;
+    return pRevision;
 }
 
 
