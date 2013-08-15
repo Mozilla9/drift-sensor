@@ -1916,6 +1916,9 @@
     <file>
       <name>$PROJ_DIR$\Revision\revision.h</name>
     </file>
+    <file>
+      <name>$PROJ_DIR$\Revision\svnrev.h</name>
+    </file>
   </group>
   <group>
     <name>RINGBUFF</name>
